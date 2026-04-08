@@ -30,7 +30,7 @@ export default function HomePage() {
           </div>
           
           {/* Main Headline */}
-          <h1 className="font-headline text-6xl md:text-7xl lg:text-8xl text-white max-w-5xl leading-[1.1] mb-6 md:mb-8 font-black tracking-tight">
+          <h1 className="font-headline text-6xl md:text-7xl lg:text-8xl text-white max-w-5xl leading-[1.1] mb-6 md:mb-8 font-black tracking-tight drop-shadow-2xl">
             Descubre lo <br className="hidden md:block" /><span className="italic font-light">mejor de México</span>
           </h1>
           
@@ -72,13 +72,13 @@ export default function HomePage() {
             <div 
               className="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-110"
               style={{
-                backgroundImage: 'url("https://images.unsplash.com/photo-1506905925346-21bda4d32df4?q=80&w=600&h=800&auto=format&fit=crop")'
+                backgroundImage: 'linear-gradient(135deg, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.5) 100%), url("https://images.pexels.com/photos/3537903/pexels-photo-3537903.jpeg?auto=compress&cs=tinysrgb&w=600&h=800")'
               }}
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/50 to-black/20" />
-            <div className="absolute bottom-0 left-0 right-0 p-6 md:p-8 bg-gradient-to-t from-black/60 to-transparent">
-              <span className="font-label text-emerald-300 text-xs uppercase tracking-widest mb-3 block font-bold text-shadow">🌿 Naturaleza</span>
-              <h3 className="font-headline text-4xl md:text-5xl text-white font-black drop-shadow-lg">Refugios Locales</h3>
+            <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/70 to-black/20" />
+            <div className="absolute bottom-0 left-0 right-0 p-6 md:p-8 bg-gradient-to-t from-black/80 to-transparent">
+              <span className="font-label text-emerald-300 text-xs uppercase tracking-widest mb-3 block font-bold drop-shadow-2xl">🌿 Naturaleza</span>
+              <h3 className="font-headline text-4xl md:text-5xl text-white font-black drop-shadow-2xl">Refugios Locales</h3>
               <div className="h-1.5 w-16 bg-emerald-400 mt-4 rounded-full group-hover:w-20 transition-all duration-300" />
             </div>
           </div>
@@ -88,13 +88,13 @@ export default function HomePage() {
             <div 
               className="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-110"
               style={{
-                backgroundImage: 'url("https://images.unsplash.com/photo-1523254521-e52f4a98f4f9?q=80&w=600&h=800&auto=format&fit=crop")'
+                backgroundImage: 'linear-gradient(135deg, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.5) 100%), url("https://images.pexels.com/photos/1537671/pexels-photo-1537671.jpeg?auto=compress&cs=tinysrgb&w=600&h=800")'
               }}
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/50 to-black/20" />
-            <div className="absolute bottom-0 left-0 right-0 p-6 md:p-8 bg-gradient-to-t from-black/60 to-transparent">
-              <span className="font-label text-cyan-300 text-xs uppercase tracking-widest mb-3 block font-bold text-shadow">🎨 Cultura</span>
-              <h3 className="font-headline text-4xl md:text-5xl text-white font-black drop-shadow-lg">Arte y Herencia</h3>
+            <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/70 to-black/20" />
+            <div className="absolute bottom-0 left-0 right-0 p-6 md:p-8 bg-gradient-to-t from-black/80 to-transparent">
+              <span className="font-label text-cyan-300 text-xs uppercase tracking-widest mb-3 block font-bold drop-shadow-2xl">🎨 Cultura</span>
+              <h3 className="font-headline text-4xl md:text-5xl text-white font-black drop-shadow-2xl">Arte y Herencia</h3>
               <div className="h-1.5 w-16 bg-cyan-400 mt-4 rounded-full group-hover:w-20 transition-all duration-300" />
             </div>
           </div>
@@ -104,13 +104,13 @@ export default function HomePage() {
             <div 
               className="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-110"
               style={{
-                backgroundImage: 'url("https://images.unsplash.com/photo-1504674900967-a75236f784c2?q=80&w=600&h=800&auto=format&fit=crop")'
+                backgroundImage: 'linear-gradient(135deg, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.5) 100%), url("https://images.pexels.com/photos/1092730/pexels-photo-1092730.jpeg?auto=compress&cs=tinysrgb&w=600&h=800")'
               }}
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/50 to-black/20" />
-            <div className="absolute bottom-0 left-0 right-0 p-6 md:p-8 bg-gradient-to-t from-black/60 to-transparent">
-              <span className="font-label text-orange-300 text-xs uppercase tracking-widest mb-3 block font-bold text-shadow">🍽️ Gastronomía</span>
-              <h3 className="font-headline text-4xl md:text-5xl text-white font-black drop-shadow-lg">Sabores de Tierra</h3>
+            <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/70 to-black/20" />
+            <div className="absolute bottom-0 left-0 right-0 p-6 md:p-8 bg-gradient-to-t from-black/80 to-transparent">
+              <span className="font-label text-orange-300 text-xs uppercase tracking-widest mb-3 block font-bold drop-shadow-2xl">🍽️ Gastronomía</span>
+              <h3 className="font-headline text-4xl md:text-5xl text-white font-black drop-shadow-2xl">Sabores de Tierra</h3>
               <div className="h-1.5 w-16 bg-orange-400 mt-4 rounded-full group-hover:w-20 transition-all duration-300" />
             </div>
           </div>
@@ -162,15 +162,15 @@ export default function HomePage() {
               <div 
                 className="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-105"
                 style={{
-                  backgroundImage: 'url("https://images.unsplash.com/photo-1506905925346-21bda4d32df4?q=80&w=600&h=400&auto=format&fit=crop")'
+                  backgroundImage: 'linear-gradient(135deg, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.6) 100%), url("https://images.pexels.com/photos/1624487/pexels-photo-1624487.jpeg?auto=compress&cs=tinysrgb&w=600&h=400")'
                 }}
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/50 to-transparent" />
-              <div className="relative z-10 h-full flex flex-col justify-end p-6 md:p-8 bg-gradient-to-t from-black/40 to-transparent">
-                <span className="text-blue-300 font-label text-xs uppercase tracking-widest mb-3 font-bold drop-shadow-lg">🌊 Pacífico Sur</span>
-                <h3 className="font-headline text-3xl md:text-4xl text-white font-black mb-3 drop-shadow-lg">Puerto Escondido</h3>
-                <p className="text-yellow-100 text-base font-body mb-5 drop-shadow-lg">Incremento en interés por experiencias sustentables y ecoturismo.</p>
-                <button className="text-yellow-400 font-headline font-black text-base flex items-center gap-2 group/btn bg-gradient-to-r from-yellow-400/20 to-blue-400/20 backdrop-blur-md px-4 py-2 rounded-lg w-fit hover:from-yellow-400/30 hover:to-blue-400/30 transition-all drop-shadow-lg">
+              <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/60 to-transparent" />
+              <div className="relative z-10 h-full flex flex-col justify-end p-6 md:p-8 bg-gradient-to-t from-black/60 to-transparent">
+                <span className="text-blue-300 font-label text-xs uppercase tracking-widest mb-3 font-bold drop-shadow-2xl">🌊 Pacífico Sur</span>
+                <h3 className="font-headline text-3xl md:text-4xl text-white font-black mb-3 drop-shadow-2xl">Puerto Escondido</h3>
+                <p className="text-white text-base font-body mb-5 drop-shadow-2xl">Incremento en interés por experiencias sustentables y ecoturismo.</p>
+                <button className="text-yellow-300 font-headline font-black text-base flex items-center gap-2 group/btn bg-gradient-to-r from-yellow-400/30 to-blue-400/30 backdrop-blur-md px-4 py-2 rounded-lg w-fit hover:from-yellow-400/40 hover:to-blue-400/40 transition-all drop-shadow-2xl border border-yellow-300/30">
                   Explorar Guía 
                   <span className="material-symbols-outlined group-hover/btn:translate-x-1 transition-transform">arrow_forward</span>
                 </button>
@@ -241,10 +241,10 @@ export default function HomePage() {
               <div 
                 className="relative rounded-3xl overflow-hidden h-96 bg-cover bg-center shadow-2xl border-2 border-cyan-400/30"
                 style={{
-                  backgroundImage: 'linear-gradient(135deg, rgba(0, 20, 60, 0.7) 0%, rgba(5, 30, 80, 0.6) 50%, rgba(0, 10, 50, 0.7) 100%), url("https://images.unsplash.com/photo-1504384308090-c894fdcc538d?q=80&w=600&h=600&auto=format&fit=crop")'
+                  backgroundImage: 'linear-gradient(135deg, rgba(0, 20, 60, 0.7) 0%, rgba(5, 30, 80, 0.6) 50%, rgba(0, 10, 50, 0.7) 100%), url("https://images.pexels.com/photos/3571899/pexels-photo-3571899.jpeg?auto=compress&cs=tinysrgb&w=600&h=600")'
                 }}
               >
-                <div className="absolute inset-0 bg-gradient-to-br from-cyan-400/20 via-transparent to-blue-600/20" />
+                <div className="absolute inset-0 bg-gradient-to-br from-cyan-400/30 via-transparent to-blue-600/30" />
               </div>
             </div>
           </div>
