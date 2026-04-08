@@ -61,6 +61,7 @@ export default function PerfilPage() {
     { id: "direcciones", icon: <MapPin size={20} />, label: "Direcciones" },
     { id: "rutas", icon: <Route size={20} />, label: "Mis Rutas" },
     { id: "resenas", icon: <Star size={20} />, label: "Mis Reseñas" },
+    { id: "editar", icon: <Settings size={20} />, label: "Editar Perfil" },
     { id: "ajustes", icon: <Settings size={20} />, label: "Ajustes" },
   ];
 
@@ -305,6 +306,100 @@ export default function PerfilPage() {
                   <p className="text-on-surface-variant leading-relaxed font-body text-lg italic font-light">
                     “Una joya arquitectónica que te transporta en el tiempo. La curaduría de la exposición actual es impecable.”
                   </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {activeTab === "editar" && (
+          <div className="space-y-8 animate-fade-in-up">
+            <h2 className="text-4xl font-headline italic text-primary">Editar Perfil</h2>
+            <div className="bg-white rounded-[2.5rem] border border-outline-variant/10 overflow-hidden p-8 md:p-12">
+              <div className="max-w-2xl space-y-8">
+                {/* Avatar Upload */}
+                <div className="space-y-4">
+                  <label className="block text-lg font-headline font-bold">Foto de Perfil</label>
+                  <div className="flex items-center gap-6">
+                    <div className="w-24 h-24 rounded-full overflow-hidden border-4 border-primary-container shadow-lg">
+                      <img 
+                        src={perfil?.avatar_url || "https://images.unsplash.com/photo-1599566150163-29194dcaad36?q=80&w=200&h=200&auto=format&fit=crop"} 
+                        alt="Avatar" 
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                    <button className="px-6 py-3 border-2 border-primary text-primary rounded-full font-bold hover:bg-primary/5 transition-colors">
+                      Cambiar foto
+                    </button>
+                  </div>
+                </div>
+
+                {/* Basic Info */}
+                <div className="space-y-4">
+                  <label className="block text-lg font-headline font-bold">Nombre Completo</label>
+                  <input 
+                    type="text" 
+                    defaultValue={perfil?.nombre_completo || "Miguel Cabrera"}
+                    className="w-full px-6 py-3 rounded-2xl border-2 border-outline-variant/30 bg-surface-container-low font-body text-lg focus:border-primary focus:outline-none transition-colors"
+                  />
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                  <div className="space-y-4">
+                    <label className="block font-headline font-bold">Usuario</label>
+                    <input 
+                      type="text" 
+                      placeholder="@username"
+                      defaultValue="migueltravel"
+                      className="w-full px-6 py-3 rounded-2xl border-2 border-outline-variant/30 bg-surface-container-low font-body focus:border-primary focus:outline-none transition-colors"
+                    />
+                  </div>
+                  <div className="space-y-4">
+                    <label className="block font-headline font-bold">Teléfono</label>
+                    <input 
+                      type="tel" 
+                      placeholder="+52 55 1234 5678"
+                      defaultValue="+52 55 1234 5678"
+                      className="w-full px-6 py-3 rounded-2xl border-2 border-outline-variant/30 bg-surface-container-low font-body focus:border-primary focus:outline-none transition-colors"
+                    />
+                  </div>
+                </div>
+
+                {/* Bio */}
+                <div className="space-y-4">
+                  <label className="block font-headline font-bold">Biografía</label>
+                  <textarea 
+                    rows={4}
+                    defaultValue="Explorador, viajero y Muul enthusiast. Descubriendo los mejores rincones de México 🇲🇽"
+                    className="w-full px-6 py-3 rounded-2xl border-2 border-outline-variant/30 bg-surface-container-low font-body focus:border-primary focus:outline-none transition-colors resize-none"
+                  />
+                </div>
+
+                {/* Banner */}
+                <div className="space-y-4">
+                  <label className="block font-headline font-bold">Banner</label>
+                  <div className="w-full aspect-video rounded-2xl overflow-hidden border-2 border-outline-variant/30 bg-surface-container-low">
+                    <img 
+                      src="https://images.unsplash.com/photo-1518182170546-07661fd94144?q=80&w=1200&h=400&auto=format&fit=crop"
+                      alt="Banner"
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  <button className="px-6 py-3 border-2 border-secondary text-secondary rounded-full font-bold hover:bg-secondary/5 transition-colors">
+                    Cambiar banner
+                  </button>
+                </div>
+
+                {/* Actions */}
+                <div className="flex gap-4 pt-4">
+                  <button className="flex-1 bg-primary text-on-primary px-6 py-4 rounded-full font-headline font-bold text-lg hover:brightness-110 transition-all">
+                    Guardar cambios
+                  </button>
+                  <button 
+                    onClick={() => setActiveTab("cuenta")}
+                    className="flex-1 border-2 border-outline-variant/30 text-on-surface px-6 py-4 rounded-full font-headline font-bold text-lg hover:bg-surface-container-low transition-all">
+                    Cancelar
+                  </button>
                 </div>
               </div>
             </div>
