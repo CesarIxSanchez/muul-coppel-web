@@ -5,13 +5,14 @@
     "ofertas": "Ofertas",
     "buscarPlaceholder": "Buscar rotas ou destinos...",
     "tiendas": "Lojas",
+    "negocio": "Negócio",
     "mapa": "Mapa",
     "perfil": "Perfil",
     "login": "Entrar",
     "salir": "Sair"
   },
   "home": {
-    "badge": "México 2026 Experience",
+    "badge": "Muul 2026 Experience",
     "titulo": "DESCUBRA O MELHOR DO",
     "tituloDestacado": "MÉXICO",
     "subtitulo": "Seu guia definitivo para navegar a cultura, o sabor e o comércio mexicano durante o maior evento esportivo do mundo.",
@@ -24,7 +25,7 @@
     "tiendas": "Lojas",
     "tiendasDesc": "Artesanato autêntico e boutiques de designers locais. Leve um pedaço do México para casa.",
     "eventoLive": "Evento ao Vivo",
-    "copaMundial": "COPA DO MUNDO 2026",
+    "copaMundial": "MUUL 2026",
     "fanZone": "Fan Zone: Cidade do México",
     "fanZoneDesc": "Garanta seu lugar nas celebrações oficiais. Telões, música ao vivo e a melhor atmosfera futebolística.",
     "registrarseAhora": "REGISTRE-SE AGORA",
@@ -114,7 +115,7 @@
     "loginParaGuardar": "Faça login para salvar rotas.",
     "usuarioAnonimo": "Usuário",
     "errorGeneric": "Erro",
-    "marcaEvento": "Copa do Mundo 2026",
+    "marcaEvento": "MUUL 2026",
     "muulAi": "Muul AI",
     "cerrarPanel": "Fechar painel",
     "abrirPanel": "Abrir painel"
