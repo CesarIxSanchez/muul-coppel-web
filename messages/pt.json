@@ -307,6 +307,11 @@
     "google": "Google",
     "social": "acesse com",
     "googleSoon": "O login com Google estará disponível em breve.",
+    "googleCompleteTitle": "Complete seu cadastro com Google",
+    "googleCompleteBody": "Alguns campos obrigatórios não foram retornados pelo Google. Complete os campos faltantes para finalizar seu cadastro oficial.",
+    "googlePasswordNotRequired": "Senha não é necessária ao continuar com Google.",
+    "googleSessionExpired": "Sua sessão com Google expirou. Tente novamente.",
+    "googleProfileSaveError": "Não foi possível salvar seu perfil do Google. Tente novamente.",
     "apple": "Apple",
     "turista": "Turista",
     "negocio": "Negócio"

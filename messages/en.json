@@ -307,6 +307,11 @@
     "google": "Google",
     "social": "continue with",
     "googleSoon": "Google login will be available soon.",
+    "googleCompleteTitle": "Complete your Google registration",
+    "googleCompleteBody": "Some required fields were not returned by Google. Complete the missing fields to finish your official registration.",
+    "googlePasswordNotRequired": "Password is not required when continuing with Google.",
+    "googleSessionExpired": "Your Google session expired. Please try again.",
+    "googleProfileSaveError": "Unable to save your Google profile. Please try again.",
     "apple": "Apple",
     "turista": "Tourist",
     "negocio": "Business"

@@ -307,6 +307,11 @@
     "google": "Google",
     "social": "使用以下方式",
     "googleSoon": "Google 登录即将开放。",
+    "googleCompleteTitle": "完成 Google 注册",
+    "googleCompleteBody": "Google 未返回部分必填信息。请补全缺失字段以完成正式注册。",
+    "googlePasswordNotRequired": "使用 Google 继续时无需密码。",
+    "googleSessionExpired": "你的 Google 会话已过期，请重试。",
+    "googleProfileSaveError": "无法保存你的 Google 资料，请重试。",
     "apple": "Apple",
     "turista": "游客",
     "negocio": "商户"

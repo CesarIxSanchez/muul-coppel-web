@@ -307,6 +307,11 @@
     "google": "Google",
     "social": "accede con",
     "googleSoon": "Google estará disponible pronto.",
+    "googleCompleteTitle": "Completa tu registro con Google",
+    "googleCompleteBody": "Algunos datos obligatorios no llegaron desde Google. Completa los campos faltantes para finalizar tu registro oficial.",
+    "googlePasswordNotRequired": "Contraseña no requerida al continuar con Google.",
+    "googleSessionExpired": "Tu sesión con Google expiró. Intenta de nuevo.",
+    "googleProfileSaveError": "No se pudo guardar tu perfil de Google. Intenta de nuevo.",
     "apple": "Apple",
     "turista": "Turista",
     "negocio": "Negocio"
