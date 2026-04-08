@@ -200,15 +200,15 @@ export default function HomePage() {
 
       {/* Newsletter CTA - Premium Section */}
       <section className="py-20 md:py-32 bg-gradient-to-b from-white to-gray-100 px-6 md:px-12">
-        <div className="max-w-[1440px] mx-auto bg-gradient-to-br from-slate-900 via-blue-900 to-black rounded-[3rem] p-8 md:p-16 lg:p-20 flex flex-col lg:flex-row items-center gap-12 lg:gap-16 relative overflow-hidden border-2 border-cyan-400/20 shadow-2xl">
+        <div className="max-w-[1440px] mx-auto bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-700 rounded-[3rem] p-8 md:p-16 lg:p-20 flex flex-col lg:flex-row items-center gap-12 lg:gap-16 relative overflow-hidden border-2 border-cyan-300/40 shadow-2xl">
           {/* Decorative animated elements */}
-          <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-br from-yellow-400/20 to-cyan-400/20 rounded-full blur-3xl -z-10 animate-pulse" />
-          <div className="absolute bottom-0 left-0 w-72 h-72 bg-gradient-to-tr from-blue-400/20 to-purple-400/20 rounded-full blur-3xl -z-10 animate-pulse" />
+          <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-br from-yellow-300/30 to-cyan-300/30 rounded-full blur-3xl -z-10 animate-pulse" />
+          <div className="absolute bottom-0 left-0 w-72 h-72 bg-gradient-to-tr from-blue-300/30 to-purple-300/30 rounded-full blur-3xl -z-10 animate-pulse" />
           
           {/* Content */}
           <div className="flex-1 relative z-10">
-            <div className="inline-flex items-center gap-2 mb-6 text-cyan-300 font-label text-xs uppercase tracking-[0.2em] bg-cyan-400/10 px-4 py-2 rounded-full border border-cyan-400/30 w-fit font-bold drop-shadow-lg">
-              <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
+            <div className="inline-flex items-center gap-2 mb-6 text-white font-label text-xs uppercase tracking-[0.2em] bg-white/15 px-4 py-2 rounded-full border border-white/30 w-fit font-bold drop-shadow-lg">
+              <span className="w-2 h-2 rounded-full bg-white animate-pulse"></span>
               ✨ Sé parte del movimiento
             </div>
             
@@ -225,13 +225,13 @@ export default function HomePage() {
               <input 
                 type="email" 
                 placeholder="tu@email.com" 
-                className="flex-1 px-6 py-4 bg-gradient-to-r from-white/15 to-cyan-400/10 border-2 border-cyan-300/40 backdrop-blur-xl rounded-full text-white placeholder:text-white/70 focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:border-cyan-300 transition-all font-body font-medium shadow-lg shadow-cyan-400/10 drop-shadow-lg"/>
+                className="flex-1 px-6 py-4 bg-white/20 border-2 border-white/40 backdrop-blur-xl rounded-full text-white placeholder:text-white/60 focus:outline-none focus:ring-2 focus:ring-white focus:border-white transition-all font-body font-medium shadow-lg drop-shadow-lg"/>
               <button className="px-10 py-4 bg-gradient-to-r from-yellow-400 to-amber-400 text-black rounded-full font-headline font-black text-base hover:from-yellow-300 hover:to-amber-300 transition-all shadow-2xl shadow-yellow-400/40 whitespace-nowrap drop-shadow-lg hover:scale-105 hover:shadow-3xl">
                 Suscribirse
               </button>
             </div>
             
-            <p className="text-cyan-200 text-sm font-label drop-shadow-lg">✓ No compartimos tu email. Cancela en cualquier momento.</p>
+            <p className="text-white text-sm font-label drop-shadow-lg">✓ No compartimos tu email. Cancela en cualquier momento.</p>
           </div>
           
           {/* Illustration/Image - Enhanced */}
