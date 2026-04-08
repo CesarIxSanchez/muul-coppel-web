@@ -1,7 +1,7 @@
 "use client";
 
 import { Link, useRouter, usePathname } from "@/i18n/navigation";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { getPerfilCompat } from "@/lib/supabase/profileCompat";
 import { useTranslations, useLocale } from "next-intl";
@@ -18,6 +18,8 @@ export default function Navbar() {
   const locale = useLocale();
   const supabase = createClient();
   const [user, setUser] = useState<UserInfo | null>(null);
+  const [isLanguageMenuOpen, setIsLanguageMenuOpen] = useState(false);
+  const languageMenuRef = useRef<HTMLDivElement>(null);
   const t = useTranslations("nav");
 
   const idiomas = [
@@ -39,6 +41,7 @@ export default function Navbar() {
 
   const cambiarIdioma = (newLocale: "es" | "en" | "zh" | "pt") => {
     router.push(pathname, { locale: newLocale });
+    setIsLanguageMenuOpen(false);
   };
 
   const getCurrentLanguageLabel = () => {
@@ -77,6 +80,28 @@ export default function Navbar() {
     });
     return () => subscription.unsubscribe();
   }, [supabase]);
+
+  useEffect(() => {
+    const onPointerDown = (event: MouseEvent) => {
+      if (!languageMenuRef.current?.contains(event.target as Node)) {
+        setIsLanguageMenuOpen(false);
+      }
+    };
+
+    const onEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setIsLanguageMenuOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", onPointerDown);
+    document.addEventListener("keydown", onEscape);
+
+    return () => {
+      document.removeEventListener("mousedown", onPointerDown);
+      document.removeEventListener("keydown", onEscape);
+    };
+  }, []);
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
@@ -121,20 +146,28 @@ export default function Navbar() {
               placeholder={t("buscarPlaceholder")}
               className="w-full bg-surface-container-low border border-transparent rounded-full px-6 py-2.5 focus:bg-white focus:border-secondary/30 focus:ring-4 focus:ring-secondary/10 outline-none text-sm transition-all"
             />
-            <span className="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 text-lg group-focus-within:text-secondary transition-colors">search</span>
+            <span className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 text-lg group-focus-within:text-secondary transition-colors">🔎</span>
           </div>
 
           <div className="flex items-center gap-2">
             {/* Language */}
-            <div className="relative group">
-              <button className="flex items-center gap-2 text-primary hover:bg-surface-container-low px-4 py-2 rounded-full transition-all">
+            <div className="relative" ref={languageMenuRef}>
+              <button
+                type="button"
+                onClick={() => setIsLanguageMenuOpen((prev) => !prev)}
+                aria-expanded={isLanguageMenuOpen}
+                aria-haspopup="menu"
+                className="flex items-center gap-2 text-primary hover:bg-surface-container-low px-4 py-2 rounded-full transition-all"
+              >
                 <span className="text-xl">🌐</span>
                 <span className="text-xs font-bold uppercase tracking-widest">{getCurrentLanguageLabel()}</span>
               </button>
-              <div className="absolute right-0 top-14 hidden group-hover:flex flex-col bg-white border border-outline-variant/10 rounded-2xl shadow-2xl overflow-hidden z-50 min-w-[160px] animate-fade-in">
+              {isLanguageMenuOpen && (
+              <div className="absolute right-0 top-14 flex flex-col bg-white border border-outline-variant/10 rounded-2xl shadow-2xl overflow-hidden z-50 min-w-[160px] animate-fade-in" role="menu">
                 {idiomas.map((idioma) => (
                   <button
                     key={idioma.code}
+                    type="button"
                     onClick={() => cambiarIdioma(idioma.code)}
                     className={`px-6 py-3.5 hover:bg-surface-container-low text-xs font-bold flex items-center justify-between transition-colors border-b border-outline-variant/5 last:border-b-0 ${
                       locale === idioma.code ? "text-primary bg-surface-container-low" : "text-primary/70"
@@ -148,6 +181,7 @@ export default function Navbar() {
                   </button>
                 ))}
               </div>
+              )}
             </div>
           </div>
 
@@ -168,16 +202,16 @@ export default function Navbar() {
               </Link>
               <div className="absolute right-0 top-14 hidden group-hover:flex flex-col bg-white border border-outline-variant/10 rounded-2xl shadow-2xl overflow-hidden z-50 min-w-[200px] animate-fade-in">
                 <Link href="/perfil" className="px-6 py-4 hover:bg-surface-container-low text-sm text-primary font-bold transition-colors flex items-center gap-3">
-                  <span className="material-symbols-outlined text-lg">person</span>
-                  Perfil
+                  <span className="text-lg">👤</span>
+                  {t("perfil")}
                 </Link>
                 <div className="h-[1px] bg-outline-variant/5 mx-4"></div>
                 <button
                   onClick={handleLogout}
                   className="px-6 py-4 hover:bg-error/5 text-sm text-error font-bold text-left transition-colors flex items-center gap-3"
                 >
-                  <span className="material-symbols-outlined text-lg">logout</span>
-                  Cerrar Sesión
+                  <span className="text-lg">↩</span>
+                  {t("salir")}
                 </button>
               </div>
             </div>
