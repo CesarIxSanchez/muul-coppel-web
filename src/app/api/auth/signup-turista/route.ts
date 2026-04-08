@@ -83,6 +83,8 @@ export async function POST(request: NextRequest) {
     });
 
     console.log("🔐 Cliente Supabase creado (SERVICE_ROLE)");
+    console.log("URL:", supabaseUrl);
+    console.log("Service Key presente:", !!supabaseServiceKey);
 
     // Paso 1: Crear usuario en auth
     console.log("📝 Creando usuario en auth...");
@@ -90,6 +92,14 @@ export async function POST(request: NextRequest) {
       email: email.toLowerCase().trim(),
       password: password,
       email_confirm: true,
+      user_metadata: {
+        tipo_cuenta: "turista",
+        nombre: nombre.trim(),
+        apellido: apellido.trim(),
+        username: username.toLowerCase().trim(),
+        telefono: telefono.trim(),
+        idioma: locale,
+      },
     });
 
     if (signUpError) {
@@ -111,50 +121,51 @@ export async function POST(request: NextRequest) {
     const userId = authData.user.id;
     console.log("✅ Usuario creado en auth:", userId);
 
-    // Paso 2: Llamar función RPC para actualizar perfil (bypass RLS)
-    console.log("📊 Actualizando perfil vía función RPC...");
+    // Paso 2: Usar función RPC para guardar perfil COMPLETO (con INSERT...ON CONFLICT)
+    console.log("🔄 Guardando perfil con función RPC...");
+    
+    const { error: rpcError } = await supabase.rpc('guardar_perfil_turista', {
+      p_id: userId,
+      p_nombre: nombre.trim(),
+      p_apellido: apellido.trim(),
+      p_correo: email.toLowerCase().trim(),
+      p_username: username.toLowerCase().trim(),
+      p_telefono: telefono.trim(),
+      p_idioma: locale,
+    });
 
-    const { data: profileRes, error: profileError } = await supabase.rpc(
-      "update_perfil_turista",
-      {
-        p_id: userId,
-        p_username: username.toLowerCase().trim(),
-        p_nombre: nombre.trim(),
-        p_apellido: apellido.trim(),
-        p_correo: email.toLowerCase().trim(),
-        p_telefono: telefono.trim(),
-        p_idioma: locale,
+    if (rpcError) {
+      console.error("❌ Error RPC:", rpcError);
+      console.error("Error completo:", JSON.stringify(rpcError, null, 2));
+      
+      try {
+        await supabase.auth.admin.deleteUser(userId);
+      } catch (delErr) {
+        console.error("Error cleanup:", delErr);
       }
-    );
-
-    if (profileError) {
-      console.error("❌ Error al actualizar perfil:", {
-        message: profileError.message,
-        code: profileError.code,
-        hint: profileError.hint,
-      });
-
-      // Cleanup: delete auth user if profile update fails
-      console.log("🧹 Limpiando usuario de auth...");
-      await supabase.auth.admin.deleteUser(userId);
-
+      
       return NextResponse.json(
-        {
-          error: `Error al actualizar perfil: ${profileError.message}`,
-          code: profileError.code,
-          hint: profileError.hint,
-        },
+        { error: `Error al guardar perfil: ${rpcError.message}` },
         { status: 400 }
       );
     }
 
-    console.log("✅ Perfil creado exitosamente:", profileRes);
-
+    console.log("✅ Perfil guardado exitosamente con RPC");
+    
     return NextResponse.json(
       {
         success: true,
         message: "Cuenta creada exitosamente",
-        data: profileRes?.[0],
+        data: {
+          id: userId,
+          tipo_cuenta: "turista",
+          nombre: nombre.trim(),
+          apellido: apellido.trim(),
+          correo: email.toLowerCase().trim(),
+          username: username.toLowerCase().trim(),
+          telefono: telefono.trim(),
+          idioma: locale,
+        },
       },
       { status: 201 }
     );
