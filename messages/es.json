@@ -8,11 +8,11 @@
     "negocio": "Negocio",
     "mapa": "Mapa",
     "perfil": "Perfil",
-    "login": "Login",
+    "login": "Iniciar Sesión",
     "salir": "Salir"
   },
   "home": {
-    "badge": "México 2026 Experience",
+    "badge": "Muul 2026 Experience",
     "titulo": "DESCUBRE LO MEJOR DE",
     "tituloDestacado": "MÉXICO",
     "subtitulo": "Tu guía definitiva para navegar la cultura, el sabor y el comercio mexicano durante el evento deportivo más grande del mundo.",
@@ -25,7 +25,7 @@
     "tiendas": "Tiendas",
     "tiendasDesc": "Artesanía auténtica y boutiques de diseñadores locales. Llévate un pedazo de México a casa.",
     "eventoLive": "Live Event",
-    "copaMundial": "COPA MUNDIAL 2026",
+    "copaMundial": "MUUL 2026",
     "fanZone": "Fan Zone: Ciudad de México",
     "fanZoneDesc": "Asegura tu lugar en las celebraciones oficiales. Pantallas gigantes, música en vivo y la mejor vibra futbolera.",
     "registrarseAhora": "REGISTRARSE AHORA",
@@ -115,7 +115,7 @@
     "loginParaGuardar": "Inicia sesión para guardar rutas.",
     "usuarioAnonimo": "Usuario",
     "errorGeneric": "Error",
-    "marcaEvento": "Copa Mundial 2026",
+    "marcaEvento": "MUUL 2026",
     "muulAi": "Muul AI",
     "cerrarPanel": "Cerrar panel",
     "abrirPanel": "Abrir panel"
@@ -307,8 +307,8 @@
   "footer": {
     "privacidad": "Privacidad",
     "soporte": "Soporte",
-    "fifa": "FIFA 2026",
-    "copyright": "© 2026 Muul World Cup Experience. All rights reserved."
+    "fifa": "MUUL 2026",
+    "copyright": "© 2026 Muul Experience. Todos los derechos reservados."
   },
   "mobileNav": {
     "tickets": "Tickets"
