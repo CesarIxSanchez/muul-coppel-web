@@ -1,0 +1,220 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* =============================================
+   MUUL — THE INTELLIGENT CURATOR
+   Design System: Editorial Intelligence
+   ============================================= */
+
+@import url('https://fonts.googleapis.com/css2?family=Newsreader:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap');
+
+/* --- Base Reset & Defaults --- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  background-color: #f8f9ff;
+  color: #001c39;
+  font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+  min-height: 100vh;
+}
+
+/* --- Material Symbols --- */
+.material-symbols-outlined {
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+  user-select: none;
+}
+
+.material-symbols-filled {
+  font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+}
+
+/* --- Intelligent Curator Utilities --- */
+
+/* Glass Panel (for floating headers/overlays) */
+.glass-panel {
+  background: rgba(248, 249, 255, 0.85);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+}
+
+/* Glass Card (for elevated surfaces) */
+.glass-card {
+  background: #ffffff;
+  box-shadow: 0 4px 32px rgba(0, 28, 57, 0.06);
+}
+
+/* Editorial gradient background */
+.bg-editorial-gradient {
+  background: linear-gradient(135deg, #003e6f, #005596);
+}
+
+/* Tonal surface shift (no-line rule — use bg shift instead of borders) */
+.tonal-shift {
+  background-color: #eff3ff;
+}
+
+.tonal-shift-deep {
+  background-color: #e4e7f4;
+}
+
+/* Ghost border (accessibility fallback — 15% opacity max) */
+.ghost-border {
+  border: 1px solid rgba(196, 198, 208, 0.15);
+}
+
+/* Eyebrow text (metadata/labels) */
+.eyebrow {
+  font-family: 'Space Grotesk', monospace;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #003e6f;
+}
+
+/* Editorial serif heading */
+.editorial-heading {
+  font-family: 'Newsreader', Georgia, serif;
+  font-weight: 700;
+  color: #001c39;
+}
+
+/* --- Scrollbar Styling --- */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #eff3ff;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #c4c6d0;
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #74777f;
+}
+
+/* --- Selection Color --- */
+::selection {
+  background-color: #fed000;
+  color: #201c00;
+}
+
+/* --- Focus Ring Override --- */
+*:focus-visible {
+  outline: 2px solid rgba(0, 62, 111, 0.4);
+  outline-offset: 2px;
+  border-radius: 0.25rem;
+}
+
+/* --- Animation Utilities --- */
+.animate-fade-in-up {
+  animation: fadeInUp 0.5s ease forwards;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Staggered children animation */
+.stagger-children > * {
+  opacity: 0;
+  animation: fadeInUp 0.5s ease forwards;
+}
+
+.stagger-children > *:nth-child(1) { animation-delay: 0.05s; }
+.stagger-children > *:nth-child(2) { animation-delay: 0.10s; }
+.stagger-children > *:nth-child(3) { animation-delay: 0.15s; }
+.stagger-children > *:nth-child(4) { animation-delay: 0.20s; }
+.stagger-children > *:nth-child(5) { animation-delay: 0.25s; }
+.stagger-children > *:nth-child(6) { animation-delay: 0.30s; }
+
+/* --- Gradient Text Utility --- */
+.gradient-text-brand {
+  background: linear-gradient(135deg, #003e6f, #005596);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* --- Input base override --- */
+input[type="email"],
+input[type="text"],
+input[type="password"],
+input[type="number"],
+input[type="time"],
+textarea,
+select {
+  background-color: #ffffff;
+  color: #001c39;
+  border: 1px solid rgba(196, 198, 208, 0.4);
+  outline: none;
+  border-radius: 0.75rem;
+}
+
+input[type="email"]:focus,
+input[type="text"]:focus,
+input[type="password"]:focus,
+input[type="number"]:focus,
+input[type="time"]:focus,
+textarea:focus,
+select:focus {
+  border-color: #003e6f;
+  box-shadow: 0 0 0 3px rgba(0, 62, 111, 0.12);
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: rgba(68, 71, 78, 0.5);
+}
+
+/* Mapbox GL Fix */
+.mapboxgl-map {
+  width: 100%;
+  height: 100%;
+}
+
+/* --- Pill Button Utility --- */
+.btn-pill {
+  border-radius: 9999px;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-weight: 700;
+  transition: all 0.2s ease;
+}
+
+.btn-pill:hover {
+  filter: brightness(1.05);
+}
+
+/* --- No-Line Card Hover --- */
+.card-hover {
+  transition: all 0.3s ease;
+}
+
+.card-hover:hover {
+  background-color: #e4e7f4;
+  transform: translateY(-2px);
+}
