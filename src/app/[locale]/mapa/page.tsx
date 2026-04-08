@@ -592,6 +592,7 @@ export default function MapaPage() {
       <main className="flex flex-1 overflow-hidden">
 
         {/* Desktop sidebar icon rail */}
+<<<<<<< HEAD
         <aside className="hidden md:flex flex-col h-full w-20 bg-surface-container-low space-y-8 py-8 items-center border-r border-outline-variant/10">
           <Link href="/" className="w-12 h-12 flex items-center justify-center rounded-xl text-on-surface-variant hover:bg-surface-container-highest/50 transition-all">
             <span className="material-symbols-outlined">explore</span>
@@ -610,6 +611,12 @@ export default function MapaPage() {
           >
             <span className="material-symbols-outlined">celebration</span>
           </button>
+=======
+        <aside className="hidden md:flex flex-col h-full w-24 bg-white space-y-8 py-10 items-center border-r border-[#003e6f]/5 shadow-sm">
+          <Link href="/" className="w-14 h-14 flex items-center justify-center rounded-2xl text-[#003e6f]/40 hover:bg-slate-50 hover:text-[#003e6f] transition-all"><span className="text-2xl">🔍</span></Link>
+          <button className="w-14 h-14 flex items-center justify-center rounded-2xl bg-[#003e6f]/5 text-[#003e6f] shadow-lg shadow-[#003e6f]/5"><span className="text-2xl">🗺️</span></button>
+          <button onClick={cargarRutasGuardadas} className="w-14 h-14 flex items-center justify-center rounded-2xl text-[#003e6f]/40 hover:bg-slate-50 hover:text-[#003e6f] transition-all"><span className="text-2xl">🔖</span></button>
+>>>>>>> 08e106928bfbe3b5cc7787470ad2d9ce321ae956
         </aside>
 
         <div className="flex-1 flex overflow-hidden">
@@ -621,6 +628,7 @@ export default function MapaPage() {
                 {/* Search + filters */}
                 <div className="p-6 space-y-4">
                   <div className="relative group">
+<<<<<<< HEAD
                     <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant group-focus-within:text-secondary transition-colors">search</span>
                     <input
                       type="text"
@@ -629,9 +637,14 @@ export default function MapaPage() {
                       placeholder={t("buscar")}
                       className="w-full bg-surface-container-highest border-none rounded-xl py-4 pl-12 pr-4 text-on-surface placeholder:text-on-surface-variant focus:ring-2 focus:ring-secondary/40 transition-all"
                     />
+=======
+                    <span className="absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant group-focus-within:text-secondary transition-colors">🔎</span>
+                    <input type="text" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} placeholder={t("buscar")} className="w-full bg-surface-container-highest border-none rounded-xl py-4 pl-12 pr-4 text-on-surface placeholder:text-on-surface-variant focus:ring-2 focus:ring-secondary/40 transition-all" />
+>>>>>>> 08e106928bfbe3b5cc7787470ad2d9ce321ae956
                   </div>
-                  <div className="flex gap-2 overflow-x-auto pb-2" style={{ scrollbarWidth: "none" }}>
+                  <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide" style={{ scrollbarWidth: "none" }}>
                     {filters.map((f) => (
+<<<<<<< HEAD
                       <button key={f.value} onClick={() => setActiveFilter(f.value)}
                         className={`flex-shrink-0 px-4 py-2 rounded-full text-sm font-bold flex items-center gap-2 transition-colors ${activeFilter === f.value ? "bg-secondary text-on-secondary" : "bg-surface-container-high text-on-surface hover:bg-surface-bright"}`}>
                         {f.label} <span className="text-xs">{f.emoji}</span>
@@ -640,6 +653,12 @@ export default function MapaPage() {
                     <button onClick={() => setSoloAbiertos(!soloAbiertos)}
                       className={`flex-shrink-0 px-4 py-2 rounded-full text-sm font-bold flex items-center gap-2 transition-colors ${soloAbiertos ? "bg-tertiary text-on-tertiary" : "bg-surface-container-high text-on-surface hover:bg-surface-bright"}`}>
                       <span className="material-symbols-outlined text-sm">schedule</span>{t("abiertos")}
+=======
+                      <button key={f.value} onClick={() => setActiveFilter(f.value)} className={`flex-shrink-0 px-5 py-2.5 rounded-2xl text-[11px] font-black uppercase tracking-widest flex items-center gap-2 transition-all shadow-sm ${activeFilter === f.value ? "bg-[#003e6f] text-white shadow-[#003e6f]/20" : "bg-white text-[#003e6f] hover:bg-slate-50 border border-slate-100"}`}>{f.label} <span className="text-sm">{f.emoji}</span></button>
+                    ))}
+                    <button onClick={() => setSoloAbiertos(!soloAbiertos)} className={`flex-shrink-0 px-5 py-2.5 rounded-2xl text-[11px] font-black uppercase tracking-widest flex items-center gap-2 transition-all shadow-sm ${soloAbiertos ? "bg-[#fed000] text-[#003e6f] shadow-[#fed000]/20" : "bg-white text-[#003e6f] hover:bg-slate-50 border border-slate-100"}`}>
+                      <span className="text-sm">⏰</span>{t("abiertos")}
+>>>>>>> 08e106928bfbe3b5cc7787470ad2d9ce321ae956
                     </button>
                   </div>
                 </div>
@@ -668,6 +687,7 @@ export default function MapaPage() {
                       const inRoute = isInRoute(poi);
                       const routeNum = poisEnRuta.findIndex((p) => p.id === poi.id) + 1;
                       return (
+<<<<<<< HEAD
                         <div key={poi.id} className={`p-4 rounded-xl flex items-start gap-4 transition-all ${selectedPoi?.id === poi.id ? "bg-surface-container-high border-l-4 border-secondary" : "hover:bg-surface-container-high"}`}>
                           <button onClick={() => handleSelectPoi(poi)} className="w-12 h-12 rounded-xl bg-surface-container-highest flex items-center justify-center text-2xl shadow-inner shrink-0">
                             {poi.emoji || "📍"}
@@ -689,6 +709,19 @@ export default function MapaPage() {
                           <button onClick={() => togglePoiEnRuta(poi)}
                             className={`shrink-0 w-10 h-10 rounded-lg flex items-center justify-center text-xs font-black transition-all ${inRoute ? "bg-secondary text-on-secondary shadow-glow-secondary" : "bg-surface-container-highest text-on-surface-variant hover:bg-surface-container-high"}`}>
                             {inRoute ? routeNum : <span className="material-symbols-outlined text-lg">add_location</span>}
+=======
+                        <div key={poi.id} className={`p-5 rounded-2xl flex items-start gap-4 transition-all duration-300 ${selectedPoi?.id === poi.id ? "bg-slate-50 border-l-4 border-[#003e6f] shadow-inner" : "hover:bg-slate-50/50"}`}>
+                          <button onClick={() => handleSelectPoi(poi)} className="w-14 h-14 rounded-2xl bg-white border border-slate-100 flex items-center justify-center text-3xl shadow-sm shrink-0 group-hover:scale-105 transition-transform">{poi.emoji || "📍"}</button>
+                          <button onClick={() => handleSelectPoi(poi)} className="flex-1 min-w-0 text-left">
+                            <div className="flex items-center gap-1.5">
+                              <h3 className="font-headline font-black text-lg text-[#003e6f] truncate leading-tight">{poi.nombre}</h3>
+                              {poi.verificado && (<span className="text-[#005596] text-[9px] font-black uppercase tracking-widest flex items-center gap-0.5"><span className="text-xs">🌊</span>MUUL</span>)}
+                            </div>
+                            <p className="text-[10px] text-neutral-500 font-bold uppercase tracking-wider mt-1"><span className={isOpenNow(poi) ? "text-emerald-500" : "text-rose-500"}>● </span>{formatHours(poi)}</p>
+                          </button>
+                          <button onClick={() => togglePoiEnRuta(poi)} className={`shrink-0 w-11 h-11 rounded-2xl flex items-center justify-center text-sm font-black transition-all ${inRoute ? "bg-[#003e6f] text-white shadow-lg shadow-[#003e6f]/20" : "bg-slate-100 text-[#003e6f] hover:bg-slate-200"}`}>
+                            {inRoute ? routeNum : <span className="text-xl">📍</span>}
+>>>>>>> 08e106928bfbe3b5cc7787470ad2d9ce321ae956
                           </button>
                         </div>
                       );
@@ -698,6 +731,7 @@ export default function MapaPage() {
 
                 {/* Route builder controls */}
                 <div className="p-6 bg-surface-container-low border-t border-outline-variant/10 space-y-3">
+<<<<<<< HEAD
                   {(mapboxOpt.error || sorprendeme.error) && (
                     <div className="p-3 rounded-lg bg-error-container/20 border border-error/20 text-error text-xs font-medium animate-fade-in-up">
                       {mapboxOpt.error || sorprendeme.error}
@@ -711,12 +745,19 @@ export default function MapaPage() {
                     className="w-full mb-1 flex items-center justify-center gap-2 py-2 px-4 rounded-xl bg-primary-container/20 text-primary border border-primary/20 font-headline font-bold text-sm transition-all hover:bg-primary-container/30 disabled:opacity-30 disabled:cursor-not-allowed"
                   >
                     <span className="material-symbols-outlined text-lg">auto_awesome</span>
+=======
+                  {rutaError && (<div className="p-3 rounded-lg bg-error-container/20 border border-error/20 text-error text-xs font-medium animate-fade-in-up">{rutaError}</div>)}
+                  <button onClick={() => { if (selectedPoi) setChatbotAbierto(true); }} disabled={!selectedPoi}
+                    className="w-full mb-1 flex items-center justify-center gap-2 py-2 px-4 rounded-xl bg-primary-container/20 text-primary border border-primary/20 font-headline font-bold text-sm transition-all hover:bg-primary-container/30 disabled:opacity-30 disabled:cursor-not-allowed">
+                    <span className="text-lg">✨</span>
+>>>>>>> 08e106928bfbe3b5cc7787470ad2d9ce321ae956
                     {selectedPoi ? t("preguntarAI", { nombre: selectedPoi.nombre }) : t("seleccionaPrimero")}
                   </button>
 
                   {/* Stops counter */}
                   <div className="flex items-center justify-between px-2">
                     <div className="flex items-center gap-2">
+<<<<<<< HEAD
                       <span className={`w-2 h-2 rounded-full ${poisEnRuta.length > 0 ? "bg-secondary animate-pulse" : "bg-on-surface-variant"}`} />
                       <span className="text-sm font-bold text-on-surface">
                         {poisEnRuta.length === 1 ? t("paradas", { count: 1 }) : t("paradasPlural", { count: poisEnRuta.length })}
@@ -728,6 +769,12 @@ export default function MapaPage() {
                         {t("limpiar")}
                       </button>
                     )}
+=======
+                      <span className={`w-2.5 h-2.5 rounded-full ${poisEnRuta.length > 0 ? "bg-[#fed000] shadow-[0_0_10px_#fed000] animate-pulse" : "bg-slate-300"}`} />
+                      <span className="text-[11px] font-black uppercase tracking-widest text-[#003e6f]">{poisEnRuta.length === 1 ? t("paradas", { count: 1 }) : t("paradasPlural", { count: poisEnRuta.length })}</span>
+                    </div>
+                    {poisEnRuta.length > 0 && (<button onClick={limpiarRuta} className="text-[10px] text-rose-500 hover:text-rose-600 transition-colors font-black uppercase tracking-widest">{t("limpiar")}</button>)}
+>>>>>>> 08e106928bfbe3b5cc7787470ad2d9ce321ae956
                   </div>
 
                   {/* Transport mode selector */}
@@ -735,6 +782,7 @@ export default function MapaPage() {
 
                   {/* Sorpréndeme + Calculate */}
                   <div className="flex gap-2">
+<<<<<<< HEAD
                     <button
                       onClick={handleSorprendeme}
                       disabled={sorprendeme.loading || mapboxOpt.loading}
@@ -752,6 +800,18 @@ export default function MapaPage() {
                       {mapboxOpt.loading ? t("calculando") : t("calcularRuta")}
                     </button>
                   </div>
+=======
+                    <button onClick={() => setModoAccesible(!modoAccesible)} className={`flex-1 py-3 rounded-2xl text-[10px] font-black uppercase tracking-widest flex items-center justify-center gap-2 transition-all ${modoAccesible ? "bg-[#003e6f] text-white shadow-lg shadow-[#003e6f]/20" : "bg-slate-100 text-[#003e6f] hover:bg-slate-200"}`}>
+                      <span className="text-base">♿</span>{t("accesible")}
+                    </button>
+                    <button onClick={() => setModoVehiculo(!modoVehiculo)} className={`flex-1 py-3 rounded-2xl text-[10px] font-black uppercase tracking-widest flex items-center justify-center gap-2 transition-all ${modoVehiculo ? "bg-[#fed000] text-[#003e6f] shadow-lg shadow-[#fed000]/20" : "bg-slate-100 text-[#003e6f] hover:bg-slate-200"}`}>
+                      <span className="text-base">🚗</span>{t("vehiculo")}
+                    </button>
+                  </div>
+                  <button onClick={calcularRuta} disabled={poisEnRuta.length < 2 || calculando} className="w-full bg-[#003e6f] text-white !text-white hover:bg-[#005596] py-5 rounded-3xl font-headline font-black uppercase tracking-tighter text-xl transition-all shadow-xl shadow-[#003e6f]/10 disabled:opacity-40 disabled:scale-[0.98] disabled:cursor-not-allowed">
+                    {calculando ? t("calculando") : t("calcularRuta")}
+                  </button>
+>>>>>>> 08e106928bfbe3b5cc7787470ad2d9ce321ae956
                 </div>
               </>
             ) : (
@@ -762,7 +822,7 @@ export default function MapaPage() {
                     <div className="flex items-center justify-between mb-4">
                       <h2 className="font-headline font-black text-on-surface text-sm uppercase tracking-widest">{t("itinerario")}</h2>
                       <button onClick={() => setMostrarItinerario(false)} className="text-xs text-on-surface-variant hover:text-on-surface font-bold flex items-center gap-1 transition-colors">
-                        <span className="material-symbols-outlined text-sm">arrow_back</span> {t("volver")}
+                        <span className="text-sm">←</span> {t("volver")}
                       </button>
                     </div>
                     {mapboxOpt.route && (
@@ -787,7 +847,7 @@ export default function MapaPage() {
                       {ubicacionUsuario && (
                         <div className="flex items-center gap-3 relative z-10">
                           <div className="w-6 h-6 rounded-full border-2 border-secondary flex items-center justify-center bg-secondary/20">
-                            <span className="material-symbols-outlined text-secondary text-[12px]">my_location</span>
+                            <span className="text-secondary text-[12px]">📍</span>
                           </div>
                           <div className="flex-1 min-w-0">
                             <span className="text-sm text-on-surface font-medium block">{t("tuUbicacion")}</span>
@@ -824,24 +884,34 @@ export default function MapaPage() {
 
                   {/* Share dropdown */}
                   <div className="relative">
+<<<<<<< HEAD
                     <button onClick={() => setCompartirMenuOpen((v) => !v)}
                       className="w-full bg-surface-container-highest text-on-surface py-2.5 rounded-lg text-[10px] font-bold flex items-center justify-center gap-1.5 hover:bg-surface-bright transition-all uppercase tracking-wider">
                       <span className="material-symbols-outlined text-sm">share</span>{t("compartir")}
+=======
+                    <button
+                      onClick={() => setCompartirMenuOpen((v) => !v)}
+                      className="w-full bg-surface-container-highest text-on-surface py-2.5 rounded-lg text-[10px] font-bold flex items-center justify-center gap-1.5 hover:bg-surface-bright transition-all uppercase tracking-wider"
+                    >
+                      <span className="text-sm">🔗</span>
+                      {t("compartir")}
+>>>>>>> 08e106928bfbe3b5cc7787470ad2d9ce321ae956
                     </button>
                     {compartirMenuOpen && (
                       <div className="absolute bottom-full mb-2 left-0 right-0 bg-surface-container-low border border-outline-variant/20 rounded-xl shadow-2xl overflow-hidden z-50 animate-fade-in-up">
                         <button onClick={() => { copiarItinerario(); setCompartirMenuOpen(false); }} className="flex items-center gap-3 px-5 py-3 hover:bg-surface-container-highest transition-colors w-full text-left text-sm font-bold text-on-surface">
-                          <span className="material-symbols-outlined text-base">content_copy</span>{t("copiar")}
+                          <span className="text-base">📋</span>{t("copiar")}
                         </button>
                         <button onClick={() => { descargarImagen(); setCompartirMenuOpen(false); }} className="flex items-center gap-3 px-5 py-3 hover:bg-surface-container-highest transition-colors w-full text-left text-sm font-bold text-on-surface">
-                          <span className="material-symbols-outlined text-base">download</span>{t("imagen")}
+                          <span className="text-base">⬇️</span>{t("imagen")}
                         </button>
                         <button onClick={() => { compartirRuta(); setCompartirMenuOpen(false); }} className="flex items-center gap-3 px-5 py-3 hover:bg-surface-container-highest transition-colors w-full text-left text-sm font-bold text-on-surface">
-                          <span className="material-symbols-outlined text-base">open_in_new</span>{t("compartirApps")}
+                          <span className="text-base">↗</span>{t("compartirApps")}
                         </button>
                       </div>
                     )}
                   </div>
+<<<<<<< HEAD
 
                   {/* Party mode button */}
                   <button
@@ -858,6 +928,10 @@ export default function MapaPage() {
                   </button>
                   <button onClick={limpiarRuta} className="w-full border border-tertiary/30 text-tertiary py-3 rounded-xl font-headline font-bold text-sm uppercase tracking-widest hover:bg-tertiary/10 transition-all">
                     {t("nuevaRuta")}
+=======
+                  <button onClick={guardarRuta} disabled={guardando} className="w-full bg-primary text-on-primary py-3 rounded-xl font-headline font-bold text-sm uppercase tracking-widest hover:brightness-110 transition-all disabled:opacity-50 flex items-center justify-center gap-2">
+                    <span className="text-sm">🔖</span>{guardando ? t("guardando") : t("guardarRuta")}
+>>>>>>> 08e106928bfbe3b5cc7787470ad2d9ce321ae956
                   </button>
                 </div>
               </>
@@ -879,6 +953,7 @@ export default function MapaPage() {
 
             {/* POI card — enhanced with photo */}
             {selectedPoi && !mostrarItinerario && (
+<<<<<<< HEAD
               <POICard
                 poi={selectedPoi}
                 isInRoute={isInRoute(selectedPoi)}
@@ -888,6 +963,40 @@ export default function MapaPage() {
                 onAskAI={(poi) => { setChatbotAbierto(true); setMobileSheetOpen(false); }}
                 t={t}
               />
+=======
+              <div className="absolute bottom-[180px] md:bottom-10 left-4 right-4 md:left-1/2 md:right-auto md:-translate-x-1/2 md:w-[380px] bg-white/95 backdrop-blur-2xl rounded-[32px] shadow-2xl p-6 md:p-8 border border-white/20 z-50 animate-fade-in-up">
+                <div className="flex gap-4 mb-5 md:mb-6">
+                  <div className="w-14 h-14 md:w-20 md:h-20 rounded-3xl bg-slate-50 flex items-center justify-center text-3xl md:text-5xl shadow-inner shrink-0">{selectedPoi.emoji || "📍"}</div>
+                  <div className="flex-1 overflow-hidden">
+                    <h4 className="font-headline font-black text-[#003e6f] text-lg md:text-2xl leading-tight truncate">{selectedPoi.nombre}</h4>
+                    <p className="text-[10px] font-black uppercase tracking-widest mt-1"><span className={isOpenNow(selectedPoi) ? "text-emerald-500" : "text-rose-500"}>● </span>{formatHours(selectedPoi)}</p>
+                    <div className="flex gap-2 mt-2">
+                      <span className="text-[9px] bg-slate-100 text-[#003e6f] px-2 py-1 rounded-lg font-black uppercase tracking-wider">{selectedPoi.categoria}</span>
+                      {selectedPoi.precio_rango && <span className="text-[9px] bg-slate-100 text-[#003e6f] px-2 py-1 rounded-lg font-black uppercase tracking-wider">{selectedPoi.precio_rango}</span>}
+                    </div>
+                  </div>
+                  <button onClick={() => setSelectedPoi(null)} className="shrink-0 w-10 h-10 flex items-center justify-center rounded-2xl bg-slate-100 text-[#003e6f] hover:bg-slate-200 transition-colors">
+                    <span className="text-base font-black">✕</span>
+                  </button>
+                </div>
+                {selectedPoi.descripcion && <p className="text-xs text-neutral-500 leading-relaxed mb-6 line-clamp-2 hidden md:block font-medium">{selectedPoi.descripcion}</p>}
+                <div className="flex gap-3">
+                  <button
+                    onClick={() => togglePoiEnRuta(selectedPoi)}
+                    className={`flex-1 py-3.5 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all ${isInRoute(selectedPoi) ? "bg-rose-50 text-rose-500 border border-rose-100" : "bg-[#003e6f] text-white !text-white shadow-lg shadow-[#003e6f]/20"}`}
+                  >
+                    {isInRoute(selectedPoi) ? t("quitarRuta") : t("agregarRuta")}
+                  </button>
+                  <button
+                    onClick={() => { setChatbotAbierto(true); setMobileSheetOpen(false); }}
+                    className="flex-1 py-3.5 rounded-2xl text-[10px] font-black uppercase tracking-widest bg-[#fed000] text-[#003e6f] flex items-center justify-center gap-2 transition-all hover:shadow-lg hover:shadow-[#fed000]/20"
+                  >
+                    <span className="text-base">✨</span>
+                    <span>{t("muulAi")}</span>
+                  </button>
+                </div>
+              </div>
+>>>>>>> 08e106928bfbe3b5cc7787470ad2d9ce321ae956
             )}
           </div>
         </div>
@@ -899,9 +1008,13 @@ export default function MapaPage() {
             <div className="relative w-full max-w-md bg-surface-container-lowest rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[80vh] border border-outline-variant/10 animate-fade-in-up">
               <div className="p-6 border-b border-outline-variant/10 flex items-center justify-between">
                 <h2 className="font-headline font-black text-on-surface text-sm uppercase tracking-widest">{t("misRutas")}</h2>
+<<<<<<< HEAD
                 <button onClick={() => setMostrarGuardadas(false)} className="p-2 hover:bg-surface-variant rounded-full transition-colors">
                   <span className="material-symbols-outlined text-on-surface-variant">close</span>
                 </button>
+=======
+                <button onClick={() => setMostrarGuardadas(false)} className="p-2 hover:bg-surface-variant rounded-full transition-colors"><span className="text-on-surface-variant">✕</span></button>
+>>>>>>> 08e106928bfbe3b5cc7787470ad2d9ce321ae956
               </div>
               <div className="flex-1 overflow-y-auto p-4 space-y-3" style={{ scrollbarWidth: "none" }}>
                 {rutasGuardadas.length === 0 ? (
@@ -925,6 +1038,7 @@ export default function MapaPage() {
                           <p className="text-xs text-on-surface font-bold truncate">{ruta.nombre}</p>
                           <p className="text-[10px] text-on-surface-variant mt-1">{ruta.distancia_texto} · {ruta.duracion_texto}</p>
                         </div>
+<<<<<<< HEAD
                         <button onClick={() => eliminarRutaGuardada(ruta.id)} className="text-on-surface-variant hover:text-tertiary transition-colors shrink-0">
                           <span className="material-symbols-outlined text-sm">delete</span>
                         </button>
@@ -942,6 +1056,9 @@ export default function MapaPage() {
                             🎉
                           </button>
                         )}
+=======
+                        <button onClick={() => eliminarRutaGuardada(ruta.id)} className="text-on-surface-variant hover:text-tertiary transition-colors shrink-0"><span className="text-sm">🗑️</span></button>
+>>>>>>> 08e106928bfbe3b5cc7787470ad2d9ce321ae956
                       </div>
                     </div>
                   ))
@@ -970,8 +1087,8 @@ export default function MapaPage() {
         <button onClick={() => setMobileSheetOpen((v) => !v)} className="flex flex-col items-center pt-3 pb-2 w-full shrink-0">
           <div className="w-10 h-1 rounded-full bg-outline-variant mb-2" />
           <div className="flex items-center gap-2">
-            <span className="material-symbols-outlined text-on-surface-variant text-sm">
-              {mobileSheetOpen ? "keyboard_arrow_down" : "keyboard_arrow_up"}
+            <span className="text-on-surface-variant text-sm">
+              {mobileSheetOpen ? "⌄" : "⌃"}
             </span>
             <span className="text-[11px] text-on-surface-variant font-bold uppercase tracking-widest">
               {mobileSheetOpen ? t("cerrar") : mostrarItinerario ? t("itinerario") : t("explorar")}
@@ -987,8 +1104,15 @@ export default function MapaPage() {
         {/* Search + filters always visible */}
         <div className="px-4 pb-3 space-y-2 shrink-0">
           <div className="relative">
+<<<<<<< HEAD
             <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-sm">search</span>
             <input type="text" value={searchQuery}
+=======
+            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-sm">🔎</span>
+            <input
+              type="text"
+              value={searchQuery}
+>>>>>>> 08e106928bfbe3b5cc7787470ad2d9ce321ae956
               onChange={(e) => { setSearchQuery(e.target.value); if (!mobileSheetOpen) setMobileSheetOpen(true); }}
               placeholder={t("buscar")}
               className="w-full bg-surface-container-highest border-none rounded-xl py-3 pl-10 pr-4 text-on-surface text-sm placeholder:text-on-surface-variant focus:ring-2 focus:ring-secondary/40"
@@ -1001,9 +1125,20 @@ export default function MapaPage() {
                 {f.label} <span>{f.emoji}</span>
               </button>
             ))}
+<<<<<<< HEAD
             <button onClick={() => { setSoloAbiertos(!soloAbiertos); if (!mobileSheetOpen) setMobileSheetOpen(true); }}
               className={`flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-bold flex items-center gap-1 transition-colors ${soloAbiertos ? "bg-tertiary text-on-tertiary" : "bg-surface-container-high text-on-surface"}`}>
               <span className="material-symbols-outlined text-sm">schedule</span>{t("abiertos")}
+=======
+            <button
+              onClick={() => { setSoloAbiertos(!soloAbiertos); if (!mobileSheetOpen) setMobileSheetOpen(true); }}
+              className={`flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-bold flex items-center gap-1 transition-colors ${
+                soloAbiertos ? "bg-tertiary text-on-tertiary" : "bg-surface-container-high text-on-surface"
+              }`}
+            >
+              <span className="text-sm">⏰</span>
+              {t("abiertos")}
+>>>>>>> 08e106928bfbe3b5cc7787470ad2d9ce321ae956
             </button>
           </div>
         </div>
@@ -1028,7 +1163,7 @@ export default function MapaPage() {
                     {ubicacionUsuario && (
                       <div className="flex items-center gap-3 relative z-10">
                         <div className="w-6 h-6 rounded-full border-2 border-secondary flex items-center justify-center bg-secondary/20 shrink-0">
-                          <span className="material-symbols-outlined text-secondary text-[12px]">my_location</span>
+                          <span className="text-secondary text-[12px]">📍</span>
                         </div>
                         <div className="flex-1 min-w-0">
                           <span className="text-sm text-on-surface font-medium block">{t("tuUbicacion")}</span>
@@ -1059,24 +1194,34 @@ export default function MapaPage() {
                     <p className={`text-xs font-bold text-center ${guardadoMsg.includes("Error") ? "text-error" : "text-secondary"}`}>{guardadoMsg}</p>
                   )}
                   <div className="relative">
+<<<<<<< HEAD
                     <button onClick={() => setCompartirMenuOpen((v) => !v)}
                       className="w-full bg-surface-container-highest text-on-surface py-2.5 rounded-lg text-xs font-bold flex items-center justify-center gap-2 hover:bg-surface-bright transition-all uppercase tracking-wider">
                       <span className="material-symbols-outlined text-sm">share</span>{t("compartir")}
+=======
+                    <button
+                      onClick={() => setCompartirMenuOpen((v) => !v)}
+                      className="w-full bg-surface-container-highest text-on-surface py-2.5 rounded-lg text-xs font-bold flex items-center justify-center gap-2 hover:bg-surface-bright transition-all uppercase tracking-wider"
+                    >
+                      <span className="text-sm">🔗</span>
+                      {t("compartir")}
+>>>>>>> 08e106928bfbe3b5cc7787470ad2d9ce321ae956
                     </button>
                     {compartirMenuOpen && (
                       <div className="absolute bottom-full mb-2 left-0 right-0 bg-surface-container-low border border-outline-variant/20 rounded-xl shadow-2xl overflow-hidden z-50 animate-fade-in-up">
                         <button onClick={() => { copiarItinerario(); setCompartirMenuOpen(false); }} className="flex items-center gap-3 px-5 py-3 hover:bg-surface-container-highest transition-colors w-full text-left text-sm font-bold text-on-surface">
-                          <span className="material-symbols-outlined text-base">content_copy</span>{t("copiar")}
+                          <span className="text-base">📋</span>{t("copiar")}
                         </button>
                         <button onClick={() => { descargarImagen(); setCompartirMenuOpen(false); }} className="flex items-center gap-3 px-5 py-3 hover:bg-surface-container-highest transition-colors w-full text-left text-sm font-bold text-on-surface">
-                          <span className="material-symbols-outlined text-base">download</span>{t("imagen")}
+                          <span className="text-base">⬇️</span>{t("imagen")}
                         </button>
                         <button onClick={() => { compartirRuta(); setCompartirMenuOpen(false); }} className="flex items-center gap-3 px-5 py-3 hover:bg-surface-container-highest transition-colors w-full text-left text-sm font-bold text-on-surface">
-                          <span className="material-symbols-outlined text-base">open_in_new</span>{t("compartirApps")}
+                          <span className="text-base">↗</span>{t("compartirApps")}
                         </button>
                       </div>
                     )}
                   </div>
+<<<<<<< HEAD
                   <button onClick={() => setPartyModalOpen(true)}
                     className="w-full bg-gradient-to-r from-secondary/20 to-primary/10 text-on-surface py-3 rounded-xl font-headline font-bold text-sm border border-secondary/20 flex items-center justify-center gap-2">
                     <span>🎉</span> Modo Party
@@ -1084,6 +1229,10 @@ export default function MapaPage() {
                   <button onClick={guardarRuta} disabled={guardando}
                     className="w-full bg-primary text-on-primary py-3 rounded-xl font-headline font-bold text-sm uppercase tracking-widest disabled:opacity-50 flex items-center justify-center gap-2">
                     <span className="material-symbols-outlined text-sm">bookmark_add</span>
+=======
+                  <button onClick={guardarRuta} disabled={guardando} className="w-full bg-primary text-on-primary py-3 rounded-xl font-headline font-bold text-sm uppercase tracking-widest disabled:opacity-50 flex items-center justify-center gap-2">
+                    <span className="text-sm">🔖</span>
+>>>>>>> 08e106928bfbe3b5cc7787470ad2d9ce321ae956
                     {guardando ? t("guardando") : t("guardarRuta")}
                   </button>
                   <button onClick={limpiarRuta}
@@ -1108,10 +1257,57 @@ export default function MapaPage() {
                         </div>
                       ))}
                     </div>
+<<<<<<< HEAD
                   ) : filteredPois.length === 0 ? (
                     <div className="flex flex-col items-center text-center py-8 space-y-2">
                       <span className="text-3xl">🔍</span>
                       <p className="text-on-surface-variant text-xs">{t("sinResultados")}</p>
+=======
+                  ))}
+                </div>
+              ) : filteredPois.length === 0 ? (
+                <div className="flex flex-col items-center text-center py-8 space-y-2">
+                  <span className="text-3xl">🔍</span>
+                  <p className="text-on-surface-variant text-xs">{t("sinResultados")}</p>
+                </div>
+              ) : (
+                filteredPois.map((poi) => {
+                  const inRoute = isInRoute(poi);
+                  const routeNum = poisEnRuta.findIndex((p) => p.id === poi.id) + 1;
+                  return (
+                    <div
+                      key={poi.id}
+                      className={`p-3 rounded-xl flex items-center gap-3 transition-all ${
+                        selectedPoi?.id === poi.id
+                          ? "bg-surface-container-high border-l-4 border-secondary"
+                          : "hover:bg-surface-container-high"
+                      }`}
+                    >
+                      <button
+                        onClick={() => { handleSelectPoi(poi); setMobileSheetOpen(false); }}
+                        className="w-10 h-10 rounded-xl bg-surface-container-highest flex items-center justify-center text-xl shrink-0"
+                      >
+                        {poi.emoji || "📍"}
+                      </button>
+                      <button
+                        onClick={() => { handleSelectPoi(poi); setMobileSheetOpen(false); }}
+                        className="flex-1 min-w-0 text-left"
+                      >
+                        <h3 className="font-headline font-bold text-on-surface text-sm truncate">{poi.nombre}</h3>
+                        <p className="text-[11px] text-on-surface-variant mt-0.5">
+                          <span className={isOpenNow(poi) ? "text-secondary" : "text-tertiary"}>● </span>
+                          {formatHours(poi)}
+                        </p>
+                      </button>
+                      <button
+                        onClick={() => togglePoiEnRuta(poi)}
+                        className={`shrink-0 w-9 h-9 rounded-lg flex items-center justify-center text-xs font-black transition-all ${
+                          inRoute ? "bg-secondary text-on-secondary" : "bg-surface-container-highest text-on-surface-variant"
+                        }`}
+                      >
+                        {inRoute ? routeNum : <span className="text-base">📍</span>}
+                      </button>
+>>>>>>> 08e106928bfbe3b5cc7787470ad2d9ce321ae956
                     </div>
                   ) : (
                     filteredPois.map((poi) => {
@@ -1140,6 +1336,7 @@ export default function MapaPage() {
                   )}
                 </div>
 
+<<<<<<< HEAD
                 <div className="px-4 pb-4 pt-3 border-t border-outline-variant/10 space-y-2 shrink-0">
                   {(mapboxOpt.error || sorprendeme.error) && (
                     <div className="p-2 rounded-lg bg-error-container/20 border border-error/20 text-error text-xs font-medium">
@@ -1180,6 +1377,59 @@ export default function MapaPage() {
                   </div>
                 </div>
               </>
+=======
+            {/* Route controls */}
+            <div className="px-4 pb-4 pt-3 border-t border-outline-variant/10 space-y-2 shrink-0">
+              {rutaError && (
+                <div className="p-2 rounded-lg bg-error-container/20 border border-error/20 text-error text-xs font-medium">
+                  {rutaError}
+                </div>
+              )}
+              <button
+                onClick={() => { if (selectedPoi) { setChatbotAbierto(true); setMobileSheetOpen(false); } }}
+                disabled={!selectedPoi}
+                className="w-full flex items-center justify-center gap-2 py-2 px-4 rounded-xl bg-primary-container/20 text-primary border border-primary/20 font-headline font-bold text-sm disabled:opacity-30 disabled:cursor-not-allowed"
+              >
+                <span className="text-base">✨</span>
+                {selectedPoi ? t("preguntarAI", { nombre: selectedPoi.nombre }) : t("seleccionaPrimero")}
+              </button>
+              <div className="flex items-center justify-between px-1">
+                <div className="flex items-center gap-2">
+                  <span className={`w-2 h-2 rounded-full ${poisEnRuta.length > 0 ? "bg-secondary animate-pulse" : "bg-on-surface-variant"}`} />
+                  <span className="text-xs font-bold text-on-surface">
+                    {poisEnRuta.length === 1 ? t("paradas", { count: 1 }) : t("paradasPlural", { count: poisEnRuta.length })}
+                  </span>
+                </div>
+                {poisEnRuta.length > 0 && (
+                  <button onClick={limpiarRuta} className="text-xs text-on-surface-variant hover:text-tertiary font-bold">
+                    {t("limpiar")}
+                  </button>
+                )}
+              </div>
+              <div className="flex gap-2">
+                <button
+                  onClick={() => setModoAccesible(!modoAccesible)}
+                  className={`flex-1 py-2 rounded-lg text-xs font-bold flex items-center justify-center gap-1.5 transition-all ${modoAccesible ? "bg-[#60a5fa]/20 text-[#60a5fa] border border-[#60a5fa]/30" : "bg-surface-container-highest text-on-surface-variant"}`}
+                >
+                  <span className="text-sm">♿</span>{t("accesible")}
+                </button>
+                <button
+                  onClick={() => setModoVehiculo(!modoVehiculo)}
+                  className={`flex-1 py-2 rounded-lg text-xs font-bold flex items-center justify-center gap-1.5 transition-all ${modoVehiculo ? "bg-[#facc15]/20 text-[#facc15] border border-[#facc15]/30" : "bg-surface-container-highest text-on-surface-variant"}`}
+                >
+                  <span className="text-sm">🚗</span>{t("vehiculo")}
+                </button>
+              </div>
+              <button
+                onClick={calcularRuta}
+                disabled={poisEnRuta.length < 2 || calculando}
+                className="w-full bg-secondary text-on-secondary py-3 rounded-xl font-headline font-black text-sm uppercase tracking-widest disabled:opacity-40 disabled:cursor-not-allowed"
+              >
+                {calculando ? t("calculando") : t("calcularRuta")}
+              </button>
+            </div>
+          </>
+>>>>>>> 08e106928bfbe3b5cc7787470ad2d9ce321ae956
             )}
           </>
         )}
@@ -1189,11 +1439,19 @@ export default function MapaPage() {
       <div className="md:hidden fixed bottom-0 left-0 right-0 bg-surface-container-low/95 backdrop-blur-md border-t border-outline-variant/10 py-3 z-50">
         <div className="flex justify-around items-center px-6">
           <Link href="/" className="flex flex-col items-center gap-1 text-on-surface-variant">
-            <span className="material-symbols-outlined">explore</span>
+            <span className="">🔍</span>
             <span className="text-[10px] font-bold uppercase tracking-tighter">{tn("explorar")}</span>
           </Link>
+<<<<<<< HEAD
           <button onClick={() => setMobileSheetOpen((v) => !v)} className="flex flex-col items-center gap-1 text-secondary">
             <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }}>map</span>
+=======
+          <button
+            onClick={() => setMobileSheetOpen((v) => !v)}
+            className="flex flex-col items-center gap-1 text-secondary"
+          >
+            <span className="" style={{ fontVariationSettings: "'FILL' 1" }}>🗺️</span>
+>>>>>>> 08e106928bfbe3b5cc7787470ad2d9ce321ae956
             <span className="text-[10px] font-bold uppercase tracking-tighter">{tn("mapa")}</span>
           </button>
           <button onClick={() => setPartyModalOpen(true)} className="flex flex-col items-center gap-1 text-on-surface-variant">
@@ -1201,7 +1459,7 @@ export default function MapaPage() {
             <span className="text-[10px] font-bold uppercase tracking-tighter">Party</span>
           </button>
           <Link href="/perfil" className="flex flex-col items-center gap-1 text-on-surface-variant">
-            <span className="material-symbols-outlined">account_circle</span>
+            <span className="">👤</span>
             <span className="text-[10px] font-bold uppercase tracking-tighter">{tn("perfil")}</span>
           </Link>
         </div>
