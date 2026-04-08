@@ -108,11 +108,11 @@ export default function Navbar() {
   };
 
   return (
-    <nav className="fixed top-0 w-full z-50 bg-white/90 backdrop-blur-2xl border-b border-outline-variant/10 shadow-[0_2px_20px_rgba(0,0,0,0.05)]">
+    <nav className="fixed top-0 w-full z-50 bg-black/90 backdrop-blur-2xl border-b border-white/10 shadow-[0_2px_20px_rgba(0,0,0,0.3)]">
       <div className="max-w-[1440px] mx-auto h-[80px] px-8 flex items-center justify-between gap-8">
         {/* Logo Container */}
         <div className="flex items-center">
-          <Link href="/" className="text-3xl font-black text-primary italic tracking-tighter leading-none hover:opacity-80 transition-opacity font-headline">
+          <Link href="/" className="text-3xl font-black text-white italic tracking-tighter leading-none hover:opacity-80 transition-opacity font-headline">
             MUUL
           </Link>
         </div>
@@ -125,8 +125,8 @@ export default function Navbar() {
               href={item.href}
               className={`font-headline text-base font-bold tracking-tight transition-all relative py-2 ${
                 isActive(item.href)
-                  ? "text-primary after:absolute after:bottom-0 after:left-0 after:w-full after:h-0.5 after:bg-secondary after:rounded-full"
-                  : "text-slate-400 hover:text-primary"
+                  ? "text-white after:absolute after:bottom-0 after:left-0 after:w-full after:h-0.5 after:bg-secondary after:rounded-full"
+                  : "text-white/70 hover:text-white"
               }`}
             >
               {item.label}
@@ -141,7 +141,7 @@ export default function Navbar() {
             <input
               type="text"
               placeholder={t("buscarPlaceholder")}
-              className="w-full bg-surface-container-low border border-transparent rounded-full px-6 py-2.5 focus:bg-white focus:border-secondary/30 focus:ring-4 focus:ring-secondary/10 outline-none text-sm transition-all"
+              className="w-full bg-white/10 border border-white/10 rounded-full px-6 py-2.5 focus:bg-white/20 focus:border-white/20 focus:ring-4 focus:ring-white/10 outline-none text-sm transition-all text-white placeholder:text-white/50"
             />
             <span className="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 text-lg group-focus-within:text-secondary transition-colors">search</span>
           </div>
@@ -149,17 +149,17 @@ export default function Navbar() {
           <div className="flex items-center gap-2">
             {/* Language */}
             <div className="relative group">
-              <button className="flex items-center gap-2 text-primary hover:bg-surface-container-low px-4 py-2 rounded-full transition-all">
+              <button className="flex items-center gap-2 text-white hover:bg-white/10 px-4 py-2 rounded-full transition-all">
                 <span className="text-xl">🌐</span>
                 <span className="text-xs font-bold uppercase tracking-widest">{getCurrentLanguageLabel()}</span>
               </button>
-              <div className="absolute right-0 top-14 hidden group-hover:flex flex-col bg-white border border-outline-variant/10 rounded-2xl shadow-2xl overflow-hidden z-50 min-w-[160px] animate-fade-in">
+              <div className="absolute right-0 top-14 hidden group-hover:flex flex-col bg-black/90 border border-white/10 rounded-2xl shadow-2xl overflow-hidden z-50 min-w-[160px] animate-fade-in">
                 {idiomas.map((idioma) => (
                   <button
                     key={idioma.code}
                     onClick={() => cambiarIdioma(idioma.code)}
-                    className={`px-6 py-3.5 hover:bg-surface-container-low text-xs font-bold flex items-center justify-between transition-colors border-b border-outline-variant/5 last:border-b-0 ${
-                      locale === idioma.code ? "text-primary bg-surface-container-low" : "text-primary/70"
+                    className={`px-6 py-3.5 hover:bg-white/10 text-xs font-bold flex items-center justify-between transition-colors border-b border-white/5 last:border-b-0 ${
+                      locale === idioma.code ? "text-white bg-white/10" : "text-white/70"
                     }`}
                   >
                     <span className="flex items-center gap-3">
@@ -179,7 +179,7 @@ export default function Navbar() {
           {user && negocio && (
             <Link href="/negocio" className="flex items-center gap-2 px-4 py-2 bg-secondary/10 border border-secondary/20 rounded-full hover:bg-secondary/20 transition-all group">
               <span className="material-symbols-outlined text-secondary">business</span>
-              <span className="text-xs font-bold text-secondary max-w-[70px] truncate group-hover:text-secondary">{negocio.nombre}</span>
+              <span className="text-xs font-bold text-white max-w-[70px] truncate group-hover:text-secondary">{negocio.nombre}</span>
             </Link>
           )}
 
@@ -188,7 +188,7 @@ export default function Navbar() {
           {/* User Avatar or Login */}
           {user ? (
             <div className="relative group font-body">
-              <Link href="/perfil" className="flex items-center gap-3 pl-2 pr-4 py-2 bg-surface-container-low border border-outline-variant/5 rounded-full hover:bg-white hover:shadow-lg transition-all">
+              <Link href="/perfil" className="flex items-center gap-3 pl-2 pr-4 py-2 bg-white/10 border border-white/5 rounded-full hover:bg-white/20 hover:shadow-lg transition-all">
                 <div className="w-8 h-8 rounded-full overflow-hidden bg-gradient-to-br from-primary to-primary-container text-white text-[10px] font-black flex items-center justify-center shadow-inner">
                   {user.avatar_url ? (
                     <img src={user.avatar_url} alt="Profile" className="w-full h-full object-cover" />
@@ -196,17 +196,17 @@ export default function Navbar() {
                     user.initials
                   )}
                 </div>
-                <span className="text-xs font-bold text-primary max-w-[80px] truncate">{user.nombre}</span>
+                <span className="text-xs font-bold text-white max-w-[80px] truncate">{user.nombre}</span>
               </Link>
-              <div className="absolute right-0 top-14 hidden group-hover:flex flex-col bg-white border border-outline-variant/10 rounded-2xl shadow-2xl overflow-hidden z-50 min-w-[200px] animate-fade-in">
-                <Link href="/perfil" className="px-6 py-4 hover:bg-surface-container-low text-sm text-primary font-bold transition-colors flex items-center gap-3">
+              <div className="absolute right-0 top-14 hidden group-hover:flex flex-col bg-black/90 border border-white/10 rounded-2xl shadow-2xl overflow-hidden z-50 min-w-[200px] animate-fade-in">
+                <Link href="/perfil" className="px-6 py-4 hover:bg-white/10 text-sm text-white font-bold transition-colors flex items-center gap-3">
                   <span className="material-symbols-outlined text-lg">person</span>
                   Perfil
                 </Link>
-                <div className="h-[1px] bg-outline-variant/5 mx-4"></div>
+                <div className="h-[1px] bg-white/5 mx-4"></div>
                 <button
                   onClick={handleLogout}
-                  className="px-6 py-4 hover:bg-error/5 text-sm text-error font-bold text-left transition-colors flex items-center gap-3"
+                  className="px-6 py-4 hover:bg-red-500/10 text-sm text-red-400 font-bold text-left transition-colors flex items-center gap-3"
                 >
                   <span className="material-symbols-outlined text-lg">logout</span>
                   Cerrar Sesión
