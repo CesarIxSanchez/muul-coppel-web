@@ -76,6 +76,17 @@ export default function LoginPage() {
     });
   };
 
+  const mapFeaturesToDatabase = (features: BusinessFeature[]): string[] => {
+    const featureMap: Record<BusinessFeature, string> = {
+      card: "pago_tarjeta",
+      transfer: "transferencias",
+      petFriendly: "pet_friendly",
+      vegan: "vegana",
+      accessible: "accesibilidad",
+    };
+    return features.map((f) => featureMap[f]);
+  };
+
   const getRegisterAuth = () => {
     if (profile === "turista") {
       return { email: touristRegister.email, password: touristRegister.password };
@@ -102,61 +113,162 @@ export default function LoginPage() {
         return;
       }
 
-      const { email, password } = getRegisterAuth();
-      if (!email || !password) {
-        setErrorMessage(t("requiredFields"));
-        return;
-      }
+      // REGISTRO - Usar RPC functions directamente
+      if (profile === "turista") {
+        // Validar campos
+        if (!touristRegister.firstName.trim()) {
+          setErrorMessage(t("requiredFields"));
+          return;
+        }
+        if (!touristRegister.lastName.trim()) {
+          setErrorMessage(t("requiredFields"));
+          return;
+        }
+        if (!touristRegister.username.trim()) {
+          setErrorMessage(t("requiredFields"));
+          return;
+        }
+        if (!touristRegister.email.trim()) {
+          setErrorMessage(t("requiredFields"));
+          return;
+        }
+        if (!touristRegister.phone.trim()) {
+          setErrorMessage(t("requiredFields"));
+          return;
+        }
+        if (!touristRegister.password || touristRegister.password.length < 8) {
+          setErrorMessage(t("errorMinContrasena"));
+          return;
+        }
 
-      if (password.length < 8) {
-        setErrorMessage(t("errorMinContrasena"));
-        return;
-      }
+        const { data: authData, error: signUpError } = await supabase.auth.signUp({
+          email: touristRegister.email,
+          password: touristRegister.password,
+        });
 
-      const profileMetadata =
-        profile === "turista"
-          ? {
-              first_name: touristRegister.firstName,
-              last_name: touristRegister.lastName,
-              username: touristRegister.username,
-              phone: touristRegister.phone,
-              tipo_usuario: "turista",
-            }
-          : {
-              owner_first_name: businessRegister.ownerFirstName,
-              owner_last_name: businessRegister.ownerLastName,
-              postal_code: businessRegister.postalCode,
-              phone: businessRegister.phone,
-              contact_email: businessRegister.contactEmail || null,
-              business_name: businessRegister.businessName,
-              business_type: businessRegister.businessType,
-              business_address: businessRegister.businessAddress,
-              business_features: businessRegister.features,
-              tipo_usuario: "negocio",
-            };
+        if (signUpError) {
+          setErrorMessage(signUpError.message);
+          return;
+        }
 
-      const { error } = await supabase.auth.signUp({
-        email,
-        password,
-        options: {
-          data: {
-            nombre_completo:
-              profile === "turista"
-                ? `${touristRegister.firstName} ${touristRegister.lastName}`.trim()
-                : `${businessRegister.ownerFirstName} ${businessRegister.ownerLastName}`.trim(),
-            ...profileMetadata,
-          },
-          emailRedirectTo: `${typeof window !== "undefined" ? window.location.origin : ""}/${locale}/auth/callback?next=/perfil`,
-        },
-      });
+        if (!authData.user?.id) {
+          setErrorMessage(t("errorCredenciales"));
+          return;
+        }
 
-      if (error) {
-        setErrorMessage(error.message);
-        return;
+        // Llamar RPC guardar_perfil_turista directamente
+        const { error: rpcError } = await supabase.rpc("guardar_perfil_turista", {
+          p_id: authData.user.id,
+          p_nombre: touristRegister.firstName.trim(),
+          p_apellido: touristRegister.lastName.trim(),
+          p_correo: touristRegister.email.toLowerCase().trim(),
+          p_username: touristRegister.username.trim(),
+          p_telefono: touristRegister.phone.trim(),
+          p_idioma: locale,
+        });
+
+        if (rpcError) {
+          console.error("RPC Error:", rpcError);
+          setErrorMessage("Error al guardar perfil");
+          return;
+        }
+      } else {
+        // NEGOCIO - Validar campos
+        if (!businessRegister.ownerFirstName.trim()) {
+          setErrorMessage(t("requiredFields"));
+          return;
+        }
+        if (!businessRegister.ownerLastName.trim()) {
+          setErrorMessage(t("requiredFields"));
+          return;
+        }
+        if (!businessRegister.postalCode.trim()) {
+          setErrorMessage(t("requiredFields"));
+          return;
+        }
+        if (!businessRegister.phone.trim()) {
+          setErrorMessage(t("requiredFields"));
+          return;
+        }
+        if (!businessRegister.businessName.trim()) {
+          setErrorMessage(t("requiredFields"));
+          return;
+        }
+        if (!businessRegister.businessType) {
+          setErrorMessage(t("requiredFields"));
+          return;
+        }
+        if (!businessRegister.businessAddress.trim()) {
+          setErrorMessage(t("requiredFields"));
+          return;
+        }
+        if (!businessRegister.authEmail.trim()) {
+          setErrorMessage(t("requiredFields"));
+          return;
+        }
+        if (!businessRegister.authPassword || businessRegister.authPassword.length < 8) {
+          setErrorMessage(t("errorMinContrasena"));
+          return;
+        }
+
+        const { data: authData, error: signUpError } = await supabase.auth.signUp({
+          email: businessRegister.authEmail,
+          password: businessRegister.authPassword,
+        });
+
+        if (signUpError) {
+          setErrorMessage(signUpError.message);
+          return;
+        }
+
+        if (!authData.user?.id) {
+          setErrorMessage(t("errorCredenciales"));
+          return;
+        }
+
+        // Llamar RPC guardar_perfil_negocio para el propietario
+        const { error: rpcProfileError } = await supabase.rpc("guardar_perfil_negocio", {
+          p_id: authData.user.id,
+          p_nombre: businessRegister.ownerFirstName.trim(),
+          p_apellido: businessRegister.ownerLastName.trim(),
+          p_correo: businessRegister.authEmail.toLowerCase().trim(),
+          p_username: businessRegister.businessName.toLowerCase().replace(/\s+/g, "_"),
+          p_telefono: businessRegister.phone.trim(),
+          p_idioma: locale,
+        });
+
+        if (rpcProfileError) {
+          console.error("RPC Profile Error:", rpcProfileError);
+          setErrorMessage("Error al guardar perfil");
+          return;
+        }
+
+        // Llamar RPC crear_negocio directamente
+        const { error: rpcNegocioError } = await supabase.rpc("crear_negocio", {
+          p_propietario_id: authData.user.id,
+          p_nombre: businessRegister.businessName.trim(),
+          p_categoria: businessRegister.businessType,
+          p_direccion: businessRegister.businessAddress.trim(),
+          p_propietario_nombre: businessRegister.ownerFirstName.trim(),
+          p_propietario_apellido: businessRegister.ownerLastName.trim(),
+          p_propietario_cp: businessRegister.postalCode.trim(),
+          p_propietario_telefono: businessRegister.phone.trim(),
+          p_propietario_correo: businessRegister.contactEmail.trim(),
+          p_latitud: 19.4326,
+          p_longitud: -99.1677,
+          p_caracteristicas: mapFeaturesToDatabase(businessRegister.features),
+        });
+
+        if (rpcNegocioError) {
+          console.error("RPC Negocio Error:", rpcNegocioError);
+          setErrorMessage("Error al crear negocio");
+          return;
+        }
       }
 
       router.push("/perfil");
-    } catch {
+    } catch (error) {
+      console.error("Auth error:", error);
       setErrorMessage(t("errorCredenciales"));
     } finally {
       setLoading(false);

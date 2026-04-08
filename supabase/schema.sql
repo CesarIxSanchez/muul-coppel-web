@@ -17,6 +17,8 @@ DROP FUNCTION IF EXISTS sorprendeme(double precision, double precision, categori
 DROP FUNCTION IF EXISTS buscar_usuarios(text) CASCADE;
 DROP FUNCTION IF EXISTS buscar_negocios(text) CASCADE;
 DROP FUNCTION IF EXISTS buscar_pois(text) CASCADE;
+DROP FUNCTION IF EXISTS guardar_perfil_turista(uuid, text, text, text, text, text, text) CASCADE;
+DROP FUNCTION IF EXISTS crear_negocio(uuid, text, text, text, text, text, text, text, double precision, double precision, text[]) CASCADE;
 
 DROP TABLE IF EXISTS rutas_participantes CASCADE;
 DROP TABLE IF EXISTS rutas_guardadas CASCADE;
@@ -139,7 +141,7 @@ CREATE TABLE negocios (
   propietario_telefono TEXT NOT NULL,
   propietario_correo TEXT,
   direccion TEXT,
-  ubicacion GEOGRAPHY(Point, 4326) NOT NULL,
+  ubicacion point NOT NULL,
   latitud DOUBLE PRECISION NOT NULL,
   longitud DOUBLE PRECISION NOT NULL,
   facebook_url TEXT,
@@ -197,7 +199,7 @@ CREATE TABLE pois (
   nombre TEXT NOT NULL,
   descripcion TEXT,
   categoria categoria_poi NOT NULL,
-  ubicacion GEOGRAPHY(Point, 4326) NOT NULL,
+  ubicacion point NOT NULL,
   latitud DOUBLE PRECISION NOT NULL,
   longitud DOUBLE PRECISION NOT NULL,
   direccion TEXT,
@@ -314,6 +316,9 @@ DECLARE
   v_nombre TEXT;
   v_apellido TEXT;
   v_tipo tipo_cuenta;
+  v_username TEXT;
+  v_idioma TEXT;
+  v_telefono TEXT;
 BEGIN
   v_nombre := COALESCE(
     NEW.raw_user_meta_data->>'nombre',
@@ -323,13 +328,17 @@ BEGIN
   );
 
   v_apellido := COALESCE(NEW.raw_user_meta_data->>'apellido', '');
+  v_username := NULLIF(TRIM(COALESCE(NEW.raw_user_meta_data->>'username', '')), '');
+  v_telefono := NULLIF(TRIM(COALESCE(NEW.raw_user_meta_data->>'telefono', '')), '');
+  v_idioma := COALESCE(NEW.raw_user_meta_data->>'idioma', 'es-MX');
+  
   v_tipo := CASE
     WHEN COALESCE(NEW.raw_user_meta_data->>'tipo_cuenta', 'turista') = 'negocio' THEN 'negocio'::tipo_cuenta
     ELSE 'turista'::tipo_cuenta
   END;
 
-  INSERT INTO public.perfiles (id, tipo_cuenta, nombre, apellido, correo, username, idioma)
-  VALUES (NEW.id, v_tipo, v_nombre, v_apellido, NEW.email, NULL, 'es-MX')
+  INSERT INTO public.perfiles (id, tipo_cuenta, nombre, apellido, correo, username, telefono, idioma)
+  VALUES (NEW.id, v_tipo, v_nombre, v_apellido, NEW.email, v_username, v_telefono, v_idioma)
   ON CONFLICT (id) DO NOTHING;
 
   RETURN NEW;
@@ -480,5 +489,142 @@ CREATE POLICY rutas_participantes_delete ON rutas_participantes FOR DELETE USING
 CREATE POLICY seguimientos_select_own ON seguimientos_negocios FOR SELECT USING (auth.uid() = usuario_id);
 CREATE POLICY seguimientos_insert_own ON seguimientos_negocios FOR INSERT WITH CHECK (auth.uid() = usuario_id);
 CREATE POLICY seguimientos_delete_own ON seguimientos_negocios FOR DELETE USING (auth.uid() = usuario_id);
+
+-- =============================================
+-- RPC FUNCTIONS PARA REGISTRO Y LOGIN
+-- =============================================
+
+CREATE OR REPLACE FUNCTION public.guardar_perfil_turista(
+  p_id UUID,
+  p_nombre TEXT,
+  p_apellido TEXT,
+  p_correo TEXT,
+  p_username TEXT,
+  p_telefono TEXT,
+  p_idioma TEXT
+)
+RETURNS void
+LANGUAGE sql
+SECURITY DEFINER
+SET search_path = public
+AS $$
+  INSERT INTO public.perfiles (id, tipo_cuenta, nombre, apellido, correo, username, telefono, idioma)
+  VALUES (p_id, 'turista', p_nombre, p_apellido, p_correo, p_username, p_telefono, p_idioma)
+  ON CONFLICT (id) DO UPDATE SET
+    tipo_cuenta = EXCLUDED.tipo_cuenta,
+    nombre = EXCLUDED.nombre,
+    apellido = EXCLUDED.apellido,
+    correo = EXCLUDED.correo,
+    username = EXCLUDED.username,
+    telefono = EXCLUDED.telefono,
+    idioma = EXCLUDED.idioma,
+    updated_at = NOW();
+$$;
+
+CREATE OR REPLACE FUNCTION public.guardar_perfil_negocio(
+  p_id UUID,
+  p_nombre TEXT,
+  p_apellido TEXT,
+  p_correo TEXT,
+  p_username TEXT,
+  p_telefono TEXT,
+  p_idioma TEXT
+)
+RETURNS void
+LANGUAGE sql
+SECURITY DEFINER
+SET search_path = public
+AS $$
+  INSERT INTO public.perfiles (id, tipo_cuenta, nombre, apellido, correo, username, telefono, idioma)
+  VALUES (p_id, 'negocio', p_nombre, p_apellido, p_correo, p_username, p_telefono, p_idioma)
+  ON CONFLICT (id) DO UPDATE SET
+    tipo_cuenta = EXCLUDED.tipo_cuenta,
+    nombre = EXCLUDED.nombre,
+    apellido = EXCLUDED.apellido,
+    correo = EXCLUDED.correo,
+    username = EXCLUDED.username,
+    telefono = EXCLUDED.telefono,
+    idioma = EXCLUDED.idioma,
+    updated_at = NOW();
+$$;
+
+CREATE OR REPLACE FUNCTION public.crear_negocio(
+  p_propietario_id UUID,
+  p_nombre TEXT,
+  p_categoria TEXT,
+  p_direccion TEXT,
+  p_propietario_nombre TEXT,
+  p_propietario_apellido TEXT,
+  p_propietario_cp TEXT,
+  p_propietario_telefono TEXT,
+  p_propietario_correo TEXT,
+  p_latitud DOUBLE PRECISION DEFAULT 19.4326,
+  p_longitud DOUBLE PRECISION DEFAULT -99.1677,
+  p_caracteristicas TEXT[] DEFAULT NULL
+)
+RETURNS void
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public
+AS $$
+DECLARE
+  v_negocio_id UUID;
+  v_carac TEXT;
+  v_categoria categoria_negocio;
+BEGIN
+  -- Validar categoría
+  BEGIN
+    v_categoria := p_categoria::categoria_negocio;
+  EXCEPTION WHEN OTHERS THEN
+    v_categoria := 'alimentos'::categoria_negocio;
+  END;
+
+  -- Insertar negocio con valores garantizados
+  INSERT INTO public.negocios (
+    propietario_id,
+    nombre,
+    categoria,
+    propietario_nombre,
+    propietario_apellido,
+    propietario_cp,
+    propietario_telefono,
+    propietario_correo,
+    direccion,
+    latitud,
+    longitud,
+    ubicacion,
+    activo
+  )
+  VALUES (
+    p_propietario_id,
+    p_nombre,
+    v_categoria,
+    p_propietario_nombre,
+    p_propietario_apellido,
+    p_propietario_cp,
+    p_propietario_telefono,
+    p_propietario_correo,
+    COALESCE(p_direccion, ''),
+    COALESCE(p_latitud, 19.4326),
+    COALESCE(p_longitud, -99.1677),
+    ST_SetSRID(ST_MakePoint(COALESCE(p_longitud, -99.1677), COALESCE(p_latitud, 19.4326)), 4326),
+    TRUE
+  )
+  RETURNING id INTO v_negocio_id;
+
+  -- Insertar características
+  IF p_caracteristicas IS NOT NULL THEN
+    FOREACH v_carac IN ARRAY p_caracteristicas LOOP
+      BEGIN
+        INSERT INTO public.negocio_caracteristicas (negocio_id, caracteristica)
+        VALUES (v_negocio_id, v_carac::caracteristica_negocio)
+        ON CONFLICT DO NOTHING;
+      EXCEPTION WHEN OTHERS THEN
+        NULL;
+      END;
+    END LOOP;
+  END IF;
+END;
+$$;
 
 COMMIT;

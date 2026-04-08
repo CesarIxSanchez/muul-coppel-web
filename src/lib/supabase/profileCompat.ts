@@ -28,37 +28,15 @@ function normalizePerfil(row: any, source: "perfiles_old" | "perfiles_new" | "us
 }
 
 export async function getPerfilCompat(supabase: AnySupabase, userId: string): Promise<Perfil | null> {
-  // Legacy schema: perfiles(nombre_completo, tipo_cuenta, idioma...)
-  const oldRes = await supabase
+  // Consultar única tabla: perfiles
+  const res = await supabase
     .from("perfiles")
-    .select("id,nombre_completo,tipo_cuenta,idioma,avatar_url,ciudad,created_at")
+    .select("id,nombre,apellido,nombre_completo,tipo_cuenta,idioma,foto_url,ciudad,created_at")
     .eq("id", userId)
     .maybeSingle();
 
-  if (!oldRes.error && oldRes.data) {
-    return normalizePerfil(oldRes.data, "perfiles_old", userId);
-  }
-
-  // New schema variant: perfiles(nombre, tipo, foto_url, idioma...)
-  const newRes = await supabase
-    .from("perfiles")
-    .select("id,nombre,tipo,idioma,foto_url,created_at")
-    .eq("id", userId)
-    .maybeSingle();
-
-  if (!newRes.error && newRes.data) {
-    return normalizePerfil(newRes.data, "perfiles_new", userId);
-  }
-
-  // Fallback schema: users(username, language...)
-  const userRes = await supabase
-    .from("users")
-    .select("id,username,language,created_at")
-    .eq("id", userId)
-    .maybeSingle();
-
-  if (!userRes.error && userRes.data) {
-    return normalizePerfil(userRes.data, "users", userId);
+  if (!res.error && res.data) {
+    return normalizePerfil(res.data, "perfiles_new", userId);
   }
 
   return null;
@@ -69,13 +47,11 @@ export async function updateIdiomaCompat(
   userId: string,
   idioma: string
 ): Promise<boolean> {
-  // Try common schema first
-  const perfilUpdate = await supabase.from("perfiles").update({ idioma }).eq("id", userId);
-  if (!perfilUpdate.error) return true;
+  // Actualizar idioma en tabla perfiles
+  const result = await supabase
+    .from("perfiles")
+    .update({ idioma })
+    .eq("id", userId);
 
-  // Fallback schema
-  const userUpdate = await supabase.from("users").update({ language: idioma }).eq("id", userId);
-  if (!userUpdate.error) return true;
-
-  return false;
+  return !result.error;
 }
