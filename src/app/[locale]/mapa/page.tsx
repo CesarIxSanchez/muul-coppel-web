@@ -630,7 +630,7 @@ export default function MapaPage() {
                       className="w-full bg-surface-container-highest border-none rounded-xl py-4 pl-12 pr-4 text-on-surface placeholder:text-on-surface-variant focus:ring-2 focus:ring-secondary/40 transition-all"
                     />
                   </div>
-                  <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide" style={{ scrollbarWidth: "none" }}>
+                  <div className="flex gap-2 overflow-x-auto pb-2" style={{ scrollbarWidth: "none" }}>
                     {filters.map((f) => (
                       <button key={f.value} onClick={() => setActiveFilter(f.value)}
                         className={`flex-shrink-0 px-4 py-2 rounded-full text-sm font-bold flex items-center gap-2 transition-colors ${activeFilter === f.value ? "bg-secondary text-on-secondary" : "bg-surface-container-high text-on-surface hover:bg-surface-bright"}`}>
@@ -762,7 +762,7 @@ export default function MapaPage() {
                     <div className="flex items-center justify-between mb-4">
                       <h2 className="font-headline font-black text-on-surface text-sm uppercase tracking-widest">{t("itinerario")}</h2>
                       <button onClick={() => setMostrarItinerario(false)} className="text-xs text-on-surface-variant hover:text-on-surface font-bold flex items-center gap-1 transition-colors">
-                        <span className="text-sm">←</span> {t("volver")}
+                        <span className="material-symbols-outlined text-sm">arrow_back</span> {t("volver")}
                       </button>
                     </div>
                     {mapboxOpt.route && (
@@ -787,7 +787,7 @@ export default function MapaPage() {
                       {ubicacionUsuario && (
                         <div className="flex items-center gap-3 relative z-10">
                           <div className="w-6 h-6 rounded-full border-2 border-secondary flex items-center justify-center bg-secondary/20">
-                            <span className="text-secondary text-[12px]">📍</span>
+                            <span className="material-symbols-outlined text-secondary text-[12px]">my_location</span>
                           </div>
                           <div className="flex-1 min-w-0">
                             <span className="text-sm text-on-surface font-medium block">{t("tuUbicacion")}</span>
@@ -831,13 +831,13 @@ export default function MapaPage() {
                     {compartirMenuOpen && (
                       <div className="absolute bottom-full mb-2 left-0 right-0 bg-surface-container-low border border-outline-variant/20 rounded-xl shadow-2xl overflow-hidden z-50 animate-fade-in-up">
                         <button onClick={() => { copiarItinerario(); setCompartirMenuOpen(false); }} className="flex items-center gap-3 px-5 py-3 hover:bg-surface-container-highest transition-colors w-full text-left text-sm font-bold text-on-surface">
-                          <span className="text-base">📋</span>{t("copiar")}
+                          <span className="material-symbols-outlined text-base">content_copy</span>{t("copiar")}
                         </button>
                         <button onClick={() => { descargarImagen(); setCompartirMenuOpen(false); }} className="flex items-center gap-3 px-5 py-3 hover:bg-surface-container-highest transition-colors w-full text-left text-sm font-bold text-on-surface">
-                          <span className="text-base">⬇️</span>{t("imagen")}
+                          <span className="material-symbols-outlined text-base">download</span>{t("imagen")}
                         </button>
                         <button onClick={() => { compartirRuta(); setCompartirMenuOpen(false); }} className="flex items-center gap-3 px-5 py-3 hover:bg-surface-container-highest transition-colors w-full text-left text-sm font-bold text-on-surface">
-                          <span className="text-base">↗</span>{t("compartirApps")}
+                          <span className="material-symbols-outlined text-base">open_in_new</span>{t("compartirApps")}
                         </button>
                       </div>
                     )}
@@ -966,21 +966,12 @@ export default function MapaPage() {
       </main>
 
       {/* ═══ MOBILE BOTTOM SHEET ═══ */}
-      <div
-        className={`md:hidden fixed inset-x-0 bottom-[60px] z-40 bg-surface-container-low rounded-t-2xl shadow-2xl border-t border-outline-variant/10 flex flex-col transition-all duration-300 ease-in-out ${
-          mobileSheetOpen ? "h-[72vh]" : "h-[160px]"
-        }`}
-      >
-        {/* Drag handle */}
-        <button
-          onClick={() => setMobileSheetOpen((v) => !v)}
-          className="flex flex-col items-center pt-3 pb-2 w-full shrink-0"
-          aria-label={mobileSheetOpen ? t("cerrarPanel") : t("abrirPanel")}
-        >
+      <div className={`md:hidden fixed inset-x-0 bottom-[60px] z-40 bg-surface-container-low rounded-t-2xl shadow-2xl border-t border-outline-variant/10 flex flex-col transition-all duration-300 ease-in-out ${mobileSheetOpen ? "h-[72vh]" : "h-[160px]"}`}>
+        <button onClick={() => setMobileSheetOpen((v) => !v)} className="flex flex-col items-center pt-3 pb-2 w-full shrink-0">
           <div className="w-10 h-1 rounded-full bg-outline-variant mb-2" />
           <div className="flex items-center gap-2">
-            <span className="text-on-surface-variant text-sm">
-              {mobileSheetOpen ? "⌄" : "⌃"}
+            <span className="material-symbols-outlined text-on-surface-variant text-sm">
+              {mobileSheetOpen ? "keyboard_arrow_down" : "keyboard_arrow_up"}
             </span>
             <span className="text-[11px] text-on-surface-variant font-bold uppercase tracking-widest">
               {mobileSheetOpen ? t("cerrar") : mostrarItinerario ? t("itinerario") : t("explorar")}
@@ -1037,7 +1028,7 @@ export default function MapaPage() {
                     {ubicacionUsuario && (
                       <div className="flex items-center gap-3 relative z-10">
                         <div className="w-6 h-6 rounded-full border-2 border-secondary flex items-center justify-center bg-secondary/20 shrink-0">
-                          <span className="text-secondary text-[12px]">📍</span>
+                          <span className="material-symbols-outlined text-secondary text-[12px]">my_location</span>
                         </div>
                         <div className="flex-1 min-w-0">
                           <span className="text-sm text-on-surface font-medium block">{t("tuUbicacion")}</span>
@@ -1075,13 +1066,13 @@ export default function MapaPage() {
                     {compartirMenuOpen && (
                       <div className="absolute bottom-full mb-2 left-0 right-0 bg-surface-container-low border border-outline-variant/20 rounded-xl shadow-2xl overflow-hidden z-50 animate-fade-in-up">
                         <button onClick={() => { copiarItinerario(); setCompartirMenuOpen(false); }} className="flex items-center gap-3 px-5 py-3 hover:bg-surface-container-highest transition-colors w-full text-left text-sm font-bold text-on-surface">
-                          <span className="text-base">📋</span>{t("copiar")}
+                          <span className="material-symbols-outlined text-base">content_copy</span>{t("copiar")}
                         </button>
                         <button onClick={() => { descargarImagen(); setCompartirMenuOpen(false); }} className="flex items-center gap-3 px-5 py-3 hover:bg-surface-container-highest transition-colors w-full text-left text-sm font-bold text-on-surface">
-                          <span className="text-base">⬇️</span>{t("imagen")}
+                          <span className="material-symbols-outlined text-base">download</span>{t("imagen")}
                         </button>
                         <button onClick={() => { compartirRuta(); setCompartirMenuOpen(false); }} className="flex items-center gap-3 px-5 py-3 hover:bg-surface-container-highest transition-colors w-full text-left text-sm font-bold text-on-surface">
-                          <span className="text-base">↗</span>{t("compartirApps")}
+                          <span className="material-symbols-outlined text-base">open_in_new</span>{t("compartirApps")}
                         </button>
                       </div>
                     )}

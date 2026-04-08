@@ -21,12 +21,10 @@ export default function HomePage() {
           <p className="text-white/90 text-lg md:text-xl max-w-xl mb-12 font-body">
             {t("subtitulo")}
           </p>
-          
-          {/* CTA Buttons */}
-          <div className="flex flex-col sm:flex-row gap-4 pt-4">
+          <div className="flex flex-wrap gap-4">
             <Link
               href="/mapa"
-              className="bg-[#003e6f] text-white !text-white px-8 md:px-12 py-4 md:py-5 rounded-full font-headline font-black text-base md:text-lg hover:bg-[#005596] transition-all shadow-2xl shadow-[#003e6f]/20 flex items-center justify-center gap-2 group"
+              className="bg-secondary-container text-on-secondary-container px-8 md:px-10 py-3 md:py-4 rounded-full font-bold text-base md:text-lg hover:brightness-105 transition-all shadow-lg flex items-center gap-2"
             >
               {t("explorarMapa")} <span aria-hidden="true">→</span>
             </Link>
@@ -37,9 +35,9 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Category Cards - Explore by Interest */}
-      <section className="py-24 md:py-32 bg-white px-6 md:px-12 max-w-[1440px] mx-auto">
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-20 gap-8">
+      {/* Category Cards */}
+      <section className="py-20 md:py-32 bg-surface px-8 max-w-[1440px] mx-auto">
+        <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-8">
           <div>
             <span className="font-label text-primary tracking-widest text-xs uppercase mb-2 block">{t("tendenciasTag")}</span>
             <h2 className="font-headline text-4xl md:text-5xl text-on-surface">{t("exploraInteresTitulo")}</h2>
@@ -156,7 +154,8 @@ export default function HomePage() {
         </div>
       </section>
 
-      <div className="h-24"></div>
+      {/* Footer Spacing */}
+      <div className="h-20"></div>
     </main>
   );
 }
