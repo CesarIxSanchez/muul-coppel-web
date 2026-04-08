@@ -19,7 +19,7 @@ export default function HomePage() {
         />
         
         {/* Gradient Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/40 to-black/50" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/80 to-black/60" />
         
         {/* Content */}
         <div className="relative z-10 h-full max-w-[1440px] mx-auto px-6 md:px-12 flex flex-col justify-center items-start">
@@ -30,12 +30,12 @@ export default function HomePage() {
           </div>
           
           {/* Main Headline */}
-          <h1 className="font-headline text-6xl md:text-7xl lg:text-8xl text-white max-w-5xl leading-[1.1] mb-6 md:mb-8 font-black tracking-tight drop-shadow-2xl">
+          <h1 className="font-headline text-6xl md:text-7xl lg:text-8xl text-white max-w-5xl leading-[1.1] mb-6 md:mb-8 font-black tracking-tight" style={{textShadow: '0 0 40px rgba(0,0,0,0.95), 2px 2px 8px rgba(0,0,0,0.8)'}}>
             Descubre lo <br className="hidden md:block" /><span className="italic font-light">mejor de México</span>
           </h1>
           
           {/* Subheading */}
-          <p className="text-white/85 text-lg md:text-xl max-w-2xl mb-10 md:mb-12 font-body leading-relaxed">
+          <p className="text-white text-lg md:text-xl max-w-2xl mb-10 md:mb-12 font-body leading-relaxed" style={{textShadow: '0 0 20px rgba(0,0,0,0.9), 1px 1px 4px rgba(0,0,0,0.8)'}}>
             Una selección curada de destinos, sabores y cultura local impulsada por la inteligencia de datos de Coppel.
           </p>
           
