@@ -10,6 +10,12 @@ interface UserInfo {
   initials: string;
   nombre: string;
   avatar_url?: string | null;
+  userId: string;
+}
+
+interface BusinessInfo {
+  id: string;
+  nombre: string;
 }
 
 export default function Navbar() {
@@ -18,6 +24,7 @@ export default function Navbar() {
   const locale = useLocale();
   const supabase = createClient();
   const [user, setUser] = useState<UserInfo | null>(null);
+  const [negocio, setNegocio] = useState<BusinessInfo | null>(null);
   const t = useTranslations("nav");
 
   const idiomas = [
@@ -31,7 +38,6 @@ export default function Navbar() {
     () => [
       { href: "/", label: t("explorar") },
       { href: "/tiendas", label: t("categorias") },
-      { href: "/negocio", label: t("negocio") },
       { href: "/mapa", label: t("mapa") },
     ],
     [t]
@@ -62,10 +68,26 @@ export default function Navbar() {
         setUser({ 
           initials, 
           nombre, 
-          avatar_url: perfil?.avatar_url 
+          avatar_url: perfil?.avatar_url,
+          userId: authUser.id
         });
+
+        // Cargar negocio si existe
+        const { data: negocioData } = await supabase
+          .from("negocios")
+          .select("id, nombre")
+          .eq("propietario_id", authUser.id)
+          .eq("activo", true)
+          .limit(1);
+        
+        if (negocioData && negocioData.length > 0) {
+          setNegocio(negocioData[0] as BusinessInfo);
+        } else {
+          setNegocio(null);
+        }
       } else {
         setUser(null);
+        setNegocio(null);
       }
     };
 
@@ -150,6 +172,16 @@ export default function Navbar() {
               </div>
             </div>
           </div>
+
+          <div className="h-8 w-[1px] bg-outline-variant/20 hidden sm:block"></div>
+
+          {/* Business Button - Only if logged in and has business */}
+          {user && negocio && (
+            <Link href="/negocio" className="flex items-center gap-2 px-4 py-2 bg-secondary/10 border border-secondary/20 rounded-full hover:bg-secondary/20 transition-all group">
+              <span className="material-symbols-outlined text-secondary">business</span>
+              <span className="text-xs font-bold text-secondary max-w-[70px] truncate group-hover:text-secondary">{negocio.nombre}</span>
+            </Link>
+          )}
 
           <div className="h-8 w-[1px] bg-outline-variant/20 hidden sm:block"></div>
 
