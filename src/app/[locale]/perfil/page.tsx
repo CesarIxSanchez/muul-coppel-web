@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { usePathname, useRouter } from "@/i18n/navigation";
 import { Navbar, Footer, MobileNav } from "@/components/layout";
 import { createClient } from "@/lib/supabase/client";
+import { getPerfilCompat, updateIdiomaCompat } from "@/lib/supabase/profileCompat";
 import { useTranslations, useLocale } from "next-intl";
 import type { Perfil } from "@/types/database";
 
@@ -93,8 +94,36 @@ export default function PerfilPage() {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) { window.location.href = `/${locale}/login`; return; }
       setEditEmail(user.email || "");
-      const { data: perfilData } = await supabase.from("perfiles").select("*").eq("id", user.id).single();
-      if (perfilData) { setPerfil(perfilData); setIdioma(perfilData.idioma || "es-MX"); }
+      const perfilData = await getPerfilCompat(supabase, user.id);
+      if (perfilData) {
+        setPerfil(perfilData);
+        setIdioma(perfilData.idioma || "es-MX");
+      } else {
+        const fallbackNombre =
+          user.user_metadata?.nombre_completo ||
+          user.user_metadata?.full_name ||
+          user.user_metadata?.name ||
+          (user.email ? user.email.split("@")[0] : "Usuario");
+
+        const fallbackTipo =
+          user.user_metadata?.tipo_cuenta === "negocio" || user.user_metadata?.tipo === "empresa"
+            ? "negocio"
+            : "turista";
+
+        const fallbackIdioma =
+          locale === "en" ? "en-US" : locale === "pt" ? "pt-BR" : locale === "zh" ? "zh-CN" : "es-MX";
+
+        setPerfil({
+          id: user.id,
+          nombre_completo: fallbackNombre,
+          tipo_cuenta: fallbackTipo,
+          idioma: fallbackIdioma,
+          avatar_url: null,
+          ciudad: null,
+          created_at: user.created_at || new Date().toISOString(),
+        });
+        setIdioma(fallbackIdioma);
+      }
       setLoading(false);
     };
     fetchData();
@@ -103,8 +132,8 @@ export default function PerfilPage() {
   const handleSave = async () => {
     if (!perfil) return;
     setSaving(true); setSaveMsg("");
-    const { error } = await supabase.from("perfiles").update({ idioma }).eq("id", perfil.id);
-    if (error) {
+    const ok = await updateIdiomaCompat(supabase, perfil.id, idioma);
+    if (!ok) {
       setSaveMsg(t("errorGeneric"));
     } else {
       setSaveMsg(t("cambiosGuardados"));
@@ -123,7 +152,11 @@ export default function PerfilPage() {
     window.location.href = "/";
   };
 
-  const getInitial = () => perfil ? perfil.nombre_completo.charAt(0).toUpperCase() : "?";
+  const getInitial = () => {
+    const nombre = perfil?.nombre_completo?.trim();
+    if (!nombre) return "?";
+    return nombre.charAt(0).toUpperCase();
+  };
   const getMemberSince = () => perfil ? new Date(perfil.created_at).getFullYear().toString() : "";
 
   if (loading) {
@@ -166,7 +199,7 @@ export default function PerfilPage() {
                     <span className="material-symbols-outlined text-[14px] mr-1">verified_user</span>
                     {perfil.tipo_cuenta === "negocio" ? t("negocio") : t("turista")}
                   </div>
-                  <h1 className="text-4xl md:text-6xl font-black font-headline tracking-tighter text-on-surface">{perfil.nombre_completo}</h1>
+                  <h1 className="text-4xl md:text-6xl font-black font-headline tracking-tighter text-on-surface">{perfil.nombre_completo || t("explorador")}</h1>
                   <p className="text-on-surface-variant font-medium mt-2">
                     {perfil.ciudad || t("explorador")} • {t("miembroDesde", { year: getMemberSince() })}
                   </p>

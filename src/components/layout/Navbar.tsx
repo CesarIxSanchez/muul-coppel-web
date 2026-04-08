@@ -3,6 +3,7 @@
 import { Link, useRouter, usePathname } from "@/i18n/navigation";
 import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
+import { getPerfilCompat } from "@/lib/supabase/profileCompat";
 import { useTranslations } from "next-intl";
 
 interface UserInfo {
@@ -36,12 +37,9 @@ export default function Navbar() {
     const getUser = async () => {
       const { data: { user: authUser } } = await supabase.auth.getUser();
       if (authUser) {
-        const { data: perfil } = await supabase
-          .from("perfiles")
-          .select("nombre_completo")
-          .eq("id", authUser.id)
-          .single();
-        const nombre = perfil?.nombre_completo || "Usuario";
+        const perfil = await getPerfilCompat(supabase, authUser.id);
+        const nombre =
+          perfil?.nombre_completo || authUser.user_metadata?.nombre_completo || authUser.email || "Usuario";
         const parts = nombre.split(" ");
         const initials = parts.length >= 2
           ? (parts[0][0] + parts[1][0]).toUpperCase()

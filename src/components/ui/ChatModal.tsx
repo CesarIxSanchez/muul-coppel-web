@@ -20,6 +20,27 @@ interface ChatModalProps {
 const MAX_PREGUNTAS_SESION = 15;
 const COOLDOWN_MS = 2000;
 
+function generarRespuestaLocal(poi: POI, idioma: string, pregunta: string): string {
+  const horario =
+    poi.horario_apertura && poi.horario_cierre
+      ? `${poi.horario_apertura} - ${poi.horario_cierre}`
+      : null;
+
+  if (idioma.startsWith("en")) {
+    return `${poi.emoji || "📍"} ${poi.nombre} is a ${poi.categoria} spot.${horario ? ` Open hours: ${horario}.` : ""}${poi.precio_rango ? ` Price range: ${poi.precio_rango}.` : ""} Based on your question ("${pregunta}"), I recommend checking details on-site for the latest updates.`;
+  }
+
+  if (idioma.startsWith("pt")) {
+    return `${poi.emoji || "📍"} ${poi.nombre} é um lugar de categoria ${poi.categoria}.${horario ? ` Horário: ${horario}.` : ""}${poi.precio_rango ? ` Faixa de preço: ${poi.precio_rango}.` : ""} Com base na sua pergunta ("${pregunta}"), recomendo confirmar detalhes no local para informações atualizadas.`;
+  }
+
+  if (idioma.startsWith("zh")) {
+    return `${poi.emoji || "📍"}${poi.nombre} 属于 ${poi.categoria} 类别。${horario ? `营业时间：${horario}。` : ""}${poi.precio_rango ? `价格范围：${poi.precio_rango}。` : ""}根据你的问题（“${pregunta}”），建议到现场确认最新信息。`;
+  }
+
+  return `${poi.emoji || "📍"} ${poi.nombre} es un lugar de categoría ${poi.categoria}.${horario ? ` Horario: ${horario}.` : ""}${poi.precio_rango ? ` Rango de precio: ${poi.precio_rango}.` : ""} Sobre tu pregunta ("${pregunta}"), te recomiendo validar los detalles directamente en el lugar para información actualizada.`;
+}
+
 export default function ChatModal({ isOpen, onClose, poi, idioma = "es-MX" }: ChatModalProps) {
   const [mensajes, setMensajes] = useState<Mensaje[]>([]);
   const [cargando, setCargando] = useState(false);
@@ -64,30 +85,11 @@ export default function ChatModal({ isOpen, onClose, poi, idioma = "es-MX" }: Ch
     setCargando(true);
 
     try {
-      const historial = nuevosMensajes
-        .filter((m) => m.tipo !== "error")
-        .slice(-10)
-        .map((m) => ({ tipo: m.tipo as "pregunta" | "respuesta", contenido: m.contenido }));
-      historial.pop();
-
-      const res = await fetch("/api/chatbot", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          pregunta: texto,
-          poi: { nombre: poi.nombre, categoria: poi.categoria, descripcion: poi.descripcion, horario_apertura: poi.horario_apertura, horario_cierre: poi.horario_cierre, precio_rango: poi.precio_rango, emoji: poi.emoji, verificado: poi.verificado, direccion: poi.direccion },
-          idioma,
-          historial,
-        }),
-      });
-      const data = await res.json();
-      if (!res.ok) {
-        setMensajes((prev) => [...prev, { tipo: "error", contenido: data.error || t("genericError") }]);
-      } else {
-        setMensajes((prev) => [...prev, { tipo: "respuesta", contenido: data.respuesta }]);
-      }
+      const respuesta = generarRespuestaLocal(poi, idioma, texto);
+      await new Promise((resolve) => setTimeout(resolve, 350));
+      setMensajes((prev) => [...prev, { tipo: "respuesta", contenido: respuesta }]);
     } catch {
-      setMensajes((prev) => [...prev, { tipo: "error", contenido: t("connectionError") }]);
+      setMensajes((prev) => [...prev, { tipo: "error", contenido: t("genericError") }]);
     }
     setCargando(false);
   };

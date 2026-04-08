@@ -5,6 +5,7 @@ import { Link } from "@/i18n/navigation";
 import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 import { createClient } from "@/lib/supabase/client";
+import { getPerfilCompat } from "@/lib/supabase/profileCompat";
 import { optimizarOrdenTSP } from "@/lib/haversine";
 import type { POI } from "@/types/database";
 import html2canvas from "html2canvas";
@@ -30,6 +31,12 @@ interface RutaGeo {
   pasos: { instruccion: string; distancia: number; duracion: number }[];
 }
 
+interface PuntoRuta {
+  latitud: number;
+  longitud: number;
+  nombre?: string;
+}
+
 /* ── Route colors for up to 3 alternatives ── */
 const ROUTE_COLORS = ["#98d5a2", "#b0c6fd", "#ffb3b3"];
 
@@ -37,6 +44,81 @@ const ROUTE_COLORS = ["#98d5a2", "#b0c6fd", "#ffb3b3"];
 const DURACION_VISITA: Record<string, number> = {
   cultural: 60, comida: 45, tienda: 30, deportes: 90, servicio: 20,
 };
+
+const MAPBOX_PROFILES: Record<"caminando" | "accesible" | "vehiculo", string> = {
+  caminando: "mapbox/walking",
+  accesible: "mapbox/cycling",
+  vehiculo: "mapbox/driving",
+};
+
+function formatearDistancia(metros: number): string {
+  if (metros >= 1000) return `${(metros / 1000).toFixed(1)} km`;
+  return `${Math.round(metros)} m`;
+}
+
+function formatearDuracion(segundos: number): string {
+  const minutos = Math.round(segundos / 60);
+  if (minutos >= 60) {
+    const horas = Math.floor(minutos / 60);
+    const mins = minutos % 60;
+    return mins > 0 ? `${horas}h ${mins} min` : `${horas}h`;
+  }
+  return `${minutos} min`;
+}
+
+async function obtenerRutasMapbox(
+  puntos: PuntoRuta[],
+  idioma: string,
+  perfil: "caminando" | "accesible" | "vehiculo"
+): Promise<RutaGeo[]> {
+  const token = process.env.NEXT_PUBLIC_MAPBOX_TOKEN;
+  if (!token) throw new Error("Missing NEXT_PUBLIC_MAPBOX_TOKEN");
+
+  const idiomaMap: Record<string, string> = {
+    "es-MX": "es",
+    "en-US": "en",
+    "zh-CN": "zh-Hans",
+    "pt-BR": "pt-BR",
+    es: "es",
+    en: "en",
+  };
+
+  const lang = idiomaMap[idioma] || "es";
+  const coordenadas = puntos.map((p) => `${p.longitud},${p.latitud}`).join(";");
+  const mapboxProfile = MAPBOX_PROFILES[perfil] || MAPBOX_PROFILES.caminando;
+  const url = `https://api.mapbox.com/directions/v5/${mapboxProfile}/${coordenadas}?alternatives=true&geometries=geojson&steps=true&language=${lang}&access_token=${token}`;
+
+  const response = await fetch(url);
+  if (!response.ok) throw new Error(`Mapbox error ${response.status}`);
+
+  const data = await response.json();
+  if (!data.routes || data.routes.length === 0) return [];
+
+  return data.routes.slice(0, 3).map((route: any, idx: number) => {
+    const pasos: { instruccion: string; distancia: number; duracion: number }[] = [];
+    route.legs.forEach((leg: any) => {
+      leg.steps.forEach((step: any) => {
+        if (step.maneuver?.instruction) {
+          pasos.push({
+            instruccion: step.maneuver.instruction,
+            distancia: Math.round(step.distance),
+            duracion: Math.round(step.duration),
+          });
+        }
+      });
+    });
+
+    return {
+      indice: idx,
+      geometry: route.geometry,
+      distancia_texto: formatearDistancia(route.distance),
+      duracion_texto: formatearDuracion(route.duration),
+      distancia_metros: Math.round(route.distance),
+      duracion_segundos: Math.round(route.duration),
+      pasos,
+    };
+  });
+}
 
 /* ── Calculate estimated arrival times ── */
 function calcularHorasLlegada(poisRuta: POI[], ruta: RutaGeo | undefined): string[] {
@@ -156,9 +238,8 @@ export default function MapaPage() {
     const fetchUser = async () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (user) {
-        const { data: perfil } = await supabase
-          .from("perfiles").select("nombre_completo").eq("id", user.id).single();
-        const nombre = perfil?.nombre_completo || t("usuarioAnonimo");
+        const perfil = await getPerfilCompat(supabase, user.id);
+        const nombre = perfil?.nombre_completo || user.email || t("usuarioAnonimo");
         const parts = nombre.split(" ");
         const initials = parts.length >= 2
           ? (parts[0][0] + parts[1][0]).toUpperCase()
@@ -231,7 +312,7 @@ export default function MapaPage() {
     if (poisEnRuta.length < 2) { setRutaError(t("errorMinPuntos")); return; }
     setCalculando(true); setRutaError(""); setRutaAccesible(null); setRutaVehiculo(null);
     const optimizados = optimizarOrdenTSP(poisEnRuta, ubicacionUsuario ?? undefined);
-    const puntosParaAPI = ubicacionUsuario
+    const puntosParaAPI: PuntoRuta[] = ubicacionUsuario
       ? [{ latitud: ubicacionUsuario[0], longitud: ubicacionUsuario[1], nombre: t("tuUbicacion") }, ...optimizados]
       : optimizados;
     const cacheKey = getCacheKey(optimizados, locale);
@@ -240,21 +321,21 @@ export default function MapaPage() {
       let rutasCaminando: RutaGeo[];
       if (cached) { rutasCaminando = cached; }
       else {
-        const res = await fetch("/api/ruta", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ puntos: puntosParaAPI, idioma: locale, perfil: "caminando" }) });
-        const data = await res.json();
-        if (!res.ok) { setRutaError(data.error || t("errorConexion")); setCalculando(false); return; }
-        rutasCaminando = data.rutas;
+        rutasCaminando = await obtenerRutasMapbox(puntosParaAPI, locale, "caminando");
+        if (!rutasCaminando.length) { setRutaError(t("errorConexion")); setCalculando(false); return; }
         setRouteCache(cacheKey, rutasCaminando);
       }
       setPoisEnRuta(optimizados); setRutas(rutasCaminando); setRutaSeleccionada(0); setMostrarItinerario(true);
       setMobileSheetOpen(false);
       if (modoAccesible) {
-        fetch("/api/ruta", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ puntos: puntosParaAPI, idioma: locale, perfil: "accesible" }) })
-          .then((r: Response) => r.json()).then((data: any) => { if (data.rutas?.[0]) setRutaAccesible(data.rutas[0]); }).catch(() => {});
+        obtenerRutasMapbox(puntosParaAPI, locale, "accesible")
+          .then((data) => { if (data[0]) setRutaAccesible(data[0]); })
+          .catch(() => {});
       }
       if (modoVehiculo) {
-        fetch("/api/ruta", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ puntos: puntosParaAPI, idioma: locale, perfil: "vehiculo" }) })
-          .then((r: Response) => r.json()).then((data: any) => { if (data.rutas?.[0]) setRutaVehiculo(data.rutas[0]); }).catch(() => {});
+        obtenerRutasMapbox(puntosParaAPI, locale, "vehiculo")
+          .then((data) => { if (data[0]) setRutaVehiculo(data[0]); })
+          .catch(() => {});
       }
     } catch { setRutaError(t("errorConexion")); }
     setCalculando(false);
