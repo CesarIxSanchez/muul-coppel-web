@@ -27,6 +27,7 @@ export default function NegocioDashboardPage() {
   const [banner, setBanner] = useState("");
   const [instagram, setInstagram] = useState("");
   const [facebook, setFacebook] = useState("");
+  const [saveMessage, setSaveMessage] = useState("");
   const [caracteristicas, setCaracteristicas] = useState({
     pago_tarjeta: false,
     transferencias: false,
@@ -92,6 +93,7 @@ export default function NegocioDashboardPage() {
 
     if (!error) {
       setIsEditing(false);
+      setSaveMessage("✓ Cambios guardados exitosamente");
       setNegocio({
         ...negocio,
         foto_url: fotoPerfil,
@@ -100,6 +102,10 @@ export default function NegocioDashboardPage() {
         facebook,
         caracteristicas,
       });
+      setTimeout(() => setSaveMessage(""), 3000);
+    } else {
+      setSaveMessage("✗ Error al guardar cambios");
+      setTimeout(() => setSaveMessage(""), 3000);
     }
   };
 
@@ -314,6 +320,13 @@ export default function NegocioDashboardPage() {
               />
             </div>
           </section>
+        )}
+
+        {/* Save Message */}
+        {saveMessage && (
+          <div className={`fixed bottom-8 left-1/2 -translate-x-1/2 px-8 py-4 rounded-full font-bold text-white shadow-lg animate-fade-in-up ${saveMessage.startsWith("✓") ? "bg-green-600" : "bg-error"}`}>
+            {saveMessage}
+          </div>
         )}
       </div>
     </main>
