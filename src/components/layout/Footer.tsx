@@ -1,8 +1,35 @@
+"use client";
+
 import { Link } from "@/i18n/navigation";
 import { useTranslations } from "next-intl";
+import { useState } from "react";
 
 export default function Footer() {
   const t = useTranslations("footer");
+  const [shareFeedback, setShareFeedback] = useState("");
+
+  const handleShare = async () => {
+    const shareUrl = typeof window !== "undefined" ? window.location.href : "";
+    if (!shareUrl) return;
+
+    try {
+      if (navigator.share) {
+        await navigator.share({
+          title: "MUUL",
+          text: t("shareText"),
+          url: shareUrl,
+        });
+        setShareFeedback(t("shared"));
+      } else {
+        await navigator.clipboard.writeText(shareUrl);
+        setShareFeedback(t("copied"));
+      }
+    } catch {
+      setShareFeedback(t("shareError"));
+    }
+
+    setTimeout(() => setShareFeedback(""), 2500);
+  };
 
   return (
     <footer className="w-full bg-neutral-950">
@@ -70,12 +97,18 @@ export default function Footer() {
 
           {/* Social Icons */}
           <div className="flex gap-3">
-            <a href="#" className="w-11 h-11 rounded-full border border-white/30 flex items-center justify-center text-white hover:bg-white/15 transition-all">
+            <button
+              type="button"
+              onClick={handleShare}
+              className="w-11 h-11 rounded-full border border-white/30 flex items-center justify-center text-white hover:bg-white/15 transition-all"
+              aria-label={t("compartir")}
+              title={t("compartir")}
+            >
               <span className="text-[18px]">🔗</span>
-            </a>
-            <a href="#" className="w-11 h-11 rounded-full border border-white/30 flex items-center justify-center text-white hover:bg-white/15 transition-all">
-              <span className="text-[18px]">🌐</span>
-            </a>
+            </button>
+            {shareFeedback && (
+              <span className="self-center text-[11px] font-label !text-white/90 uppercase tracking-wider">{shareFeedback}</span>
+            )}
           </div>
         </div>
 
