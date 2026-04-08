@@ -14,12 +14,12 @@ export default function HomePage() {
         <div 
           className="absolute inset-0 bg-cover bg-center bg-no-repeat"
           style={{
-            backgroundImage: 'linear-gradient(135deg, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.75) 50%, rgba(0,0,0,0.85) 100%), url("https://images.unsplash.com/photo-1518182170546-07661fd94144?q=80&w=1920&h=1080&auto=format&fit=crop")',
+            backgroundImage: 'linear-gradient(135deg, rgba(0,0,0,0.45) 0%, rgba(0,0,0,0.4) 50%, rgba(0,0,0,0.45) 100%), url("https://images.unsplash.com/photo-1518182170546-07661fd94144?q=80&w=1920&h=1080&auto=format&fit=crop")',
           }}
         />
         
-        {/* Gradient Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black to-transparent" style={{background: 'linear-gradient(to top, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.85) 30%, rgba(0,0,0,0.75) 100%)'}} />
+        {/* Gradient Overlay - Subtle for text readability */}
+        <div className="absolute inset-0" style={{background: 'linear-gradient(to top, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.3) 50%, rgba(0,0,0,0.2) 100%)'}} />
         
         {/* Content */}
         <div className="relative z-10 h-full max-w-[1440px] mx-auto px-6 md:px-12 flex flex-col justify-center items-start">
@@ -48,7 +48,7 @@ export default function HomePage() {
               Comenzar Viaje 
               <span className="material-symbols-outlined group-hover:translate-x-1 transition-transform">arrow_forward</span>
             </Link>
-            <button className="bg-white/10 backdrop-blur-md border-2 border-white/30 text-white px-8 md:px-12 py-4 md:py-5 rounded-full font-headline font-bold text-base md:text-lg hover:bg-white/20 hover:border-white/50 transition-all">
+            <button className="bg-white/20 backdrop-blur-md border-2 border-white/60 text-white px-8 md:px-12 py-4 md:py-5 rounded-full font-headline font-black text-base md:text-lg hover:bg-white/30 hover:border-white/80 transition-all shadow-lg">
               Ver Catálogo
             </button>
           </div>
