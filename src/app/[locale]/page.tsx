@@ -68,50 +68,50 @@ export default function HomePage() {
         </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
           {/* Green Card - Nature */}
-          <div className="group relative aspect-[4/5] rounded-3xl overflow-hidden cursor-pointer shadow-lg hover:shadow-2xl transition-all duration-300 h-80 md:h-96">
+          <div className="group relative aspect-[4/5] rounded-3xl overflow-hidden cursor-pointer shadow-2xl hover:shadow-3xl transition-all duration-300 h-80 md:h-96 border-4 border-emerald-300/30">
             <div 
               className="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-110"
               style={{
-                backgroundImage: 'url("https://images.unsplash.com/photo-1511632765486-a01980e01a18?q=80&w=600&h=800&auto=format&fit=crop")'
+                backgroundImage: 'url("https://images.unsplash.com/photo-1506905925346-21bda4d32df4?q=80&w=600&h=800&auto=format&fit=crop")'
               }}
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
-            <div className="absolute bottom-0 left-0 right-0 p-6 md:p-8">
-              <span className="font-label text-green-300 text-xs uppercase tracking-widest mb-2 block font-bold">🌿 Naturaleza</span>
-              <h3 className="font-headline text-3xl md:text-4xl text-white font-black">Refugios Locales</h3>
-              <div className="h-1 w-12 bg-green-300 mt-4 rounded-full group-hover:w-16 transition-all duration-300" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/50 to-black/20" />
+            <div className="absolute bottom-0 left-0 right-0 p-6 md:p-8 bg-gradient-to-t from-black/60 to-transparent">
+              <span className="font-label text-emerald-300 text-xs uppercase tracking-widest mb-3 block font-bold text-shadow">🌿 Naturaleza</span>
+              <h3 className="font-headline text-4xl md:text-5xl text-white font-black drop-shadow-lg">Refugios Locales</h3>
+              <div className="h-1.5 w-16 bg-emerald-400 mt-4 rounded-full group-hover:w-20 transition-all duration-300" />
             </div>
           </div>
           
           {/* Blue Card - Culture */}
-          <div className="group relative aspect-[4/5] rounded-3xl overflow-hidden cursor-pointer shadow-lg hover:shadow-2xl transition-all duration-300 h-80 md:h-96">
+          <div className="group relative aspect-[4/5] rounded-3xl overflow-hidden cursor-pointer shadow-2xl hover:shadow-3xl transition-all duration-300 h-80 md:h-96 border-4 border-cyan-300/30">
             <div 
               className="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-110"
               style={{
-                backgroundImage: 'url("https://images.unsplash.com/photo-1471879832106-c7ab9019e8de?q=80&w=600&h=800&auto=format&fit=crop")'
+                backgroundImage: 'url("https://images.unsplash.com/photo-1523254521-e52f4a98f4f9?q=80&w=600&h=800&auto=format&fit=crop")'
               }}
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
-            <div className="absolute bottom-0 left-0 right-0 p-6 md:p-8">
-              <span className="font-label text-blue-300 text-xs uppercase tracking-widest mb-2 block font-bold">🎨 Cultura</span>
-              <h3 className="font-headline text-3xl md:text-4xl text-white font-black">Arte y Herencia</h3>
-              <div className="h-1 w-12 bg-blue-300 mt-4 rounded-full group-hover:w-16 transition-all duration-300" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/50 to-black/20" />
+            <div className="absolute bottom-0 left-0 right-0 p-6 md:p-8 bg-gradient-to-t from-black/60 to-transparent">
+              <span className="font-label text-cyan-300 text-xs uppercase tracking-widest mb-3 block font-bold text-shadow">🎨 Cultura</span>
+              <h3 className="font-headline text-4xl md:text-5xl text-white font-black drop-shadow-lg">Arte y Herencia</h3>
+              <div className="h-1.5 w-16 bg-cyan-400 mt-4 rounded-full group-hover:w-20 transition-all duration-300" />
             </div>
           </div>
           
           {/* Red Card - Gastronomy */}
-          <div className="group relative aspect-[4/5] rounded-3xl overflow-hidden cursor-pointer shadow-lg hover:shadow-2xl transition-all duration-300 h-80 md:h-96">
+          <div className="group relative aspect-[4/5] rounded-3xl overflow-hidden cursor-pointer shadow-2xl hover:shadow-3xl transition-all duration-300 h-80 md:h-96 border-4 border-orange-300/30">
             <div 
               className="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-110"
               style={{
-                backgroundImage: 'url("https://images.unsplash.com/photo-1546069901-ba9599a7e63c?q=80&w=600&h=800&auto=format&fit=crop")'
+                backgroundImage: 'url("https://images.unsplash.com/photo-1504674900967-a75236f784c2?q=80&w=600&h=800&auto=format&fit=crop")'
               }}
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
-            <div className="absolute bottom-0 left-0 right-0 p-6 md:p-8">
-              <span className="font-label text-red-300 text-xs uppercase tracking-widest mb-2 block font-bold">🍽️ Gastronomía</span>
-              <h3 className="font-headline text-3xl md:text-4xl text-white font-black">Sabores de Tierra</h3>
-              <div className="h-1 w-12 bg-red-300 mt-4 rounded-full group-hover:w-16 transition-all duration-300" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/50 to-black/20" />
+            <div className="absolute bottom-0 left-0 right-0 p-6 md:p-8 bg-gradient-to-t from-black/60 to-transparent">
+              <span className="font-label text-orange-300 text-xs uppercase tracking-widest mb-3 block font-bold text-shadow">🍽️ Gastronomía</span>
+              <h3 className="font-headline text-4xl md:text-5xl text-white font-black drop-shadow-lg">Sabores de Tierra</h3>
+              <div className="h-1.5 w-16 bg-orange-400 mt-4 rounded-full group-hover:w-20 transition-all duration-300" />
             </div>
           </div>
         </div>
@@ -130,68 +130,68 @@ export default function HomePage() {
           {/* Bento Grid */}
           <div className="grid grid-cols-1 md:grid-cols-4 md:grid-rows-2 gap-6 h-auto md:h-[650px]">
             {/* Large Featured Card - San Miguel de Allende */}
-            <div className="md:col-span-2 md:row-span-2 relative rounded-3xl overflow-hidden shadow-2xl hover:shadow-3xl transition-all duration-300 group cursor-pointer h-80 md:h-full">
+            <div className="md:col-span-2 md:row-span-2 relative rounded-3xl overflow-hidden shadow-2xl hover:shadow-3xl transition-all duration-300 group cursor-pointer h-80 md:h-full border-4 border-yellow-300/30">
               <div 
                 className="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-105"
                 style={{
-                  backgroundImage: 'url("https://images.unsplash.com/photo-1565008576549-bdde9e154310?q=80&w=800&h=1000&auto=format&fit=crop")'
+                  backgroundImage: 'url("https://images.unsplash.com/photo-1518182170546-07661fd94144?q=80&w=800&h=1000&auto=format&fit=crop")'
                 }}
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent" />
-              <div className="relative z-10 h-full flex flex-col justify-end p-6 md:p-8">
+              <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/60 to-transparent" />
+              <div className="relative z-10 h-full flex flex-col justify-end p-6 md:p-8 bg-gradient-to-t from-black/50 to-transparent">
                 <div className="inline-flex items-center gap-2 mb-4 w-fit">
-                  <span className="bg-yellow-400 text-black px-3 py-1 rounded-lg text-xs font-headline font-black uppercase tracking-widest">🔥 Trending #1</span>
-                  <span className="text-white/70 font-label text-xs uppercase tracking-widest">Guanajuato</span>
+                  <span className="bg-gradient-to-r from-yellow-400 to-amber-400 text-black px-4 py-2 rounded-lg text-xs font-headline font-black uppercase tracking-widest shadow-lg shadow-yellow-400/30">🔥 Trending #1</span>
+                  <span className="text-yellow-300 font-label text-xs uppercase tracking-widest font-bold drop-shadow-lg">Guanajuato</span>
                 </div>
-                <h3 className="font-headline text-4xl md:text-5xl text-white font-black mb-6 leading-tight">San Miguel de Allende</h3>
-                <div className="flex gap-8 md:gap-12">
-                  <div>
-                    <span className="text-white/50 text-xs uppercase block font-label mb-2 font-bold">Búsquedas</span>
-                    <span className="text-yellow-300 font-headline text-2xl font-black">+124%</span>
+                <h3 className="font-headline text-5xl md:text-6xl text-white font-black mb-6 leading-tight drop-shadow-lg">San Miguel de Allende</h3>
+                <div className="flex gap-12 md:gap-16">
+                  <div className="bg-black/40 backdrop-blur-md px-4 py-3 rounded-xl">
+                    <span className="text-yellow-300 text-xs uppercase block font-label mb-2 font-bold">Búsquedas</span>
+                    <span className="text-yellow-300 font-headline text-3xl font-black drop-shadow-lg">+124%</span>
                   </div>
-                  <div>
-                    <span className="text-white/50 text-xs uppercase block font-label mb-2 font-bold">Clima</span>
-                    <span className="text-white font-headline text-2xl font-black">24°C</span>
+                  <div className="bg-black/40 backdrop-blur-md px-4 py-3 rounded-xl">
+                    <span className="text-yellow-300 text-xs uppercase block font-label mb-2 font-bold">Clima</span>
+                    <span className="text-white font-headline text-3xl font-black drop-shadow-lg">24°C</span>
                   </div>
                 </div>
               </div>
             </div>
 
             {/* Puerto Escondido Card */}
-            <div className="md:col-span-2 relative rounded-3xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 group cursor-pointer h-80 md:h-auto">
+            <div className="md:col-span-2 relative rounded-3xl overflow-hidden shadow-2xl hover:shadow-3xl transition-all duration-300 group cursor-pointer h-80 md:h-auto border-4 border-blue-300/30">
               <div 
                 className="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-105"
                 style={{
                   backgroundImage: 'url("https://images.unsplash.com/photo-1506905925346-21bda4d32df4?q=80&w=600&h=400&auto=format&fit=crop")'
                 }}
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />
-              <div className="relative z-10 h-full flex flex-col justify-end p-6 md:p-8">
-                <span className="text-blue-300 font-label text-xs uppercase tracking-widest mb-2 font-bold">🌊 Pacífico Sur</span>
-                <h3 className="font-headline text-2xl md:text-3xl text-white font-black mb-2">Puerto Escondido</h3>
-                <p className="text-white/80 text-sm font-body mb-4">Incremento en interés por experiencias sustentables.</p>
-                <button className="text-yellow-300 font-headline font-bold text-sm flex items-center gap-2 group/btn">
+              <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/50 to-transparent" />
+              <div className="relative z-10 h-full flex flex-col justify-end p-6 md:p-8 bg-gradient-to-t from-black/40 to-transparent">
+                <span className="text-blue-300 font-label text-xs uppercase tracking-widest mb-3 font-bold drop-shadow-lg">🌊 Pacífico Sur</span>
+                <h3 className="font-headline text-3xl md:text-4xl text-white font-black mb-3 drop-shadow-lg">Puerto Escondido</h3>
+                <p className="text-yellow-100 text-base font-body mb-5 drop-shadow-lg">Incremento en interés por experiencias sustentables y ecoturismo.</p>
+                <button className="text-yellow-400 font-headline font-black text-base flex items-center gap-2 group/btn bg-gradient-to-r from-yellow-400/20 to-blue-400/20 backdrop-blur-md px-4 py-2 rounded-lg w-fit hover:from-yellow-400/30 hover:to-blue-400/30 transition-all drop-shadow-lg">
                   Explorar Guía 
-                  <span className="material-symbols-outlined text-sm group-hover/btn:translate-x-1 transition-transform">arrow_forward</span>
+                  <span className="material-symbols-outlined group-hover/btn:translate-x-1 transition-transform">arrow_forward</span>
                 </button>
               </div>
             </div>
 
             {/* Stats Card 1 - Digital Resonance */}
-            <div className="bg-gradient-to-br from-blue-600 to-blue-700 rounded-3xl p-6 md:p-8 text-white flex flex-col justify-between shadow-lg h-80 md:h-auto hover:shadow-xl transition-all duration-300">
-              <span className="material-symbols-outlined text-5xl opacity-80">insights</span>
+            <div className="bg-gradient-to-br from-blue-600 via-cyan-500 to-blue-700 rounded-3xl p-6 md:p-8 text-white flex flex-col justify-between shadow-2xl h-80 md:h-auto hover:shadow-3xl transition-all duration-300 border-2 border-cyan-300/30">
+              <span className="material-symbols-outlined text-6xl drop-shadow-lg">insights</span>
               <div>
-                <span className="font-headline text-4xl md:text-5xl font-black block">8.4k</span>
-                <p className="font-label text-xs uppercase tracking-widest opacity-70 mt-2 font-bold">Resonancia Digital</p>
+                <span className="font-headline text-5xl md:text-6xl font-black block drop-shadow-lg">8.4k</span>
+                <p className="font-label text-xs uppercase tracking-widest mt-2 font-bold drop-shadow-lg text-cyan-100">Resonancia Digital</p>
               </div>
             </div>
 
             {/* Stats Card 2 - Occupancy */}
-            <div className="bg-gradient-to-br from-yellow-400 to-orange-500 rounded-3xl p-6 md:p-8 text-white flex flex-col justify-between shadow-lg h-80 md:h-auto hover:shadow-xl transition-all duration-300">
-              <span className="material-symbols-outlined text-5xl opacity-80">hotel</span>
+            <div className="bg-gradient-to-br from-yellow-400 via-amber-400 to-orange-500 rounded-3xl p-6 md:p-8 text-black flex flex-col justify-between shadow-2xl h-80 md:h-auto hover:shadow-3xl transition-all duration-300 border-2 border-yellow-300/30">
+              <span className="material-symbols-outlined text-6xl drop-shadow-lg">hotel</span>
               <div>
-                <span className="font-headline text-4xl md:text-5xl font-black block">92%</span>
-                <p className="font-label text-xs uppercase tracking-widest opacity-70 mt-2 font-bold">Ocupación Hotelera</p>
+                <span className="font-headline text-5xl md:text-6xl font-black block drop-shadow-lg">92%</span>
+                <p className="font-label text-xs uppercase tracking-widest mt-2 font-bold drop-shadow-lg text-yellow-900">Ocupación Hotelera</p>
               </div>
             </div>
           </div>
@@ -199,47 +199,52 @@ export default function HomePage() {
       </section>
 
       {/* Newsletter CTA - Premium Section */}
-      <section className="py-20 md:py-32 bg-white px-6 md:px-12">
-        <div className="max-w-[1440px] mx-auto bg-gradient-to-br from-gray-900 via-gray-800 to-black rounded-[3rem] p-8 md:p-16 lg:p-20 flex flex-col lg:flex-row items-center gap-12 lg:gap-16 relative overflow-hidden">
-          {/* Decorative elements */}
-          <div className="absolute top-10 right-10 w-40 h-40 bg-yellow-400/10 rounded-full blur-3xl" />
-          <div className="absolute bottom-10 left-10 w-32 h-32 bg-blue-400/10 rounded-full blur-3xl" />
+      <section className="py-20 md:py-32 bg-gradient-to-b from-white to-gray-100 px-6 md:px-12">
+        <div className="max-w-[1440px] mx-auto bg-gradient-to-br from-slate-900 via-blue-900 to-black rounded-[3rem] p-8 md:p-16 lg:p-20 flex flex-col lg:flex-row items-center gap-12 lg:gap-16 relative overflow-hidden border-2 border-cyan-400/20 shadow-2xl">
+          {/* Decorative animated elements */}
+          <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-br from-yellow-400/20 to-cyan-400/20 rounded-full blur-3xl -z-10 animate-pulse" />
+          <div className="absolute bottom-0 left-0 w-72 h-72 bg-gradient-to-tr from-blue-400/20 to-purple-400/20 rounded-full blur-3xl -z-10 animate-pulse" />
           
           {/* Content */}
           <div className="flex-1 relative z-10">
-            <h2 className="font-headline text-4xl md:text-5xl lg:text-6xl text-white mb-6 font-black leading-tight">
-              Únete a la <span className="italic font-light text-yellow-400">Inteligencia Editorial</span>
+            <div className="inline-flex items-center gap-2 mb-6 text-cyan-300 font-label text-xs uppercase tracking-[0.2em] bg-cyan-400/10 px-4 py-2 rounded-full border border-cyan-400/30 w-fit font-bold drop-shadow-lg">
+              <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
+              ✨ Sé parte del movimiento
+            </div>
+            
+            <h2 className="font-headline text-5xl md:text-6xl lg:text-7xl text-white mb-8 font-black leading-tight drop-shadow-lg">
+              Únete a la <br className="hidden md:block" /><span className="bg-gradient-to-r from-yellow-300 via-cyan-300 to-blue-300 bg-clip-text text-transparent italic font-light">Inteligencia Editorial</span>
             </h2>
-            <p className="text-white/80 text-lg md:text-xl mb-8 font-body leading-relaxed max-w-md">
-              Recibe cada semana una curaduría profunda de destinos, productos locales y experiencias auténticas que están definiendo el nuevo México.
+            
+            <p className="text-white/90 text-lg md:text-xl mb-10 font-body leading-relaxed max-w-lg drop-shadow-lg">
+              Recibe cada semana una curaduría profunda de destinos, productos locales, experiencias auténticas y tendencias que están redefiniendo el nuevo México.
             </p>
             
-            {/* Email Form */}
-            <div className="flex flex-col sm:flex-row gap-3 max-w-md">
+            {/* Email Form - Enhanced */}
+            <div className="flex flex-col sm:flex-row gap-4 max-w-lg mb-6">
               <input 
                 type="email" 
                 placeholder="tu@email.com" 
-                className="flex-1 px-6 py-4 bg-white/10 border border-white/20 backdrop-blur-md rounded-full text-white placeholder:text-white/50 focus:outline-none focus:ring-2 focus:ring-yellow-400/50 transition-all font-body"
-              />
-              <button className="px-8 py-4 bg-yellow-400 text-black rounded-full font-headline font-black text-base hover:bg-yellow-300 transition-all shadow-lg shadow-yellow-400/20 whitespace-nowrap">
+                className="flex-1 px-6 py-4 bg-gradient-to-r from-white/15 to-cyan-400/10 border-2 border-cyan-300/40 backdrop-blur-xl rounded-full text-white placeholder:text-white/70 focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:border-cyan-300 transition-all font-body font-medium shadow-lg shadow-cyan-400/10 drop-shadow-lg"/>
+              <button className="px-10 py-4 bg-gradient-to-r from-yellow-400 to-amber-400 text-black rounded-full font-headline font-black text-base hover:from-yellow-300 hover:to-amber-300 transition-all shadow-2xl shadow-yellow-400/40 whitespace-nowrap drop-shadow-lg hover:scale-105 hover:shadow-3xl">
                 Suscribirse
               </button>
             </div>
             
-            <p className="text-white/50 text-sm mt-4 font-label">No compartimos tu email. Cancela en cualquier momento.</p>
+            <p className="text-cyan-200 text-sm font-label drop-shadow-lg">✓ No compartimos tu email. Cancela en cualquier momento.</p>
           </div>
           
-          {/* Illustration/Image */}
-          <div className="flex-1 relative z-10 hidden lg:block">
-            <div className="relative">
-              <div className="absolute -inset-4 bg-gradient-to-r from-yellow-400/20 to-blue-400/20 rounded-2xl blur-2xl" />
+          {/* Illustration/Image - Enhanced */}
+          <div className="flex-1 relative z-10 hidden lg:flex items-center justify-center">
+            <div className="relative w-full h-96">
+              <div className="absolute -inset-8 bg-gradient-to-r from-yellow-400/30 via-cyan-400/30 to-blue-400/30 rounded-3xl blur-3xl" />
               <div 
-                className="relative rounded-2xl overflow-hidden h-80 lg:h-96 bg-cover bg-center shadow-2xl"
+                className="relative rounded-3xl overflow-hidden h-96 bg-cover bg-center shadow-2xl border-2 border-cyan-400/30"
                 style={{
-                  backgroundImage: 'url("https://images.unsplash.com/photo-1516321318423-f06f70fafcde?q=80&w=600&h=600&auto=format&fit=crop")'
+                  backgroundImage: 'linear-gradient(135deg, rgba(0, 20, 60, 0.7) 0%, rgba(5, 30, 80, 0.6) 50%, rgba(0, 10, 50, 0.7) 100%), url("https://images.unsplash.com/photo-1504384308090-c894fdcc538d?q=80&w=600&h=600&auto=format&fit=crop")'
                 }}
               >
-                <div className="absolute inset-0 bg-gradient-to-br from-transparent via-transparent to-black/40" />
+                <div className="absolute inset-0 bg-gradient-to-br from-cyan-400/20 via-transparent to-blue-600/20" />
               </div>
             </div>
           </div>
