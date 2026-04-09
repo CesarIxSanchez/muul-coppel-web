@@ -1,4 +1,5 @@
 import type { POI } from "@/types/database";
+import { SANTA_FE_POIS } from "./santa-fe-dummy-data";
 
 export type SupportedLocale = "es" | "en" | "pt" | "zh";
 
@@ -527,6 +528,7 @@ const POI_SEEDS: PoiSeed[] = [
       },
     ],
   },
+  ...SANTA_FE_POIS,
 ];
 
 const normalizeLocale = (locale?: string): SupportedLocale => {
