@@ -1046,12 +1046,12 @@ export default function MapaPage() {
                   <button onClick={() => setPartyModalOpen(true)} className="w-full bg-gradient-to-r from-secondary/20 to-primary/10 text-on-surface py-3 rounded-xl font-headline font-bold text-sm border border-secondary/20 flex items-center justify-center gap-2"><span className="text-base">🎉</span> {t("partyMode")}</button>
                   <button 
                     onClick={() => window.location.href = "/comunidad"} 
-                    className="w-full bg-[#003e6f] text-white py-3 rounded-xl font-headline font-black text-sm uppercase tracking-widest shadow-lg flex items-center justify-center gap-2"
+                    className="w-full bg-[#003e6f] !text-white py-3 rounded-xl font-headline font-black text-sm uppercase tracking-widest hover:bg-[#005596] transition-all flex items-center justify-center gap-2 shadow-lg shadow-[#003e6f]/20"
                   >
                     <span className="material-symbols-outlined text-base">public</span>
                     <span className="text-white">{t("publishCommunity")}</span>
                   </button>
-                  <button onClick={guardarRuta} disabled={guardando} className="w-full bg-[#003e6f] text-white py-3 rounded-xl font-headline font-bold text-sm uppercase tracking-widest hover:brightness-110 transition-all disabled:opacity-50 flex items-center justify-center gap-2">
+                  <button onClick={guardarRuta} disabled={guardando} className="w-full bg-[#003e6f] !text-white py-3 rounded-xl font-headline font-bold text-sm uppercase tracking-widest hover:brightness-110 transition-all disabled:opacity-50 flex items-center justify-center gap-2">
                     <span className="material-symbols-outlined text-sm">bookmark_add</span>
                     <span>{guardando ? t("guardando") : t("guardarRuta")}</span>
                   </button>
@@ -1241,12 +1241,12 @@ export default function MapaPage() {
                   <button onClick={() => setPartyModalOpen(true)} className="w-full bg-gradient-to-r from-secondary/20 to-primary/10 text-on-surface py-3 rounded-xl font-headline font-bold text-sm border border-secondary/20 flex items-center justify-center gap-2"><span>🎉</span> {t("partyMode")}</button>
                   <button 
                     onClick={() => window.location.href = "/comunidad"} 
-                    className="w-full bg-[#003e6f] text-white py-3 rounded-xl font-headline font-black text-sm uppercase tracking-widest shadow-lg flex items-center justify-center gap-2"
+                    className="w-full bg-[#003e6f] !text-white py-3 rounded-xl font-headline font-black text-sm uppercase tracking-widest shadow-lg flex items-center justify-center gap-2"
                   >
                     <span className="material-symbols-outlined text-base">public</span>
                     <span className="text-white">{t("publishCommunity")}</span>
                   </button>
-                  <button onClick={guardarRuta} disabled={guardando} className="w-full bg-[#003e6f] text-white py-3 rounded-xl font-headline font-bold text-sm uppercase tracking-widest disabled:opacity-50 flex items-center justify-center gap-2">
+                  <button onClick={guardarRuta} disabled={guardando} className="w-full bg-[#003e6f] !text-white py-3 rounded-xl font-headline font-bold text-sm uppercase tracking-widest hover:brightness-110 transition-all disabled:opacity-50 flex items-center justify-center gap-2">
                     <span className="material-symbols-outlined text-sm">bookmark_add</span>
                     <span>{guardando ? t("guardando") : t("guardarRuta")}</span>
                   </button>
