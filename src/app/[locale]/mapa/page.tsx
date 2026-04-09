@@ -96,6 +96,9 @@ export default function MapaPage() {
     { label: t("cultural"), emoji: "🏛️", value: "cultural" },
     { label: t("deportes"), emoji: "⚽", value: "deportes" },
     { label: t("tiendas"), emoji: "🛍️", value: "tienda" },
+    { label: "Hospedaje", emoji: "🏨", value: "hospedaje" },
+    { label: "Eventos", emoji: "🎟️", value: "eventos" },
+    { label: "Servicios", emoji: "🛠️", value: "servicios" },
   ];
 
   // ── Feature hooks ──
@@ -278,6 +281,11 @@ export default function MapaPage() {
     const lat = params.get("lat") || params.get("latitud");
     const lng = params.get("lng") || params.get("longitud");
     const id = params.get("id") || params.get("poi") || params.get("negocio_id");
+    const filter = params.get("filter");
+
+    if (filter) {
+      setActiveFilter(filter);
+    }
 
     if (lat && lng) {
       const qLat = parseFloat(lat);
