@@ -93,9 +93,9 @@ export default function PerfilPage() {
   };
 
   return (
-    <main className="min-h-screen pt-16 lg:pt-20 lg:ml-80 bg-surface flex flex-col lg:flex-row">
-      {/* Mobile Menu Button */}
-      <div className="lg:hidden fixed top-4 left-4 z-50">
+    <main className="min-h-screen pt-16 lg:pt-20 bg-surface flex flex-col lg:flex-row">
+      {/* Menu Button */}
+      <div className="fixed top-20 left-4 z-50 lg:top-4">
         <button 
           onClick={() => setSidebarOpen(true)}
           className="p-2 bg-white/80 backdrop-blur-sm rounded-full shadow-lg text-[#003e6f]"
@@ -104,17 +104,17 @@ export default function PerfilPage() {
         </button>
       </div>
 
-      {/* Sidebar */}
+      {/* Sidebar Modal */}
       <aside className={clsx(
         "fixed inset-y-0 left-0 z-50 w-80 shrink-0 border-r border-outline-variant/10 p-8 flex flex-col gap-10 bg-white/80 backdrop-blur-xl transition-transform duration-300 ease-in-out",
-        "lg:top-20 lg:h-[calc(100vh-5rem)]",
+        "lg:top-0 lg:h-full", // Full height on desktop
         {
           "translate-x-0": isSidebarOpen,
-          "-translate-x-full lg:translate-x-0": !isSidebarOpen,
+          "-translate-x-full": !isSidebarOpen,
         }
       )}>
-        {/* Mobile Close Button */}
-        <div className="lg:hidden absolute top-4 right-4">
+        {/* Close Button */}
+        <div className="absolute top-4 right-4">
           <button 
             onClick={() => setSidebarOpen(false)}
             className="p-2 text-[#003e6f]/60 hover:text-[#003e6f]"
@@ -177,7 +177,12 @@ export default function PerfilPage() {
       </aside>
 
       {/* Main Content */}
-      <div className="flex-1 overflow-y-auto p-8 lg:p-12 space-y-12 max-w-6xl mx-auto w-full">
+      <div className={clsx(
+        "flex-1 overflow-y-auto p-8 lg:p-12 space-y-12 max-w-6xl mx-auto w-full transition-all duration-300",
+        {
+          "blur-lg pointer-events-none": isSidebarOpen,
+        }
+      )}>
         {activeTab === "cuenta" && (
           <div className="space-y-12 animate-fade-in-up">
             {/* Hero Section */}
@@ -514,6 +519,14 @@ export default function PerfilPage() {
           </div>
         )}
       </div>
+
+      {/* Backdrop Overlay */}
+      {isSidebarOpen && (
+        <div
+          className="fixed inset-0 z-40 bg-black/20"
+          onClick={() => setSidebarOpen(false)}
+        />
+      )}
     </main>
   );
 }
