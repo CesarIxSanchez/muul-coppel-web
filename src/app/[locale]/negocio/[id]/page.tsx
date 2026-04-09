@@ -271,7 +271,7 @@ export default function NegocioPerfilPage() {
           <img
             alt={negocio.nombre}
             className="w-full h-full object-cover"
-            src={negocio.foto_url || getPremiumPhoto(negocio.nombre, negocio.categoria)}
+            src="https://qewqnirwuptcudoflgkd.supabase.co/storage/v1/object/public/muul_media/TacosTino.jpeg"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-primary/60 to-transparent"></div>
 
@@ -292,7 +292,7 @@ export default function NegocioPerfilPage() {
               <img
                 alt="Business Logo"
                 className="w-full h-full object-cover rounded-xl"
-                src={negocio.foto_url || `https://ui-avatars.com/api/?name=${negocio.nombre}&background=003e6f&color=fff&size=256`}
+                src="https://qewqnirwuptcudoflgkd.supabase.co/storage/v1/object/public/muul_media/TacosTino.jpeg"
               />
             </div>
             <div className="pb-2">

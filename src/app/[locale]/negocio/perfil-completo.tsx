@@ -21,8 +21,8 @@ export default function NegocioPerfilCompleto() {
   const [loading, setLoading] = useState(true);
   const [isEditor, setIsEditor] = useState(false);
 
-  const [banner, setBanner] = useState("");
-  const [fotoPerfil, setFotoPerfil] = useState("");
+  const [banner, setBanner] = useState("https://qewqnirwuptcudoflgkd.supabase.co/storage/v1/object/public/muul_media/TacosTino.jpeg");
+  const [fotoPerfil, setFotoPerfil] = useState("https://qewqnirwuptcudoflgkd.supabase.co/storage/v1/object/public/muul_media/TacosTino.jpeg");
   const [instagram, setInstagram] = useState("");
   const [facebook, setFacebook] = useState("");
   const [caracteristicas, setCaracteristicas] = useState({
@@ -54,8 +54,8 @@ export default function NegocioPerfilCompleto() {
       if (data && data.length > 0) {
         const neg = data[0] as Negocio;
         setNegocio(neg);
-        setBanner(neg.banner_url || "");
-        setFotoPerfil(neg.foto_url || "");
+        setBanner(neg.banner_url || "https://qewqnirwuptcudoflgkd.supabase.co/storage/v1/object/public/muul_media/TacosTino.jpeg");
+        setFotoPerfil(neg.foto_url || "https://qewqnirwuptcudoflgkd.supabase.co/storage/v1/object/public/muul_media/TacosTino.jpeg");
         setInstagram(neg.instagram || "");
         setFacebook(neg.facebook || "");
         setCaracteristicas({
@@ -108,22 +108,56 @@ export default function NegocioPerfilCompleto() {
 
   if (!negocio)
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center gap-6">
-        <span className="text-6xl">🏪</span>
-        <p>No tienes un negocio registrado</p>
-        <Link href="/tiendas" className="px-6 py-3 bg-primary text-white rounded-full">
-          Registrar negocio
-        </Link>
-      </div>
+      <main className="min-h-screen pt-20 pb-12">
+        {/* BANNER */}
+        <div className="relative h-72 bg-gradient-to-br from-primary/20 to-secondary/20 overflow-hidden">
+          <img 
+            src="https://qewqnirwuptcudoflgkd.supabase.co/storage/v1/object/public/muul_media/TacosTino.jpeg" 
+            alt="Tacos Don Tino" 
+            className="w-full h-full object-cover" 
+          />
+          <div className="absolute inset-0 bg-black/30" />
+        </div>
+
+        <div className="max-w-7xl mx-auto px-6 py-12">
+          {/* Header */}
+          <div className="flex flex-col md:flex-row gap-8 mb-12">
+            {/* Avatar */}
+            <div className="w-40 h-40 rounded-full overflow-hidden border-4 border-white shadow-xl -mt-32 shrink-0 bg-surface-container-low">
+              <img 
+                src="https://qewqnirwuptcudoflgkd.supabase.co/storage/v1/object/public/muul_media/TacosTino.jpeg" 
+                alt="Tacos Don Tino" 
+                className="w-full h-full object-cover" 
+              />
+            </div>
+
+            {/* Info */}
+            <div className="flex-1 flex flex-col justify-center gap-4">
+              <h1 className="text-5xl font-bold">Tacos Don Tino</h1>
+              <p className="text-on-surface-variant text-lg">Los mejores tacos del barrio</p>
+              <div className="flex items-center gap-4">
+                <span className="px-3 py-1 bg-primary-container text-primary-fixed rounded-full text-sm font-bold">
+                  comida
+                </span>
+                <span className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm font-bold">
+                  ✓ Verificado
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
     );
 
   return (
     <main className="min-h-screen pt-20 pb-12">
       {/* BANNER */}
       <div className="relative h-72 bg-gradient-to-br from-primary/20 to-secondary/20 overflow-hidden">
-        {fotoPerfil && (
-          <img src={fotoPerfil} alt={negocio.nombre} className="w-full h-full object-cover" />
-        )}
+        <img 
+          src="https://qewqnirwuptcudoflgkd.supabase.co/storage/v1/object/public/muul_media/TacosTino.jpeg" 
+          alt={negocio.nombre} 
+          className="w-full h-full object-cover" 
+        />
         <div className="absolute inset-0 bg-black/30" />
         {isEditor && (
           <div className="absolute inset-0 flex items-center justify-center gap-4">
@@ -143,13 +177,11 @@ export default function NegocioPerfilCompleto() {
         <div className="flex flex-col md:flex-row gap-8 mb-12">
           {/* Avatar */}
           <div className="w-40 h-40 rounded-full overflow-hidden border-4 border-white shadow-xl -mt-32 shrink-0 bg-surface-container-low">
-            {fotoPerfil ? (
-              <img src={fotoPerfil} alt={negocio.nombre} className="w-full h-full object-cover" />
-            ) : (
-              <div className="w-full h-full flex items-center justify-center text-6xl">
-                {categoryEmojis[negocio.categoria] || "🏪"}
-              </div>
-            )}
+            <img 
+              src="https://qewqnirwuptcudoflgkd.supabase.co/storage/v1/object/public/muul_media/TacosTino.jpeg" 
+              alt={negocio.nombre} 
+              className="w-full h-full object-cover" 
+            />
           </div>
 
           {/* Info */}
