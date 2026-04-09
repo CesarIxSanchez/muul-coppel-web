@@ -300,16 +300,6 @@ export default function ChatModal({ isOpen, onClose, poi, poisEnRuta = [], lugar
     return msg.contenido;
   };
 
-  const resetProvisional = () => {
-    setMensajes([]);
-    setUltimaPregunta(0);
-    setPreguntasConsumidas(0);
-    try {
-      localStorage.removeItem(historyKey);
-      localStorage.removeItem(counterKey);
-    } catch {}
-  };
-
   const limpiarSoloHistorial = () => {
     setMensajes([]);
     try {
@@ -450,15 +440,6 @@ export default function ChatModal({ isOpen, onClose, poi, poisEnRuta = [], lugar
               </div>
             </div>
           )}
-            <div className="mt-3 flex justify-center">
-              <button
-                type="button"
-                onClick={resetProvisional}
-                className="px-3 py-1.5 rounded-md border border-[#c8d3df] text-[#4e5d6a] text-xs font-body normal-case hover:bg-[#e8edf2] transition-colors"
-              >
-                {t("testReset")}
-              </button>
-            </div>
           <div className="mt-3 flex justify-center">
             <p className="font-body normal-case text-[12px] text-[#0c4f86] flex items-center gap-1.5">
               <span className="material-symbols-outlined text-[14px]">shield</span>

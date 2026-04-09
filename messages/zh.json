@@ -512,7 +512,6 @@
     "connectionError": "无网络连接。",
     "apiKeyOff": "MUUL AI 暂时不可用。请启用 OpenRouter 密钥后继续。",
     "noResponse": "我暂时无法生成回复。",
-    "testReset": "重置历史记录（测试）",
     "clearHistory": "清除历史记录",
     "serviceRetrying": "MUUL AI 当前负载较高，正在尝试其他免费服务提供方..."
   },

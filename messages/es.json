@@ -512,7 +512,6 @@
     "connectionError": "Sin conexión.",
     "apiKeyOff": "MUUL AI está temporalmente inactivo. Activa la llave de OpenRouter para continuar.",
     "noResponse": "No pude generar una respuesta en este momento.",
-    "testReset": "Reiniciar historial (test)",
     "clearHistory": "Borrar historial",
     "serviceRetrying": "MUUL AI está saturado por el momento. Reintentando proveedor gratuito..."
   },
