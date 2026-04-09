@@ -3,7 +3,8 @@
 import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "@/i18n/navigation";
 import { useLocale, useTranslations } from "next-intl";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { useSearchParams } from "next/navigation";
 
 type BusinessFeature = "card" | "transfer" | "petFriendly" | "vegan" | "accessible";
 
@@ -35,6 +36,7 @@ export default function LoginPage() {
   const locale = useLocale();
   const supabase = createClient();
   const t = useTranslations("login");
+  const searchParams = useSearchParams();
 
   const [mode, setMode] = useState<"login" | "register">("login");
   const [profile, setProfile] = useState<"turista" | "negocio">("turista");
@@ -63,6 +65,34 @@ export default function LoginPage() {
   });
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const hasPrefilledFromOAuth = useRef(false);
+
+  const isGoogleCompletionFlow =
+    searchParams.get("oauth") === "google" && searchParams.get("complete") === "1";
+
+  useEffect(() => {
+    if (!isGoogleCompletionFlow || hasPrefilledFromOAuth.current) return;
+
+    const firstName = searchParams.get("firstName") ?? "";
+    const lastName = searchParams.get("lastName") ?? "";
+    const username = searchParams.get("username") ?? "";
+    const email = searchParams.get("email") ?? "";
+    const phone = searchParams.get("phone") ?? "";
+
+    setProfile("turista");
+    setMode("register");
+    setTouristRegister((prev) => ({
+      ...prev,
+      firstName,
+      lastName,
+      username,
+      email,
+      phone,
+      password: "",
+    }));
+
+    hasPrefilledFromOAuth.current = true;
+  }, [isGoogleCompletionFlow, searchParams]);
 
   const toggleFeature = (feature: BusinessFeature) => {
     setBusinessRegister((prev) => {
@@ -93,6 +123,53 @@ export default function LoginPage() {
     }
     return { email: businessRegister.authEmail, password: businessRegister.authPassword };
   };
+
+  const iniciarSesionConGoogle = async () => {
+    if (loading) return;
+
+    setLoading(true);
+    setErrorMessage("");
+
+    const resetTimer = window.setTimeout(() => {
+      setLoading(false);
+    }, 6000);
+
+    const redirectTo = `${window.location.origin}/${locale}/auth/callback?next=/perfil`;
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: "google",
+      options: {
+        redirectTo,
+        queryParams: {
+          prompt: "select_account",
+        },
+      },
+    });
+
+    if (error) {
+      setErrorMessage(error.message || t("errorCredenciales"));
+      setLoading(false);
+    }
+
+    window.clearTimeout(resetTimer);
+  };
+
+  useEffect(() => {
+    // If user comes back from OAuth and this page is restored from cache,
+    // ensure actions are not left in a blocked loading state.
+    setLoading(false);
+
+    const unlockUi = () => setLoading(false);
+
+    window.addEventListener("focus", unlockUi);
+    window.addEventListener("pageshow", unlockUi);
+    document.addEventListener("visibilitychange", unlockUi);
+
+    return () => {
+      window.removeEventListener("focus", unlockUi);
+      window.removeEventListener("pageshow", unlockUi);
+      document.removeEventListener("visibilitychange", unlockUi);
+    };
+  }, [searchParams]);
 
   const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -136,8 +213,39 @@ export default function LoginPage() {
           setErrorMessage(t("requiredFields"));
           return;
         }
-        if (!touristRegister.password || touristRegister.password.length < 8) {
+
+        if (!isGoogleCompletionFlow && (!touristRegister.password || touristRegister.password.length < 8)) {
           setErrorMessage(t("errorMinContrasena"));
+          return;
+        }
+
+        if (isGoogleCompletionFlow) {
+          const {
+            data: { user },
+          } = await supabase.auth.getUser();
+
+          if (!user?.id) {
+            setErrorMessage(t("googleSessionExpired"));
+            return;
+          }
+
+          const { error: rpcError } = await supabase.rpc("guardar_perfil_turista", {
+            p_id: user.id,
+            p_nombre: touristRegister.firstName.trim(),
+            p_apellido: touristRegister.lastName.trim(),
+            p_correo: touristRegister.email.toLowerCase().trim(),
+            p_username: touristRegister.username.trim(),
+            p_telefono: touristRegister.phone.trim(),
+            p_idioma: locale,
+          });
+
+          if (rpcError) {
+            console.error("RPC Error:", rpcError);
+            setErrorMessage(t("googleProfileSaveError"));
+            return;
+          }
+
+          router.push("/perfil");
           return;
         }
 
@@ -356,6 +464,12 @@ export default function LoginPage() {
               <p className="font-label text-xs text-on-surface-variant uppercase tracking-[0.24em] mt-3">
                 {profile === "negocio" ? t("businessSubtitle") : t("touristSubtitle")}
               </p>
+              {isGoogleCompletionFlow && (
+                <div className="mt-4 rounded-2xl border border-[#003e6f]/15 bg-[#003e6f]/5 px-4 py-3 text-left">
+                  <p className="text-xs font-black uppercase tracking-[0.14em] text-[#003e6f]">{t("googleCompleteTitle")}</p>
+                  <p className="mt-1 text-sm text-[#003e6f]/80">{t("googleCompleteBody")}</p>
+                </div>
+              )}
             </div>
 
             <form className="space-y-5" onSubmit={handleAuth}>
@@ -476,15 +590,21 @@ export default function LoginPage() {
                     <label className="font-label text-xs font-bold text-primary uppercase tracking-[0.2em]" htmlFor="touristPassword">
                       {t("contrasena")}
                     </label>
-                    <input
-                      id="touristPassword"
-                      type="password"
-                      value={touristRegister.password}
-                      onChange={(e) => setTouristRegister((prev) => ({ ...prev, password: e.target.value }))}
-                      className="w-full h-14 px-4 bg-surface border border-outline-variant/20 rounded-2xl focus:ring-2 focus:ring-secondary/40 focus:border-transparent outline-none"
-                      minLength={8}
-                      required
-                    />
+                    {isGoogleCompletionFlow ? (
+                      <div className="w-full h-14 px-4 bg-slate-50 border border-slate-200 rounded-2xl flex items-center text-sm text-on-surface-variant">
+                        {t("googlePasswordNotRequired")}
+                      </div>
+                    ) : (
+                      <input
+                        id="touristPassword"
+                        type="password"
+                        value={touristRegister.password}
+                        onChange={(e) => setTouristRegister((prev) => ({ ...prev, password: e.target.value }))}
+                        className="w-full h-14 px-4 bg-surface border border-outline-variant/20 rounded-2xl focus:ring-2 focus:ring-secondary/40 focus:border-transparent outline-none"
+                        minLength={8}
+                        required
+                      />
+                    )}
                   </div>
                 </>
               )}
@@ -679,7 +799,7 @@ export default function LoginPage() {
               </button>
             </form>
 
-            {profile === "turista" && mode === "login" && (
+            {profile === "turista" && (
               <>
                 <div className="relative my-8">
                   <div className="absolute inset-0 flex items-center">
@@ -694,6 +814,8 @@ export default function LoginPage() {
 
                 <button
                   type="button"
+                  onClick={iniciarSesionConGoogle}
+                  disabled={loading}
                   className="w-full h-14 bg-slate-50 rounded-2xl border border-slate-200 flex items-center justify-center gap-4 hover:bg-slate-100 transition-all shadow-sm"
                 >
                   <span className="w-8 h-8 rounded-full bg-white border border-slate-100 flex items-center justify-center shadow-inner" aria-hidden="true">
@@ -706,7 +828,6 @@ export default function LoginPage() {
                   </span>
                   <span className="font-black text-xs uppercase tracking-widest text-[#003e6f]">{t("google")}</span>
                 </button>
-                <p className="text-center text-[10px] font-bold text-[#003e6f]/40 uppercase tracking-widest mt-4">{t("googleSoon")}</p>
               </>
             )}
 

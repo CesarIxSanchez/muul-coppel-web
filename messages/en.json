@@ -6,12 +6,29 @@
     "amigos": "Friends",
     "more": "More",
     "buscarPlaceholder": "Search routes or destinations...",
+    "searchPeople": "People",
+    "person": "Person",
+    "searchPlaces": "Places",
+    "searchLocations": "Locations",
+    "searching": "Searching...",
+    "noResults": "No results",
+    "seeAll": "See all",
+    "type_country": "Country",
+    "type_region": "State",
+    "type_postcode": "Zip Code",
+    "type_district": "District",
+    "type_place": "City",
+    "type_locality": "Locality",
+    "type_neighborhood": "Neighborhood",
+    "type_address": "Address",
+    "type_poi": "Place",
     "tiendas": "Shops",
     "negocio": "Business",
     "mapa": "Map",
     "perfil": "Profile",
     "login": "Login",
-    "salir": "Logout"
+    "salir": "Logout",
+    "cerrar": "Close"
   },
   "home": {
     "badge": "Editorial Intelligence Curation",
@@ -307,6 +324,11 @@
     "google": "Google",
     "social": "continue with",
     "googleSoon": "Google login will be available soon.",
+    "googleCompleteTitle": "Complete your Google registration",
+    "googleCompleteBody": "Some required fields were not returned by Google. Complete the missing fields to finish your official registration.",
+    "googlePasswordNotRequired": "Password is not required when continuing with Google.",
+    "googleSessionExpired": "Your Google session expired. Please try again.",
+    "googleProfileSaveError": "Unable to save your Google profile. Please try again.",
     "apple": "Apple",
     "turista": "Tourist",
     "negocio": "Business"
@@ -401,5 +423,10 @@
     "comida": "Food",
     "tienda": "Shop",
     "servicios": "Services"
+  },
+  "amigos": {
+    "subtitulo": "Discover where your friends are and plan your next adventure together.",
+    "verMapa": "View Map",
+    "agregarAmigos": "Add new friends"
   }
 }

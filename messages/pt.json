@@ -6,12 +6,29 @@
     "amigos": "Amigos",
     "more": "Mais",
     "buscarPlaceholder": "Buscar rotas ou destinos...",
+    "searchPeople": "Pessoas",
+    "person": "Pessoa",
+    "searchPlaces": "Lugares",
+    "searchLocations": "Localizações",
+    "searching": "Buscando...",
+    "noResults": "Sem resultados",
+    "seeAll": "Ver todos",
+    "type_country": "País",
+    "type_region": "Estado",
+    "type_postcode": "CEP",
+    "type_district": "Distrito",
+    "type_place": "Cidade",
+    "type_locality": "Localidade",
+    "type_neighborhood": "Bairro",
+    "type_address": "Endereço",
+    "type_poi": "Lugar",
     "tiendas": "Lojas",
     "negocio": "Negócio",
     "mapa": "Mapa",
     "perfil": "Perfil",
     "login": "Entrar",
-    "salir": "Sair"
+    "salir": "Sair",
+    "cerrar": "Fechar"
   },
   "home": {
     "badge": "Curadoria de Inteligência Editorial",
@@ -307,6 +324,11 @@
     "google": "Google",
     "social": "acesse com",
     "googleSoon": "O login com Google estará disponível em breve.",
+    "googleCompleteTitle": "Complete seu cadastro com Google",
+    "googleCompleteBody": "Alguns campos obrigatórios não foram retornados pelo Google. Complete os campos faltantes para finalizar seu cadastro oficial.",
+    "googlePasswordNotRequired": "Senha não é necessária ao continuar com Google.",
+    "googleSessionExpired": "Sua sessão com Google expirou. Tente novamente.",
+    "googleProfileSaveError": "Não foi possível salvar seu perfil do Google. Tente novamente.",
     "apple": "Apple",
     "turista": "Turista",
     "negocio": "Negócio"
@@ -401,5 +423,10 @@
     "comida": "Comida",
     "tienda": "Loja",
     "servicios": "Serviços"
+  },
+  "amigos": {
+    "subtitulo": "Descubra onde seus amigos estão e planeje sua próxima aventura juntos.",
+    "verMapa": "Ver Mapa",
+    "agregarAmigos": "Adicionar novos amigos"
   }
 }

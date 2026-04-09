@@ -869,8 +869,7 @@ export default function MapaPage() {
           <div className="flex-1 relative overflow-hidden">
             <div ref={mapContainer} className="absolute inset-0" />
 
-
-           {/* Accessibility features on map */}
+            {/* Accessibility features on map */}
             <AccessibilityFeaturesLayer
               map={mapRef.current}
               features={isAccessibleMode && accessibleRoute.route ? accessibleRoute.route.accessibilityFeatures : []}
