@@ -559,7 +559,7 @@ export default function MapaPage() {
   /* ── Save route ── */
   const guardarRuta = async () => {
     setGuardando(true);
-    setGuardadoMsg("Ruta guardada");
+    setGuardadoMsg(t("rutaGuardada"));
     setTimeout(() => {
       setGuardando(false);
       setGuardadoMsg("");
