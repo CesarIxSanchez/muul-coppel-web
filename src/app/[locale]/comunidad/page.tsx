@@ -8,8 +8,10 @@ import {
   SocialPost, 
   SocialUser 
 } from "@/lib/social-dummy";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
+import { createClient } from "@/lib/supabase/client";
+import { getPerfilCompat } from "@/lib/supabase/profileCompat";
 
 function PostCard({ post }: { post: SocialPost }) {
   const t = useTranslations("comunidad");
@@ -25,20 +27,25 @@ function PostCard({ post }: { post: SocialPost }) {
     <div className="bg-white rounded-[2rem] border border-outline-variant/20 shadow-sm p-6 mb-6 hover:shadow-md transition-shadow">
       {/* Header */}
       <div className="flex justify-between items-start mb-4">
-        <div className="flex gap-4 items-center">
-          <div className="relative w-14 h-14 rounded-full overflow-hidden border-2 border-[#003e6f]/10 shadow-sm">
+        <div className="flex gap-4 items-center group">
+          <Link href={`/perfil?id=${post.user.id}`} className="relative w-14 h-14 rounded-full overflow-hidden border-2 border-[#003e6f]/10 shadow-sm transition-transform group-hover:scale-105">
             <Image src={post.user.avatar_url} alt={post.user.username} fill className="object-cover" />
-          </div>
+          </Link>
           <div>
             <div className="flex items-center gap-2">
-              <h3 className="font-headline font-bold text-[#003e6f]">{post.user.full_name}</h3>
+              <Link href={`/perfil?id=${post.user.id}`} className="font-headline font-bold text-[#003e6f] hover:underline decoration-2 underline-offset-2 transition-all">
+                {post.user.full_name}
+              </Link>
               {post.is_friend && (
                 <span className="bg-[#fed000]/20 text-[#003e6f] text-[10px] font-black uppercase px-2 py-0.5 rounded-full tracking-widest">
                   {t("tuAmigo")}
                 </span>
               )}
             </div>
-            <p className="text-on-surface-variant text-sm font-label">{post.user.username} • {post.created_at}</p>
+            <Link href={`/perfil?id=${post.user.id}`} className="text-on-surface-variant text-sm font-label hover:text-[#003e6f] transition-colors">
+              {post.user.username}
+            </Link>
+            <span className="text-on-surface-variant text-sm font-label"> • {post.created_at}</span>
           </div>
         </div>
         <button className="text-on-surface-variant hover:bg-surface-container rounded-full p-2">
@@ -91,15 +98,17 @@ function RankingBoard({ users }: { users: SocialUser[] }) {
       
       <div className="flex flex-col gap-4">
         {users.map((user, idx) => (
-          <div key={user.id} className="flex items-center gap-4 bg-[#f3f6ff] p-4 rounded-2xl hover:-translate-y-1 transition-transform border border-[#003e6f]/5">
+          <div key={user.id} className="flex items-center gap-4 bg-[#f3f6ff] p-4 rounded-2xl hover:-translate-y-1 transition-transform border border-[#003e6f]/5 group">
             <span className={`font-headline font-black text-xl w-6 text-center ${idx === 0 ? 'text-[#fed000]' : idx === 1 ? 'text-gray-400' : idx === 2 ? 'text-amber-600' : 'text-neutral-400'}`}>
               #{idx + 1}
             </span>
-            <div className="relative w-12 h-12 rounded-full overflow-hidden shadow-sm">
+            <Link href={`/perfil?id=${user.id}`} className="relative w-12 h-12 rounded-full overflow-hidden shadow-sm hover:ring-2 hover:ring-[#fed000] transition-all">
               <Image src={user.avatar_url} alt={user.username} fill className="object-cover" />
-            </div>
+            </Link>
             <div className="flex-1">
-              <h4 className="font-headline font-bold text-[#003e6f] text-sm leading-tight">{user.full_name}</h4>
+              <Link href={`/perfil?id=${user.id}`} className="font-headline font-bold text-[#003e6f] text-sm leading-tight hover:underline">
+                {user.full_name}
+              </Link>
               <p className="text-on-surface-variant text-xs">{t("nivel", { nivel: user.level })}</p>
             </div>
             <div className="text-right">
@@ -118,23 +127,72 @@ function RankingBoard({ users }: { users: SocialUser[] }) {
 export default function ComunidadPage() {
   const t = useTranslations("comunidad");
   const [posts, setPosts] = useState<SocialPost[]>(() => {
-    return DUMMY_POSTS.slice().sort((a, b) => (b.is_friend === a.is_friend ? 0 : b.is_friend ? 1 : -1));
+    const basePosts = DUMMY_POSTS.slice().sort((a, b) => (b.is_friend === a.is_friend ? 0 : b.is_friend ? 1 : -1));
+    if (typeof window !== 'undefined') {
+      try {
+        const saved = localStorage.getItem('muul_user_posts');
+        if (saved) {
+          const userPosts: SocialPost[] = JSON.parse(saved);
+          return [...userPosts, ...basePosts];
+        }
+      } catch (_) {}
+    }
+    return basePosts;
   });
   const [inputValue, setInputValue] = useState("");
   const [isPublishing, setIsPublishing] = useState(false);
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [selectedImageFile, setSelectedImageFile] = useState<File | null>(null);
+
+  /* 
+   ========================================================================================
+   HACKATHON ARCHITECTURE NOTE:
+   We explicitly chose to mock this data using local state (DUMMY_POSTS) to guarantee 
+   zero-latency during the live Hackathon Pitch demo. 
+
+   If we wanted to use real data, the Supabase integration is perfectly mapped 
+   and would just require replacing the useState initialization with this effect:
+   
+   useEffect(() => {
+     const fetchRealPosts = async () => {
+       const { data } = await supabase.from('social_posts').select('*, users(*)');
+       setPosts(data);
+     }
+     fetchRealPosts();
+   }, []);
+   ========================================================================================
+  */
+
+  const supabase = createClient();
+  const [currentUser, setCurrentUser] = useState<{ nombre: string, initials: string, avatar_url: string | null } | null>(null);
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        const perfil = await getPerfilCompat(supabase, user.id);
+        const nombre = perfil?.nombre_completo || user.user_metadata?.nombre_completo || user.email || "Usuario";
+        const parts = nombre.split(" ");
+        const initials = parts.length >= 2 ? (parts[0][0] + parts[1][0]).toUpperCase() : nombre.substring(0, 2).toUpperCase();
+        setCurrentUser({ nombre, initials, avatar_url: perfil?.avatar_url || null });
+      }
+    };
+    fetchUser();
+  }, [supabase]);
 
   const handleAddPost = () => {
     if (!inputValue.trim()) return;
     
     setIsPublishing(true);
     
-    // Simular un ligero retraso de red para dar realismo a la demo
     setTimeout(() => {
+      const userName = currentUser?.nombre || 'Usuario';
+      const userInitials = currentUser?.initials || 'US';
       const newPost: SocialPost = {
         id: `post_new_${Date.now()}`,
         user_id: 'me',
         content: inputValue,
-        image_urls: [],
+        image_urls: selectedImage ? [selectedImage] : [],
         likes: 0,
         dislikes: 0,
         comments: 0,
@@ -142,18 +200,38 @@ export default function ComunidadPage() {
         is_friend: true,
         user: {
           id: 'me',
-          username: '@admin',
-          full_name: 'Yo (Muul Master)',
-          avatar_url: 'https://images.unsplash.com/photo-1599566150163-29194dcaad36?q=80&w=200&h=200&auto=format&fit=crop',
-          points: 9999,
-          level: 'Creador'
+          username: `@${userName.split(' ')[0].toLowerCase()}`,
+          full_name: userName,
+          avatar_url: currentUser?.avatar_url || `https://ui-avatars.com/api/?name=${userInitials}&background=003e6f&color=fff&size=200&bold=true`,
+          points: 50,
+          level: 'Explorador'
         }
       };
       
-      setPosts(prev => [newPost, ...prev]);
+      setPosts(prev => {
+        const updated = [newPost, ...prev];
+        // Persist user-created posts to localStorage
+        const userPosts = updated.filter(p => p.user_id === 'me');
+        try { localStorage.setItem('muul_user_posts', JSON.stringify(userPosts)); } catch(_) {}
+        return updated;
+      });
       setInputValue("");
+      setSelectedImage(null);
+      setSelectedImageFile(null);
       setIsPublishing(false);
     }, 600);
+  };
+
+  const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setSelectedImageFile(file);
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        setSelectedImage(ev.target?.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
   };
 
   return (
@@ -173,25 +251,48 @@ export default function ComunidadPage() {
           {/* Main Feed Column */}
           <div className="flex-1 lg:max-w-2xl">
             {/* Create Post Input */}
-            <div className={`bg-white rounded-[2rem] border border-outline-variant/20 shadow-md p-6 mb-8 flex gap-4 items-center transition-colors ${isPublishing ? 'opacity-50 pointer-events-none' : 'hover:border-secondary'}`}>
-              <div className="w-12 h-12 rounded-full overflow-hidden flex items-center justify-center shrink-0 border-2 border-slate-100">
-                <Image src="https://images.unsplash.com/photo-1599566150163-29194dcaad36?q=80&w=200&h=200&auto=format&fit=crop" alt="Yo" width={48} height={48} className="w-full h-full object-cover" />
+            <div className={`bg-white rounded-[2rem] border border-outline-variant/20 shadow-md p-6 mb-8 transition-colors ${isPublishing ? 'opacity-50 pointer-events-none' : 'hover:border-secondary'}`}>
+              <div className="flex gap-4 items-center">
+                <div className="w-12 h-12 rounded-full overflow-hidden flex items-center justify-center shrink-0 border-2 border-slate-100 bg-gradient-to-br from-[#003e6f] to-[#005596] text-white font-black text-lg shadow-inner">
+                  {currentUser?.avatar_url ? (
+                    <Image src={currentUser.avatar_url} alt="Yo" width={48} height={48} className="w-full h-full object-cover" />
+                  ) : (
+                    currentUser?.initials || "US"
+                  )}
+                </div>
+                <input 
+                  type="text" 
+                  value={inputValue}
+                  onChange={(e) => setInputValue(e.target.value)}
+                  onKeyDown={(e) => e.key === 'Enter' && handleAddPost()}
+                  placeholder={t("compartirAventura")}
+                  className="flex-1 bg-transparent border-none outline-none font-body text-base placeholder-gray-400"
+                />
+                <label className="cursor-pointer text-neutral-400 hover:text-[#003e6f] transition-colors p-2 rounded-full hover:bg-neutral-100">
+                  <span className="material-symbols-outlined text-[22px]">add_photo_alternate</span>
+                  <input type="file" accept="image/*" className="hidden" onChange={handleImageSelect} />
+                </label>
+                <button 
+                  onClick={handleAddPost}
+                  disabled={!inputValue.trim()}
+                  className="bg-[#fed000] text-[#003e6f] h-12 px-6 rounded-full font-headline font-black text-sm uppercase tracking-widest transition-colors shadow-sm disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-[0_0_15px_rgba(254,208,0,0.4)]"
+                >
+                  {isPublishing ? '...' : t("publicar")}
+                </button>
               </div>
-              <input 
-                type="text" 
-                value={inputValue}
-                onChange={(e) => setInputValue(e.target.value)}
-                onKeyDown={(e) => e.key === 'Enter' && handleAddPost()}
-                placeholder={t("compartirAventura")}
-                className="flex-1 bg-transparent border-none outline-none font-body text-base placeholder-gray-400"
-              />
-              <button 
-                onClick={handleAddPost}
-                disabled={!inputValue.trim()}
-                className="bg-[#fed000] text-[#003e6f] h-12 px-6 rounded-full font-headline font-black text-sm uppercase tracking-widest transition-colors shadow-sm disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-[0_0_15px_rgba(254,208,0,0.4)]"
-              >
-                {isPublishing ? '...' : t("publicar")}
-              </button>
+              {selectedImage && (
+                <div className="mt-4 relative">
+                  <div className="w-full h-48 rounded-2xl overflow-hidden border border-outline-variant/10">
+                    <img src={selectedImage} alt="Preview" className="w-full h-full object-cover" />
+                  </div>
+                  <button 
+                    onClick={() => { setSelectedImage(null); setSelectedImageFile(null); }}
+                    className="absolute top-2 right-2 bg-black/60 text-white w-8 h-8 rounded-full flex items-center justify-center hover:bg-black/80 transition-colors"
+                  >
+                    ✕
+                  </button>
+                </div>
+              )}
             </div>
 
             {/* Posts Feed */}

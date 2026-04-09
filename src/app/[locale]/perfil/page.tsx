@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
+import { useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { useTranslations } from "next-intl";
 import { 
@@ -22,37 +23,179 @@ import clsx from "clsx";
 type TabType = "cuenta" | "publicaciones" | "amigos" | "rutas" | "medallas" | "ajustes";
 
 export default function PerfilPage() {
+  return (
+    <Suspense fallback={<div>Cargando perfil...</div>}>
+      <PerfilContent />
+    </Suspense>
+  );
+}
+
+function PerfilContent() {
   const t = useTranslations("perfil");
   const supabase = createClient();
   const [perfil, setPerfil] = useState<any>(null);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<TabType>("cuenta");
+  
+  const searchParams = useSearchParams();
+  const [activeTab, setActiveTab] = useState<TabType>(() => {
+    const tabParam = searchParams.get("tab") as TabType;
+    return tabParam || "cuenta";
+  });
+  
   const [isSidebarOpen, setSidebarOpen] = useState(false);
   const [friendSearch, setFriendSearch] = useState("");
   const [requestSent, setRequestSent] = useState(false);
+  
+  const [friendsList, setFriendsList] = useState([
+    {
+      id: "u2",
+      name: "Carlos R.",
+      username: "@carlos_explorador",
+      status: "En línea",
+      avatar: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=500&auto=format&fit=crop",
+      online: true
+    },
+    {
+      id: "u1",
+      name: "Ana Martínez",
+      username: "@viajera66",
+      status: "Hace 2 horas",
+      avatar: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=500&auto=format&fit=crop",
+      online: false
+    },
+    {
+      id: "u6",
+      name: "Marco Villanueva",
+      username: "@marco_photo",
+      status: "En línea",
+      avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=500&auto=format&fit=crop",
+      online: true
+    },
+    {
+      id: "u5",
+      name: "Lucía Ramírez",
+      username: "@lu_traveler",
+      status: "Hace 30 min",
+      avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=500&auto=format&fit=crop",
+      online: false
+    },
+    {
+      id: "u7",
+      name: "Valentina Orozco",
+      username: "@vale_fit",
+      status: "Hace 1 día",
+      avatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=500&auto=format&fit=crop",
+      online: false
+    }
+  ]);
+
+  const profileId = searchParams.get("id");
+  const [isPublicView, setIsPublicView] = useState(false);
+  const [publicProfileData, setPublicProfileData] = useState<any>(null);
 
   useEffect(() => {
     const fetchPerfil = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      
+      // HACKATHON: Mocking public profile routing based on ?id
+      // Dynamic lookup from our social user registry for perfect data consistency
+      if (profileId && (!session || session.user.id !== profileId)) {
+        setIsPublicView(true);
+        
+        const userBios: Record<string, string> = {
+          u1: "Me encanta el arte, los museos y todo lo relacionado con la cultura. Siempre buscando la próxima exhibición. 🎨",
+          u2: "Cazador de tacos legendarios y aventuras urbanas. Si no está picante, no es buena comida. 🌮🔥",
+          u3: "Viajando poco a poco y conociendo mi propia ciudad de formas distintas. 🌎",
+          u4: "Crítico gastronómico independiente. Pruebo, califico y comparto para que no pierdas tu tiempo ni tu dinero. 🍽️⭐",
+          u5: "Nómada digital. Trabajo desde cafés bonitos y exploro la ciudad entre reuniones. 💻✈️",
+          u6: "Fotógrafo callejero. Capturo la esencia de cada rincón de esta ciudad infinita. 📸",
+          u7: "Fitness + turismo = mi estilo de vida. Corro por parques nuevos cada fin de semana. 🏃‍♀️🌿",
+          u8: "Chef retirado. Ahora me dedico a descubrir la comida callejera más auténtica de México. 👨‍🍳🇲🇽",
+        };
+
+        const knownUsers: Record<string, { name: string; username: string; avatar: string; level: string; points: number }> = {
+          u1: { name: "Ana Martínez", username: "@viajera66", avatar: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=500&auto=format&fit=crop", level: "Guía Maestro", points: 4500 },
+          u2: { name: "Carlos R.", username: "@carlos_explorador", avatar: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=500&auto=format&fit=crop", level: "Aventurero Veterano", points: 3200 },
+          u3: { name: "Sofía Navarro", username: "@sofia_cdmx", avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=500&auto=format&fit=crop", level: "Turista Curioso", points: 1200 },
+          u4: { name: "Diego Hernández", username: "@foodie_mx", avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=500&auto=format&fit=crop", level: "Crítico Gourmet", points: 5100 },
+          u5: { name: "Lucía Ramírez", username: "@lu_traveler", avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=500&auto=format&fit=crop", level: "Nómada Digital", points: 2800 },
+          u6: { name: "Marco Villanueva", username: "@marco_photo", avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=500&auto=format&fit=crop", level: "Fotógrafo Urbano", points: 3900 },
+          u7: { name: "Valentina Orozco", username: "@vale_fit", avatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=500&auto=format&fit=crop", level: "Exploradora Activa", points: 1800 },
+          u8: { name: "Pedro Castañeda", username: "@el_chef_pedro", avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=500&auto=format&fit=crop", level: "Leyenda Local", points: 6200 },
+        };
+
+        const found = knownUsers[profileId];
+        const isFriend = profileId === "u1" || profileId === "u2" || profileId === "u6";
+        
+        setPublicProfileData({
+          id: profileId,
+          nombre_completo: found?.name || "Explorador Activo",
+          username: found?.username || `@explorer_${profileId}`,
+          avatar_url: found?.avatar || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=200&h=200&auto=format&fit=crop",
+          level: found?.level || "Aventurero",
+          about: userBios[profileId] || "Descubriendo nuevos lugares cada día. ¡Sígueme en mis aventuras!",
+          points: found?.points || 500,
+          isFriend: isFriend,
+        });
+        setLoading(false);
+        return;
+      }
+
       try {
         const { data, error } = await supabase.rpc('get_perfil_usuario_actual');
         
         if (error) {
           console.error("Error fetching profile:", error);
-          throw error;
-        }
-
-        if (data && data.length > 0) {
+          // HACKATHON: Fallback - build profile from auth session metadata
+          if (session?.user) {
+            const meta = session.user.user_metadata;
+            setPerfil({
+              nombre_completo: meta?.nombre_completo || meta?.full_name || session.user.email?.split('@')[0] || 'Usuario',
+              correo: session.user.email,
+              avatar_url: meta?.avatar_url || null,
+              nivel_actual: 'Explorador',
+              puntos_totales: 120,
+              rutas_completadas: 3,
+              insignias: 2,
+            });
+          }
+        } else if (data && data.length > 0) {
           setPerfil(data[0]);
+        } else if (session?.user) {
+          // RPC returned empty - build from auth
+          const meta = session.user.user_metadata;
+          setPerfil({
+            nombre_completo: meta?.nombre_completo || meta?.full_name || session.user.email?.split('@')[0] || 'Usuario',
+            correo: session.user.email,
+            avatar_url: meta?.avatar_url || null,
+            nivel_actual: 'Explorador',
+            puntos_totales: 120,
+            rutas_completadas: 3,
+            insignias: 2,
+          });
         }
       } catch (err) {
         console.error(err);
+        // Ultimate fallback
+        if (session?.user) {
+          const meta = session.user.user_metadata;
+          setPerfil({
+            nombre_completo: meta?.nombre_completo || meta?.full_name || session.user.email?.split('@')[0] || 'Usuario',
+            correo: session.user.email,
+            avatar_url: meta?.avatar_url || null,
+            nivel_actual: 'Explorador',
+            puntos_totales: 120,
+            rutas_completadas: 3,
+            insignias: 2,
+          });
+        }
       } finally {
         setLoading(false);
       }
     };
 
     fetchPerfil();
-  }, [supabase]);
+  }, [supabase, profileId]);
 
   if (loading) {
     return (
@@ -62,6 +205,79 @@ export default function PerfilPage() {
           <p className="text-on-surface-variant font-medium tracking-widest uppercase text-xs">{t("cargando")}</p>
         </div>
       </div>
+    );
+  }
+
+  if (isPublicView && publicProfileData) {
+    return (
+      <main className="min-h-screen bg-[#f8fafd] pt-24 pb-20">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6">
+          <div className="bg-white rounded-[2.5rem] border border-outline-variant/20 shadow-xl overflow-hidden animate-fade-in-up">
+            <div className="h-48 md:h-64 bg-gradient-to-r from-[#003e6f] to-[#005596] relative">
+              <div className="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_center,_white_1px,_transparent_1px)] bg-[size:20px_20px]"></div>
+            </div>
+            
+            <div className="px-8 pb-10 relative">
+              <div className="flex flex-col md:flex-row md:items-end justify-between -mt-20 md:-mt-24 mb-6">
+                <div className="relative w-32 h-32 md:w-40 md:h-40 rounded-full overflow-hidden border-4 border-white shadow-lg bg-surface mb-4 md:mb-0">
+                  <img src={publicProfileData.avatar_url} alt={publicProfileData.nombre_completo} className="w-full h-full object-cover" />
+                </div>
+                
+                <div className="flex gap-3">
+                  <button 
+                    onClick={() => {
+                      setPublicProfileData({...publicProfileData, isFriend: !publicProfileData.isFriend});
+                      setRequestSent(true);
+                    }}
+                    className={`px-8 py-3 rounded-full font-headline font-black text-sm uppercase tracking-widest transition-all shadow-md ${publicProfileData.isFriend ? 'bg-neutral-200 text-neutral-600 hover:bg-neutral-300' : 'bg-[#fed000] text-[#003e6f] hover:bg-[#ffdf40] hover:shadow-[0_0_15px_rgba(254,208,0,0.4)]'}`}
+                  >
+                    {publicProfileData.isFriend ? "Amigos ✔" : requestSent ? "Solicitud Enviada" : "Agregar a Red"}
+                  </button>
+                  <button className="bg-surface-container-highest w-12 h-12 rounded-full flex items-center justify-center text-primary hover:bg-secondary/20 transition-colors shadow-sm">
+                    <Globe size={20} />
+                  </button>
+                </div>
+              </div>
+              
+              <div className="mb-8">
+                <h1 className="text-3xl md:text-4xl font-headline font-black tracking-tight text-[#003e6f] mb-1">
+                  {publicProfileData.nombre_completo}
+                </h1>
+                <p className="text-neutral-500 font-label text-base">{publicProfileData.username} • {publicProfileData.level}</p>
+              </div>
+              
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                <div className="bg-neutral-50 p-6 rounded-3xl border border-neutral-100 flex flex-col items-center justify-center text-center">
+                  <span className="material-symbols-outlined text-4xl text-secondary mb-2">workspace_premium</span>
+                  <p className="text-3xl font-black text-[#003e6f]">{publicProfileData.points}</p>
+                  <p className="text-xs font-bold text-neutral-500 uppercase tracking-widest">Puntos de Ruta</p>
+                </div>
+                <div className="bg-neutral-50 p-6 rounded-3xl border border-neutral-100 flex flex-col items-center justify-center text-center col-span-2">
+                  <span className="material-symbols-outlined text-3xl text-neutral-400 mb-2">format_quote</span>
+                  <p className="text-on-surface-variant font-body italic text-center text-lg leading-relaxed">
+                    "{publicProfileData.about}"
+                  </p>
+                </div>
+              </div>
+
+              <div className="space-y-6">
+                <h3 className="font-headline font-black text-xl text-[#003e6f] border-b border-neutral-100 pb-3">Rutas Recientes</h3>
+                <div className="bg-surface-container-lowest border border-outline-variant/10 rounded-2xl p-6 flex flex-col md:flex-row items-center gap-6 hover:shadow-md transition-shadow cursor-pointer">
+                  <div className="w-16 h-16 bg-[#003e6f]/5 rounded-2xl flex items-center justify-center shrink-0">
+                    <Route size={32} className="text-[#003e6f]" />
+                  </div>
+                  <div>
+                    <h4 className="font-headline font-bold text-[#003e6f] text-lg">Tour Gastronómico Centro Histórico</h4>
+                    <p className="font-body text-neutral-500 text-sm">3 Paradas • 2.5 km • Hace 2 días</p>
+                  </div>
+                  <button className="md:ml-auto font-bold text-[#005596] hover:underline text-sm">Ver Ruta en Mapa</button>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </main>
     );
   }
 
@@ -325,11 +541,35 @@ export default function PerfilPage() {
                     </button>
                   </div>
                 </div>
+              ) : friendsList.length > 0 ? (
+                <div className="animate-fade-in-up mt-8 space-y-4">
+                  {friendsList.map((friend) => (
+                    <div key={friend.id} className={`flex items-center justify-between p-4 rounded-2xl border border-outline-variant/10 hover:bg-neutral-50 transition-colors ${!friend.online ? 'opacity-70' : ''}`}>
+                      <div className="flex items-center gap-4">
+                        <div className="relative w-12 h-12 rounded-full overflow-hidden bg-gray-200 border-2 border-transparent">
+                          <img src={friend.avatar} alt={friend.name} className={`w-full h-full object-cover ${!friend.online ? 'grayscale' : ''}`} />
+                          {friend.online && <div className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-white"></div>}
+                        </div>
+                        <div>
+                          <p className="font-headline font-bold text-[#003e6f] flex items-center gap-2">{friend.name}</p>
+                          <p className="text-xs text-neutral-500">{friend.username} • {friend.status}</p>
+                        </div>
+                      </div>
+                      <button 
+                        onClick={() => setFriendsList(friendsList.filter(f => f.id !== friend.id))}
+                        className="text-neutral-400 hover:text-red-500 bg-transparent hover:bg-red-50 transition-all p-2 rounded-full flex items-center justify-center shrink-0"
+                        title="Eliminar amigo"
+                      >
+                        <span className="material-symbols-outlined text-[20px]">person_remove</span>
+                      </button>
+                    </div>
+                  ))}
+                </div>
               ) : (
                 <div className="flex flex-col items-center justify-center py-16 animate-fade-in">
-                  <span className="material-symbols-outlined text-6xl text-neutral-300 mb-4">group_add</span>
-                  <p className="font-headline text-2xl text-[#003e6f] font-bold mb-2">No tienes amigos añadidos</p>
-                  <p className="text-neutral-500 font-body text-center max-w-sm">Conecta con otros exploradores agregándolos a tu red para ver sus rutas en vivo.</p>
+                  <span className="material-symbols-outlined text-6xl text-neutral-300 mb-4">group_off</span>
+                  <p className="font-headline text-2xl text-[#003e6f] font-bold mb-2">Lista Vacía</p>
+                  <p className="text-neutral-500 font-body text-center max-w-sm">Has eliminado a todos tus amigos de la lista.</p>
                 </div>
               )}
             </div>

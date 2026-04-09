@@ -37,6 +37,10 @@ export default function Navbar() {
   const [negocio, setNegocio] = useState<BusinessInfo | null>(null);
   const [isLanguageMenuOpen, setIsLanguageMenuOpen] = useState(false);
   const languageMenuRef = useRef<HTMLDivElement>(null);
+  
+  const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
+  const profileMenuRef = useRef<HTMLDivElement>(null);
+
   const t = useTranslations("nav");
 
   // Search state
@@ -60,7 +64,6 @@ export default function Navbar() {
       { href: "/comunidad", label: t("comunidad") },
       { href: "/tiendas", label: t("categorias") },
       { href: "/mapa", label: t("mapa") },
-      { href: "/amigos", label: t("amigos") },
     ],
     [t]
   );
@@ -190,6 +193,9 @@ export default function Navbar() {
       }
       if (!languageMenuRef.current?.contains(e.target as Node)) {
         setIsLanguageMenuOpen(false);
+      }
+      if (!profileMenuRef.current?.contains(e.target as Node)) {
+        setIsProfileMenuOpen(false);
       }
     };
     const onEscape = (event: KeyboardEvent) => {
@@ -398,10 +404,10 @@ export default function Navbar() {
 
           {/* User Avatar or Login */}
           {user ? (
-            <div className="relative group font-body">
-              <Link
-                href="/perfil"
-                className="flex items-center gap-3 pl-2 pr-4 py-2 bg-[#003e6f]/5 border border-transparent rounded-full hover:bg-[#003e6f]/10 transition-all"
+            <div className="relative font-body" ref={profileMenuRef}>
+              <button
+                onClick={() => setIsProfileMenuOpen(!isProfileMenuOpen)}
+                className="flex items-center gap-3 pl-2 pr-4 py-2 bg-[#003e6f]/5 border border-transparent rounded-full hover:bg-[#003e6f]/10 transition-all cursor-pointer"
               >
                 <div className="w-8 h-8 rounded-full overflow-hidden bg-gradient-to-br from-[#003e6f] to-[#005596] text-white text-[10px] font-black flex items-center justify-center">
                   {user.avatar_url ? (
@@ -411,24 +417,39 @@ export default function Navbar() {
                   )}
                 </div>
                 <span className="text-xs font-bold text-[#003e6f] max-w-[80px] truncate">{user.nombre}</span>
-              </Link>
-              <div className="absolute right-0 top-14 hidden group-hover:flex flex-col bg-white border border-neutral-200 rounded-2xl shadow-[0_20px_50px_rgba(0,18,50,0.12)] overflow-hidden z-50 min-w-[200px] animate-fade-in">
-                <Link
-                  href="/perfil"
-                  className="px-6 py-4 hover:bg-[#003e6f]/5 text-sm text-[#003e6f] font-bold transition-colors flex items-center gap-3"
-                >
-                  <span className="material-symbols-outlined text-lg">person</span>
-                  {t("perfil")}
-                </Link>
-                <div className="h-[1px] bg-neutral-100 mx-4"></div>
-                <button
-                  onClick={handleLogout}
-                  className="px-6 py-4 hover:bg-red-500/5 text-sm text-red-600 font-bold text-left transition-colors flex items-center gap-3"
-                >
-                  <span className="material-symbols-outlined text-lg">logout</span>
-                  {t("salir")}
-                </button>
-              </div>
+              </button>
+              
+              {isProfileMenuOpen && (
+                <div className="absolute right-0 top-14 flex flex-col bg-white border border-neutral-200 rounded-2xl shadow-[0_20px_50px_rgba(0,18,50,0.12)] overflow-hidden z-[100] min-w-[200px] animate-fade-in">
+                  <Link
+                    href="/perfil"
+                    onClick={() => setIsProfileMenuOpen(false)}
+                    className="px-6 py-4 hover:bg-[#003e6f]/5 text-sm text-[#003e6f] font-bold transition-colors flex items-center gap-3"
+                  >
+                    <span className="material-symbols-outlined text-lg">person</span>
+                    {t("perfil")}
+                  </Link>
+                  <Link
+                    href="/perfil?tab=amigos"
+                    onClick={() => setIsProfileMenuOpen(false)}
+                    className="px-6 py-4 hover:bg-[#003e6f]/5 text-sm text-[#003e6f] font-bold transition-colors flex items-center gap-3"
+                  >
+                    <span className="material-symbols-outlined text-lg">group</span>
+                    Amigos
+                  </Link>
+                  <div className="h-[1px] bg-neutral-100 mx-4"></div>
+                  <button
+                    onClick={() => {
+                      setIsProfileMenuOpen(false);
+                      handleLogout();
+                    }}
+                    className="px-6 py-4 hover:bg-red-500/5 text-sm text-red-600 font-bold text-left transition-colors flex items-center gap-3"
+                  >
+                    <span className="material-symbols-outlined text-lg">logout</span>
+                    {t("salir")}
+                  </button>
+                </div>
+              )}
             </div>
           ) : (
             <Link

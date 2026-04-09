@@ -8,7 +8,7 @@ import type { Negocio } from "@/types/database";
 import { DUMMY_POIS } from "@/lib/dummy-data";
 import { getPremiumPhoto } from "@/lib/photo-engine";
 
-type BusinessCategory = "comida" | "tienda" | "servicios";
+type BusinessCategory = "comida" | "tienda" | "servicios" | "cultural";
 
 const categoryEmojis: Record<string, string> = {
   comida: "🌮", tienda: "🛍️", servicios: "🏨", cultural: "🏛️", deportes: "⚽",
@@ -56,6 +56,7 @@ export default function TiendasPage() {
     { label: t("gastronomia"), value: "comida" },
     { label: t("artesanias"), value: "tienda" },
     { label: t("servicios"), value: "servicios" },
+    { label: t("cultural"), value: "cultural" },
   ];
 
   const businessCategories: { id: BusinessCategory; label: string; emoji: string }[] = [

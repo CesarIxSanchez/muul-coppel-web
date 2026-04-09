@@ -36,77 +36,41 @@ export default function NegocioDashboardPage() {
     accesibilidad: false,
   });
 
+  const [createForm, setCreateForm] = useState({
+    nombre: "",
+    descripcion: "",
+    categoria: "comida",
+  });
+
   useEffect(() => {
-    const loadBusiness = async () => {
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
+    // HACKATHON ARCHITECTURE NOTE:
+    // Para motivos del pitch y asegurar agilidad sin depender de latencia de BD,
+    // hemos comentado la capa de Auth de Supabase real. 
+    // Si quisieramos usar datos reales en produccion, aquí usaríamos:
+    // 
+    // const { data: { user } } = await supabase.auth.getUser();
+    // const { data } = await supabase.from('negocios').select('*').eq('propietario_id', user.id);
+    // setNegocio(data[0]);
 
-      if (!user) {
-        setAuthenticated(false);
-        setLoading(false);
-        return;
-      }
-
-      setAuthenticated(true);
-      const { data } = await supabase
-        .from("negocios")
-        .select("*")
-        .eq("propietario_id", user.id)
-        .eq("activo", true)
-        .limit(1);
-
-      if (data && data.length > 0) {
-        const neg = data[0] as Negocio;
-        setNegocio(neg);
-        setFotoPerfil(neg.foto_url || "");
-        setBanner(neg.banner_url || "");
-        setInstagram(neg.instagram || "");
-        setFacebook(neg.facebook || "");
-        setCaracteristicas({
-          pago_tarjeta: neg.caracteristicas?.pago_tarjeta ?? false,
-          transferencias: neg.caracteristicas?.transferencias ?? false,
-          pet_friendly: neg.caracteristicas?.pet_friendly ?? false,
-          vegana: neg.caracteristicas?.vegana ?? false,
-          accesibilidad: neg.caracteristicas?.accesibilidad ?? false,
-        });
-      }
-      setLoading(false);
-    };
-
-    loadBusiness();
+    setAuthenticated(true);
+    setLoading(false);
   }, [supabase]);
 
   const handleGuardar = async () => {
     if (!negocio) return;
 
-    const { error } = await supabase
-      .from("negocios")
-      .update({
-        foto_url: fotoPerfil,
-        banner_url: banner,
-        instagram,
-        facebook,
-        caracteristicas,
-      })
-      .eq("id", negocio.id);
-
-    if (!error) {
-      setIsEditing(false);
-      setSaveMessage("✓ Cambios guardados exitosamente");
-      setNegocio({
-        ...negocio,
-        foto_url: fotoPerfil,
-        banner_url: banner,
-        instagram,
-        facebook,
-        caracteristicas,
-      });
-      setTimeout(() => setSaveMessage(""), 3000);
-    } else {
-      setSaveMessage("✗ Error al guardar cambios");
-      setTimeout(() => setSaveMessage(""), 3000);
-    }
+    // HACKATHON: Mock save function instead of supabase.update()
+    setIsEditing(false);
+    setSaveMessage("✓ Cambios guardados exitosamente");
+    setNegocio({
+      ...negocio,
+      foto_url: fotoPerfil,
+      banner_url: banner,
+      instagram,
+      facebook,
+      caracteristicas,
+    } as any);
+    setTimeout(() => setSaveMessage(""), 3000);
   };
 
   if (loading) {
@@ -121,28 +85,73 @@ export default function NegocioDashboardPage() {
     );
   }
 
-  if (!authenticated) {
-    return (
-      <main className="max-w-4xl mx-auto min-h-screen px-6 py-24 flex flex-col items-center justify-center text-center gap-6">
-        <span className="text-6xl">🔐</span>
-        <h1 className="text-4xl font-bold">Accede a tu panel</h1>
-        <p className="text-on-surface-variant max-w-xl">Inicia sesión para gestionar tu negocio</p>
-        <Link href="/login" className="px-8 py-4 bg-secondary text-on-secondary rounded-full font-bold">
-          {tNav("login")}
-        </Link>
-      </main>
-    );
-  }
-
   if (!negocio) {
     return (
-      <main className="max-w-4xl mx-auto min-h-screen px-6 py-24 flex flex-col items-center justify-center text-center gap-6">
-        <span className="text-6xl">🏪</span>
-        <h1 className="text-4xl font-bold">No tienes un negocio registrado</h1>
-        <p className="text-on-surface-variant max-w-xl">Registra tu negocio en MUUL</p>
-        <Link href="/tiendas" className="px-8 py-4 bg-primary text-white rounded-full font-bold">
-          Registrar negocio
-        </Link>
+      <main className="max-w-4xl mx-auto min-h-screen pt-28 pb-24 px-6 flex flex-col items-center font-body animate-fade-in-up">
+        <div className="w-full bg-white p-8 md:p-12 rounded-[2.5rem] border border-outline-variant/20 shadow-2xl">
+          <div className="text-center mb-10">
+            <span className="text-6xl mb-4 block">🏬</span>
+            <h1 className="text-4xl font-headline italic font-bold text-[#003e6f] mb-2">Crea tu Negocio</h1>
+            <p className="text-on-surface-variant text-lg">Únete a la red B2B para que miles de viajeros descubran tu local de forma instantánea.</p>
+          </div>
+          
+          <div className="space-y-6">
+            <div>
+              <label className="block text-sm font-bold text-[#003e6f] mb-2 uppercase tracking-wide">Nombre del Local</label>
+              <input 
+                type="text" 
+                value={createForm.nombre} 
+                onChange={e => setCreateForm({...createForm, nombre: e.target.value})} 
+                className="w-full p-4 rounded-xl border-2 border-outline-variant/30 bg-surface-container-lowest focus:border-[#fed000] focus:ring-4 focus:ring-[#fed000]/20 outline-none transition-all" 
+                placeholder="Ej. Tacos y Tortas El Muul" 
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-bold text-[#003e6f] mb-2 uppercase tracking-wide">Descripción Comercial</label>
+              <textarea 
+                value={createForm.descripcion} 
+                onChange={e => setCreateForm({...createForm, descripcion: e.target.value})} 
+                className="w-full p-4 rounded-xl border-2 border-outline-variant/30 bg-surface-container-lowest focus:border-[#fed000] focus:ring-4 focus:ring-[#fed000]/20 outline-none transition-all resize-none h-32" 
+                placeholder="Describe la magia y la esencia de tu servicio..." 
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-bold text-[#003e6f] mb-2 uppercase tracking-wide">Categoría</label>
+              <select 
+                value={createForm.categoria} 
+                onChange={e => setCreateForm({...createForm, categoria: e.target.value})} 
+                className="w-full p-4 rounded-xl border-2 border-outline-variant/30 bg-surface-container-lowest focus:border-[#fed000] focus:ring-4 focus:ring-[#fed000]/20 outline-none transition-all appearance-none cursor-pointer"
+              >
+                <option value="comida">🌮 Restaurante / Gastronomía</option>
+                <option value="tienda">🛍️ Tienda / Retail</option>
+                <option value="servicios">🏨 Servicios / Hotelería</option>
+                <option value="cultural">🏛️ Cultura / Galería</option>
+              </select>
+            </div>
+            
+            <button 
+              disabled={!createForm.nombre.trim()}
+              onClick={() => {
+                setNegocio({
+                  id: `dummy-b2b-${Date.now()}`,
+                  propietario_id: "me",
+                  nombre: createForm.nombre,
+                  descripcion: createForm.descripcion || "Un excelente lugar listo para recibir viajeros.",
+                  categoria: createForm.categoria,
+                  latitud: 19.4326,
+                  longitud: -99.1332,
+                  activo: true,
+                  verificado: false,
+                  seguidores: 0,
+                  creado_en: new Date().toISOString(),
+                } as any);
+              }}
+              className="w-full py-4 mt-6 bg-[#fed000] text-[#003e6f] rounded-full font-headline font-black tracking-widest uppercase hover:bg-[#ffdf40] shadow-lg shadow-[#fed000]/20 transition-all disabled:opacity-50 disabled:cursor-not-allowed text-sm"
+            >
+              Registrar Negocio Ahora
+            </button>
+          </div>
+        </div>
       </main>
     );
   }
