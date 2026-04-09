@@ -60,6 +60,9 @@
     "eventos": "Events",
     "servicios": "Services",
     "curaduriaExclusiva": "Exclusive curation",
+    "heroAngel": "Angel of Independence",
+    "heroBellasArtes": "Palace of Fine Arts",
+    "heroChapultepec": "Chapultepec Castle",
     "tagHogarVerde": "GREEN HOME",
     "tagCulturaViva": "LIVING CULTURE",
     "tagGastronomia": "GASTRONOMY",
@@ -78,6 +81,15 @@
     "ofertasTag": "Muul opportunities",
     "ofertasTitulo": "Special",
     "ofertasDestacado": "Offers",
+    "oferta1Nombre": "Tacos El Guero",
+    "oferta1Desc": "20% off all tacos al pastor. Only with code MUUL26.",
+    "oferta1Badge": "-20% OFF",
+    "oferta2Nombre": "Coppel Reforma",
+    "oferta2Desc": "$500 MXN bonus on purchases over $3,000 in technology.",
+    "oferta2Badge": "$500 MXN",
+    "oferta3Nombre": "Soumaya VIP",
+    "oferta3Desc": "Premium 2x1 pass for night guided visits. Limited spots.",
+    "oferta3Badge": "2x1",
     "verTodasLasOfertas": "See all offers",
     "uneteA": "Join the",
     "inteligenciaEditorial": "Editorial Intelligence",
@@ -161,6 +173,28 @@
     "muulAi": "Muul AI",
     "cerrarPanel": "Close panel",
     "abrirPanel": "Open panel"
+    ,"requireUserLocation": "Your location is required"
+    ,"noNearbyPlaces": "No nearby places were found"
+    ,"maxStops": "(max 12)"
+    ,"analyzingAccessible": "Analyzing..."
+    ,"accessibleRouteCta": "♿ Accessible Route"
+    ,"visitsMinutes": "min visits"
+    ,"optimal": "Optimal"
+    ,"accessibilityLabel": "Accessibility"
+    ,"accessibilityHigh": "High"
+    ,"accessibilityMedium": "Medium"
+    ,"accessibilityLow": "Low"
+    ,"accessibilityFeaturesToggle": "Ramps and elevators on map"
+    ,"featureRamps": "Ramps"
+    ,"featureElevators": "Elevators"
+    ,"featureCrossings": "Crossings"
+    ,"featureTactile": "Tactile paving"
+    ,"partyMode": "Party Mode"
+    ,"publishCommunity": "Post to Community"
+    ,"saveRoutes": "Save routes"
+    ,"openMuulAi": "Open MUUL AI"
+    ,"accessibleMode": "Accessible Mode"
+    ,"externalSource": "Mapbox"
   },
   "tiendas": {
     "titulo": "Registered",

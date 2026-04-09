@@ -60,6 +60,9 @@
     "eventos": "Eventos",
     "servicios": "Serviços",
     "curaduriaExclusiva": "Curadoria exclusiva",
+    "heroAngel": "Anjo da Independência",
+    "heroBellasArtes": "Palácio de Belas Artes",
+    "heroChapultepec": "Castelo de Chapultepec",
     "tagHogarVerde": "LAR VERDE",
     "tagCulturaViva": "CULTURA VIVA",
     "tagGastronomia": "GASTRONOMIA",
@@ -78,6 +81,15 @@
     "ofertasTag": "Oportunidades Muul",
     "ofertasTitulo": "Ofertas",
     "ofertasDestacado": "Especiais",
+    "oferta1Nombre": "Tacos El Guero",
+    "oferta1Desc": "20% de desconto em todos os tacos al pastor. Somente com o código MUUL26.",
+    "oferta1Badge": "-20% OFF",
+    "oferta2Nombre": "Coppel Reforma",
+    "oferta2Desc": "Bônus de $500 MXN em compras acima de $3.000 em tecnologia.",
+    "oferta2Badge": "$500 MXN",
+    "oferta3Nombre": "Soumaya VIP",
+    "oferta3Desc": "Passe premium 2x1 para visitas guiadas noturnas. Vagas limitadas.",
+    "oferta3Badge": "2x1",
     "verTodasLasOfertas": "Ver todas as ofertas",
     "uneteA": "Junte-se à",
     "inteligenciaEditorial": "Inteligência Editorial",
@@ -161,6 +173,28 @@
     "muulAi": "Muul AI",
     "cerrarPanel": "Fechar painel",
     "abrirPanel": "Abrir painel"
+    ,"requireUserLocation": "Sua localização é necessária"
+    ,"noNearbyPlaces": "Não foram encontrados lugares próximos"
+    ,"maxStops": "(máx 12)"
+    ,"analyzingAccessible": "Analisando..."
+    ,"accessibleRouteCta": "♿ Rota Acessível"
+    ,"visitsMinutes": "min de visitas"
+    ,"optimal": "Ótima"
+    ,"accessibilityLabel": "Acessibilidade"
+    ,"accessibilityHigh": "Alta"
+    ,"accessibilityMedium": "Média"
+    ,"accessibilityLow": "Baixa"
+    ,"accessibilityFeaturesToggle": "Rampas e elevadores no mapa"
+    ,"featureRamps": "Rampas"
+    ,"featureElevators": "Elevadores"
+    ,"featureCrossings": "Travessias"
+    ,"featureTactile": "Piso tátil"
+    ,"partyMode": "Modo Party"
+    ,"publishCommunity": "Publicar na Comunidade"
+    ,"saveRoutes": "Salvar rotas"
+    ,"openMuulAi": "Abrir MUUL AI"
+    ,"accessibleMode": "Modo Acessível"
+    ,"externalSource": "Mapbox"
   },
   "tiendas": {
     "titulo": "Lojas",

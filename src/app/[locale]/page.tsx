@@ -7,9 +7,9 @@ import { haversine } from "@/lib/haversine";
 import { HOME_IMAGE_URLS } from "@/lib/dummy-data";
 
 const OFFERS_DATA = [
-  { id: 1, name: "Tacos El Guero", lat: 19.423, lng: -99.163, desc: "20% de descuento en todos los tacos al pastor. Solo con código MUUL26.", off: "-20% OFF", type: "food" },
-  { id: 2, name: "Coppel Reforma", lat: 19.428, lng: -99.157, desc: "Bono de $500 MXN en compras mayores a $3,000 en tecnología.", off: "$500 MXN", type: "tech" },
-  { id: 3, name: "Soumaya VIP", lat: 19.440, lng: -99.204, desc: "Pase premium 2x1 en visitas guiadas nocturnas. Cupos limitados.", off: "2x1", type: "culture" }
+  { id: 1, lat: 19.423, lng: -99.163 },
+  { id: 2, lat: 19.428, lng: -99.157 },
+  { id: 3, lat: 19.440, lng: -99.204 },
 ];
 
 export default function HomePage() {
@@ -22,21 +22,21 @@ export default function HomePage() {
     { 
       id: "dummy-angel-independencia",
       img: HOME_IMAGE_URLS.hero.angel,
-      title: "Ángel de la Independencia", 
+      titleKey: "heroAngel", 
       lat: 19.4270, 
       lng: -99.1677 
     },
     { 
       id: "dummy-bellas-artes",
       img: HOME_IMAGE_URLS.hero.bellasArtes,
-      title: "Palacio de Bellas Artes", 
+      titleKey: "heroBellasArtes", 
       lat: 19.4352, 
       lng: -99.1412 
     },
     { 
       id: "dummy-chapultepec",
       img: HOME_IMAGE_URLS.hero.chapultepec,
-      title: "Castillo de Chapultepec", 
+      titleKey: "heroChapultepec", 
       lat: 19.4204, 
       lng: -99.1819 
     }
@@ -88,14 +88,6 @@ export default function HomePage() {
         {/* Gradient Overlay - Subtle for text readability */}
         <div className="absolute inset-0" style={{background: 'linear-gradient(to top, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0) 50%, rgba(0,0,0,0) 100%)'}} />
         
-        {/* Place Badge - Bottom Right */}
-        <div className="absolute bottom-12 right-12 z-20 flex flex-col items-end">
-          <div className="flex items-center gap-3 bg-[#fed000] px-6 py-2 rounded-full shadow-2xl animate-fade-in-up">
-            <span className="w-2 h-2 rounded-full bg-[#003e6f] animate-pulse"></span>
-            <span className="font-headline text-[#003e6f] text-sm font-black uppercase tracking-widest">{heroData[activeHero].title}</span>
-          </div>
-        </div>
-        
         {/* Navigation Controls */}
         <div className="absolute bottom-12 left-1/2 -translate-x-1/2 z-20 flex items-center gap-6">
           {/* Previous Arrow */}
@@ -126,13 +118,13 @@ export default function HomePage() {
           </button>
         </div>
         
-        {/* Place Badge - Bottom Right */}
-        <div className="absolute bottom-12 right-12 z-20 hidden md:flex flex-col items-end">
-            <div className="flex items-center gap-2 mb-2 font-label text-xs uppercase tracking-[0.2em]" style={{color: '#fed000', textShadow: '0 0 15px rgba(0,0,0,0.9)'}}>
-              <span className="w-2 h-2 rounded-full bg-[#fed000]"></span>
-              {t("curaduriaExclusiva")}
-            </div>
-          <span className="font-headline text-white text-xl font-bold tracking-widest bg-black/30 backdrop-blur-sm px-4 py-1.5 rounded-lg border border-white/10 shadow-xl">{heroData[activeHero].title}</span>
+        {/* Hero label */}
+        <div className="absolute top-24 right-6 md:right-12 z-20">
+          <div className="rounded-2xl border border-white/20 bg-black/35 backdrop-blur-md px-4 py-3 shadow-xl">
+            <p className="font-headline text-base font-bold !text-white md:text-lg">
+              {t(heroData[activeHero].titleKey)}
+            </p>
+          </div>
         </div>
 
         {/* Content */}
@@ -190,8 +182,8 @@ export default function HomePage() {
               />
               <div className="absolute inset-0 bg-gradient-to-t from-[#001c39]/90 via-transparent to-transparent opacity-80" />
               <div className="absolute bottom-0 left-0 right-0 p-6">
-                <span className="material-symbols-outlined text-white/50 mb-3 block group-hover:scale-110 group-hover:text-secondary transition-all">{card.icon}</span>
-                <h3 className="font-headline text-lg md:text-xl lg:text-2xl text-white font-black leading-tight">{card.label}</h3>
+                <span className="material-symbols-outlined !text-white/80 mb-3 block group-hover:scale-110 group-hover:!text-white transition-all">{card.icon}</span>
+                <h3 className="font-headline text-lg md:text-xl lg:text-2xl !text-white font-black leading-tight">{card.label}</h3>
                 <div className="h-1 w-8 bg-[#fed000] mt-4 rounded-full group-hover:w-16 transition-all duration-300" />
               </div>
             </Link>
@@ -300,10 +292,10 @@ export default function HomePage() {
                   </span>
                 )}
               </div>
-              <h3 className="font-headline text-3xl text-[#003e6f] font-black mb-4">Tacos El Guero</h3>
-              <p className="text-neutral-500 font-body mb-10 leading-relaxed">20% de descuento en todos los tacos al pastor. Solo con código MUUL26.</p>
+              <h3 className="font-headline text-3xl text-[#003e6f] font-black mb-4">{t("oferta1Nombre")}</h3>
+              <p className="text-neutral-500 font-body mb-10 leading-relaxed">{t("oferta1Desc")}</p>
               <div className="mt-auto flex items-center justify-between">
-                <span className="bg-secondary text-[#003e6f] font-headline font-black px-4 py-2 rounded-xl text-lg">-20% OFF</span>
+                <span className="bg-secondary text-[#003e6f] font-headline font-black px-4 py-2 rounded-xl text-lg">{t("oferta1Badge")}</span>
                 <Link href="/mapa?lat=19.423&lng=-99.163&id=1" className="w-12 h-12 rounded-full bg-[#003e6f] text-white flex items-center justify-center hover:bg-secondary hover:text-[#003e6f] transition-all border border-transparent">
                   <span className="material-symbols-outlined">map</span>
                 </Link>
@@ -326,10 +318,10 @@ export default function HomePage() {
                   </span>
                 )}
               </div>
-              <h3 className="font-headline text-3xl text-white font-black mb-4">Coppel Reforma</h3>
-              <p className="text-white/60 font-body mb-10 leading-relaxed">Bono de $500 MXN en compras mayores a $3,000 en tecnología.</p>
+              <h3 className="font-headline text-3xl text-white font-black mb-4">{t("oferta2Nombre")}</h3>
+              <p className="text-white/60 font-body mb-10 leading-relaxed">{t("oferta2Desc")}</p>
               <div className="mt-auto flex items-center justify-between">
-                <span className="bg-[#fed000] text-[#003e6f] font-headline font-black px-4 py-2 rounded-xl text-lg">$500 MXN</span>
+                <span className="bg-[#fed000] text-[#003e6f] font-headline font-black px-4 py-2 rounded-xl text-lg">{t("oferta2Badge")}</span>
                 <Link href="/mapa?lat=19.428&lng=-99.157&id=2" className="w-12 h-12 rounded-full bg-white text-[#003e6f] flex items-center justify-center hover:bg-[#fed000] transition-all">
                   <span className="material-symbols-outlined">map</span>
                 </Link>
@@ -352,10 +344,10 @@ export default function HomePage() {
                   </span>
                 )}
               </div>
-              <h3 className="font-headline text-3xl text-[#003e6f] font-black mb-4">Soumaya VIP</h3>
-              <p className="text-neutral-500 font-body mb-10 leading-relaxed">Pase premium 2x1 en visitas guiadas nocturnas. Cupos limitados.</p>
+              <h3 className="font-headline text-3xl text-[#003e6f] font-black mb-4">{t("oferta3Nombre")}</h3>
+              <p className="text-neutral-500 font-body mb-10 leading-relaxed">{t("oferta3Desc")}</p>
               <div className="mt-auto flex items-center justify-between">
-                <span className="bg-[#003e6f] text-white font-headline font-black px-4 py-2 rounded-xl text-lg">2x1</span>
+                <span className="bg-[#003e6f] text-white font-headline font-black px-4 py-2 rounded-xl text-lg">{t("oferta3Badge")}</span>
                 <Link href="/mapa?lat=19.440&lng=-99.204&id=3" className="w-12 h-12 rounded-full bg-[#fed000] text-[#003e6f] flex items-center justify-center hover:bg-[#003e6f] hover:text-white transition-all">
                   <span className="material-symbols-outlined">map</span>
                 </Link>

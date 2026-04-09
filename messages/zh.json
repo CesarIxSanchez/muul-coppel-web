@@ -60,6 +60,9 @@
     "eventos": "活动",
     "servicios": "服务",
     "curaduriaExclusiva": "独家策展",
+    "heroAngel": "独立天使纪念碑",
+    "heroBellasArtes": "美术宫",
+    "heroChapultepec": "查普尔特佩克城堡",
     "tagHogarVerde": "绿色家园",
     "tagCulturaViva": "活力文化",
     "tagGastronomia": "美食",
@@ -78,6 +81,15 @@
     "ofertasTag": "Muul 专属机会",
     "ofertasTitulo": "精选",
     "ofertasDestacado": "优惠",
+    "oferta1Nombre": "Tacos El Guero",
+    "oferta1Desc": "所有牧羊人烤肉塔可享 8 折优惠，仅限使用代码 MUUL26。",
+    "oferta1Badge": "-20% OFF",
+    "oferta2Nombre": "Coppel Reforma",
+    "oferta2Desc": "科技类消费满 $3,000 可获 $500 MXN 奖励金。",
+    "oferta2Badge": "$500 MXN",
+    "oferta3Nombre": "Soumaya VIP",
+    "oferta3Desc": "夜间导览尊享 2x1 通票，名额有限。",
+    "oferta3Badge": "2x1",
     "verTodasLasOfertas": "查看全部优惠",
     "uneteA": "加入",
     "inteligenciaEditorial": "精选情报",
@@ -161,6 +173,28 @@
     "muulAi": "Muul AI",
     "cerrarPanel": "关闭面板",
     "abrirPanel": "打开面板"
+    ,"requireUserLocation": "需要你的位置信息"
+    ,"noNearbyPlaces": "未找到附近地点"
+    ,"maxStops": "（最多 12 个）"
+    ,"analyzingAccessible": "分析中..."
+    ,"accessibleRouteCta": "♿ 无障碍路线"
+    ,"visitsMinutes": "分钟参观"
+    ,"optimal": "最优"
+    ,"accessibilityLabel": "无障碍"
+    ,"accessibilityHigh": "高"
+    ,"accessibilityMedium": "中"
+    ,"accessibilityLow": "低"
+    ,"accessibilityFeaturesToggle": "在地图上显示坡道和电梯"
+    ,"featureRamps": "坡道"
+    ,"featureElevators": "电梯"
+    ,"featureCrossings": "过街点"
+    ,"featureTactile": "盲道"
+    ,"partyMode": "派对模式"
+    ,"publishCommunity": "发布到社区"
+    ,"saveRoutes": "保存路线"
+    ,"openMuulAi": "打开 MUUL AI"
+    ,"accessibleMode": "无障碍模式"
+    ,"externalSource": "Mapbox"
   },
   "tiendas": {
     "titulo": "注册",

@@ -484,7 +484,7 @@ export default function MapaPage() {
   /* ── Sorpréndeme ── */
   const handleSorprendeme = async () => {
     if (!ubicacionUsuario) {
-      mapboxOpt.setError("Se requiere tu ubicación");
+      mapboxOpt.setError(t("requireUserLocation"));
       return;
     }
 
@@ -503,7 +503,7 @@ export default function MapaPage() {
     );
 
     if (!poisSeleccionados || poisSeleccionados.length === 0) {
-      mapboxOpt.setError("No se encontraron lugares cercanos");
+      mapboxOpt.setError(t("noNearbyPlaces"));
       return;
     }
 
@@ -681,12 +681,12 @@ export default function MapaPage() {
   /* ── Accessibility score badge ── */
   const AccessibilityScoreBadge = ({ score }: { score: number }) => {
     const color = score >= 70 ? "#98d5a2" : score >= 40 ? "#fed000" : "#ffb3b3";
-    const label = score >= 70 ? "Alta" : score >= 40 ? "Media" : "Baja";
+    const label = score >= 70 ? t("accessibilityHigh") : score >= 40 ? t("accessibilityMedium") : t("accessibilityLow");
     return (
       <div className="flex items-center gap-1 px-2 py-1 rounded-lg" style={{ background: `${color}30`, border: `1px solid ${color}` }}>
         <span className="text-xs">♿</span>
         <div>
-          <p className="text-[8px] font-black uppercase text-[#003e6f]">Accesibilidad</p>
+          <p className="text-[8px] font-black uppercase text-[#003e6f]">{t("accessibilityLabel")}</p>
           <p className="text-[10px] font-black text-[#003e6f]">{label} · {score}/100</p>
         </div>
       </div>
@@ -715,13 +715,13 @@ export default function MapaPage() {
           <button onClick={cargarRutasGuardadas} className="w-12 h-12 flex items-center justify-center rounded-xl text-on-surface-variant hover:bg-surface-container-highest/50 transition-all">
             <span className="material-symbols-outlined">bookmark</span>
           </button>
-          <button onClick={() => setPartyModalOpen(true)} className="w-12 h-12 flex items-center justify-center rounded-xl text-on-surface-variant hover:bg-surface-container-highest/50 transition-all" title="Modo Party">
+          <button onClick={() => setPartyModalOpen(true)} className="w-12 h-12 flex items-center justify-center rounded-xl text-on-surface-variant hover:bg-surface-container-highest/50 transition-all" title={t("partyMode")}>
             <span className="material-symbols-outlined">celebration</span>
           </button>
           <button
             onClick={() => setTransportMode(isAccessibleMode ? "walking" : "accessible")}
             className={`w-12 h-12 flex items-center justify-center rounded-xl transition-all ${isAccessibleMode ? "bg-[#fed000] text-[#003e6f] shadow-lg" : "text-on-surface-variant hover:bg-surface-container-highest/50"}`}
-            title="Modo Accesible ♿"
+            title={t("accessibleMode")}
           >
             <span className="material-symbols-outlined" style={isAccessibleMode ? { fontVariationSettings: "'FILL' 1" } : undefined}>accessible</span>
           </button>
@@ -735,7 +735,7 @@ export default function MapaPage() {
               <>
                 {isAccessibleMode && (
                   <div className="mx-4 mb-2 p-2.5 rounded-xl bg-[#fed000]/20 border border-[#fed000]/40 flex items-center gap-2">
-                    <span className="text-lg">♿</span><p className="flex-1 text-[10px] font-bold text-[#003e6f]">Modo Accesible</p>
+                    <span className="text-lg">♿</span><p className="flex-1 text-[10px] font-bold text-[#003e6f]">{t("accessibleMode")}</p>
                     <button onClick={() => setTransportMode("walking")} className="text-on-surface-variant"><span className="material-symbols-outlined text-sm">close</span></button>
                   </div>
                 )}
@@ -794,7 +794,7 @@ export default function MapaPage() {
                                 </span>
                               )}
                               {!verified && (
-                                <span className="text-[9px] font-bold text-on-surface-variant bg-surface-container-highest px-1 py-0.5 rounded">Mapbox</span>
+                                <span className="text-[9px] font-bold text-on-surface-variant bg-surface-container-highest px-1 py-0.5 rounded">{t("externalSource")}</span>
                               )}
                             </div>
                             <p className="text-xs text-on-surface-variant mt-0.5">
@@ -820,7 +820,7 @@ export default function MapaPage() {
                       <span className={`w-2 h-2 rounded-full ${poisEnRuta.length > 0 ? (isAccessibleMode ? "bg-[#fed000]" : "bg-secondary") + " animate-pulse" : "bg-on-surface-variant"}`} />
                       <span className="text-sm font-bold text-on-surface">
                         {poisEnRuta.length === 1 ? t("paradas", { count: 1 }) : t("paradasPlural", { count: poisEnRuta.length })}
-                        <span className="text-on-surface-variant font-normal text-xs ml-1">(máx 12)</span>
+                        <span className="text-on-surface-variant font-normal text-xs ml-1">{t("maxStops")}</span>
                       </span>
                     </div>
                     {poisEnRuta.length > 0 && (
@@ -831,7 +831,7 @@ export default function MapaPage() {
                   <div className="flex gap-2">
                     <button onClick={calcularRuta} disabled={poisEnRuta.length < 1 || activeLoading}
                       className={`flex-1 py-4 rounded-xl font-headline font-black uppercase tracking-widest transition-all shadow-lg disabled:opacity-40 disabled:cursor-not-allowed ${isAccessibleMode ? "bg-[#fed000] text-[#003e6f] shadow-[#fed000]/20 hover:bg-yellow-400" : "bg-secondary hover:bg-secondary-fixed text-on-secondary shadow-secondary/10"}`}>
-                      {activeLoading ? (isAccessibleMode ? "Analizando..." : t("calculando")) : (isAccessibleMode ? "♿ Ruta Accesible" : t("calcularRuta"))}
+                      {activeLoading ? (isAccessibleMode ? t("analyzingAccessible") : t("calculando")) : (isAccessibleMode ? t("accessibleRouteCta") : t("calcularRuta"))}
                     </button>
                   </div>
                 </div>
@@ -858,12 +858,12 @@ export default function MapaPage() {
                           </p>
                           <p className="text-[10px] text-on-surface-variant">
                             {activeRoute.distancia_texto} · {activeRoute.duracion_texto}
-                            {!isAccessibleMode && ` + ${Math.round(poisEnRuta.reduce((a, p) => a + (DURACION_VISITA[p.categoria] || 30), 0))} min visitas`}
+                            {!isAccessibleMode && ` + ${Math.round(poisEnRuta.reduce((a, p) => a + (DURACION_VISITA[p.categoria] || 30), 0))} ${t("visitsMinutes")}`}
                           </p>
                         </div>
                         {isAccessibleMode && accessibleRoute.route
                           ? <AccessibilityScoreBadge score={accessibleRoute.route.accessibilityScore} />
-                          : <span className="text-[10px] font-bold text-secondary bg-secondary/10 px-2 py-0.5 rounded uppercase">Óptima</span>}
+                          : <span className="text-[10px] font-bold text-secondary bg-secondary/10 px-2 py-0.5 rounded uppercase">{t("optimal")}</span>}
                       </div>
                     )}
                     {isAccessibleMode && accessibleRoute.route?.warnings.length ? (
@@ -876,7 +876,7 @@ export default function MapaPage() {
                     {isAccessibleMode && accessibleRoute.route && (
                       <button onClick={() => setShowAccessibilityFeatures((v) => !v)}
                         className="mt-3 w-full flex items-center justify-between px-3 py-2 rounded-lg bg-surface-container-high text-xs font-bold text-on-surface hover:bg-surface-bright transition-all">
-                        <span className="flex items-center gap-2"><span className="material-symbols-outlined text-sm">layers</span>Rampas y elevadores en mapa</span>
+                        <span className="flex items-center gap-2"><span className="material-symbols-outlined text-sm">layers</span>{t("accessibilityFeaturesToggle")}</span>
                         <span className={`w-8 h-4 rounded-full transition-colors relative ${showAccessibilityFeatures ? "bg-[#fed000]" : "bg-surface-container-highest"}`}>
                           <span className={`absolute top-0.5 w-3 h-3 rounded-full bg-white transition-all ${showAccessibilityFeatures ? "left-4" : "left-0.5"}`} />
                         </span>
@@ -884,7 +884,7 @@ export default function MapaPage() {
                     )}
                     {isAccessibleMode && accessibleRoute.route && (
                       <div className="mt-2 flex gap-1.5 flex-wrap">
-                        {[{ type: "ramp", emoji: "♿", label: "Rampas" }, { type: "elevator", emoji: "🛗", label: "Elevadores" }, { type: "accessible_crossing", emoji: "🚶", label: "Cruces" }, { type: "tactile_paving", emoji: "🟡", label: "Piso táctil" }].map(({ type, emoji, label }) => {
+                        {[{ type: "ramp", emoji: "♿", label: t("featureRamps") }, { type: "elevator", emoji: "🛗", label: t("featureElevators") }, { type: "accessible_crossing", emoji: "🚶", label: t("featureCrossings") }, { type: "tactile_paving", emoji: "🟡", label: t("featureTactile") }].map(({ type, emoji, label }) => {
                           const count = accessibleRoute.route!.accessibilityFeatures.filter((f) => f.type === type).length;
                           if (count === 0) return null;
                           return <span key={type} className="text-[9px] font-black bg-surface-container-highest text-on-surface-variant px-1.5 py-0.5 rounded uppercase flex items-center gap-0.5">{emoji} {count} {label}</span>;
@@ -936,16 +936,16 @@ export default function MapaPage() {
                       </div>
                     )}
                   </div>
-                  <button onClick={() => setPartyModalOpen(true)} className="w-full bg-gradient-to-r from-secondary/20 to-primary/10 text-on-surface py-3 rounded-xl font-headline font-bold text-sm border border-secondary/20 flex items-center justify-center gap-2"><span className="text-base">🎉</span> Modo Party</button>
+                  <button onClick={() => setPartyModalOpen(true)} className="w-full bg-gradient-to-r from-secondary/20 to-primary/10 text-on-surface py-3 rounded-xl font-headline font-bold text-sm border border-secondary/20 flex items-center justify-center gap-2"><span className="text-base">🎉</span> {t("partyMode")}</button>
                   <button 
                     onClick={() => window.location.href = "/comunidad"} 
                     className="w-full bg-[#003e6f] text-white py-3 rounded-xl font-headline font-black text-sm uppercase tracking-widest hover:bg-[#005596] transition-all flex items-center justify-center gap-2 shadow-lg shadow-[#003e6f]/20"
                   >
-                    <span className="material-symbols-outlined text-base">public</span> Publicar en Comunidad
+                    <span className="material-symbols-outlined text-base">public</span> {t("publishCommunity")}
                   </button>
                   <button onClick={guardarRuta} disabled={guardando} className="w-full bg-[#003e6f] text-white py-3 rounded-xl font-headline font-bold text-sm uppercase tracking-widest hover:brightness-110 transition-all disabled:opacity-50 flex items-center justify-center gap-2">
                     <span className="material-symbols-outlined text-sm">bookmark_add</span>
-                    <span>{guardando ? "Guardando..." : "Guardar rutas"}</span>
+                    <span>{guardando ? t("guardando") : t("saveRoutes")}</span>
                   </button>
                   <button onClick={limpiarRuta} className="w-full border border-tertiary/30 text-tertiary py-2.5 rounded-xl font-headline font-bold text-sm uppercase tracking-widest hover:bg-tertiary/10 transition-all">{t("nuevaRuta")}</button>
                 </div>
@@ -985,8 +985,8 @@ export default function MapaPage() {
                 setMobileSheetOpen(false);
               }}
               className="absolute bottom-[12rem] right-4 md:bottom-6 md:right-6 z-[45] h-14 px-5 rounded-full bg-[#fed000] text-[#003e6f] shadow-xl shadow-[#fed000]/30 hover:brightness-95 transition-colors flex items-center gap-2"
-              aria-label="Abrir MUUL AI"
-              title="Abrir MUUL AI"
+              aria-label={t("openMuulAi")}
+              title={t("openMuulAi")}
             >
               <span className="w-6 h-6 rounded-full border border-[#003e6f]/70 flex items-center justify-center text-[11px] leading-none text-[#003e6f]" aria-hidden="true">
                 ✦
@@ -1129,17 +1129,17 @@ export default function MapaPage() {
                       </div>
                     )}
                   </div>
-                  <button onClick={() => setPartyModalOpen(true)} className="w-full bg-gradient-to-r from-secondary/20 to-primary/10 text-on-surface py-3 rounded-xl font-headline font-bold text-sm border border-secondary/20 flex items-center justify-center gap-2"><span>🎉</span> Modo Party</button>
+                  <button onClick={() => setPartyModalOpen(true)} className="w-full bg-gradient-to-r from-secondary/20 to-primary/10 text-on-surface py-3 rounded-xl font-headline font-bold text-sm border border-secondary/20 flex items-center justify-center gap-2"><span>🎉</span> {t("partyMode")}</button>
                   <button 
                     onClick={() => window.location.href = "/comunidad"} 
                     className="w-full bg-[#003e6f] text-white py-3 rounded-xl font-headline font-black text-sm uppercase tracking-widest shadow-lg flex items-center justify-center gap-2"
                   >
-                    <span className="material-symbols-outlined text-base">public</span> Publicar Ruta
+                    <span className="material-symbols-outlined text-base">public</span> {t("publishCommunity")}
                   </button>
                   <button onClick={guardarRuta} disabled={guardando} className="w-full bg-primary text-on-primary py-3 rounded-xl font-headline font-bold text-sm uppercase tracking-widest disabled:opacity-50 flex items-center justify-center gap-2"><span className="material-symbols-outlined text-sm">bookmark_add</span>{guardando ? t("guardando") : t("guardarRuta")}</button>
                   <button onClick={guardarRuta} disabled={guardando} className="w-full bg-[#003e6f] text-white py-3 rounded-xl font-headline font-bold text-sm uppercase tracking-widest hover:brightness-110 transition-all disabled:opacity-50 flex items-center justify-center gap-2">
                     <span className="material-symbols-outlined text-sm">bookmark_add</span>
-                    <span>{guardando ? "Guardando..." : "Guardar rutas"}</span>
+                    <span>{guardando ? t("guardando") : t("saveRoutes")}</span>
                   </button>
                   <button onClick={limpiarRuta} className="w-full border border-tertiary/30 text-tertiary py-2.5 rounded-xl font-headline font-bold text-sm uppercase tracking-widest hover:bg-tertiary/10 transition-all">{t("nuevaRuta")}</button>
                 </div>
@@ -1148,7 +1148,7 @@ export default function MapaPage() {
               <>
                 {isAccessibleMode && (
                   <div className="mx-4 mb-2 p-2.5 rounded-xl bg-[#fed000]/20 border border-[#fed000]/40 flex items-center gap-2">
-                    <span className="text-lg">♿</span><p className="flex-1 text-[10px] font-bold text-[#003e6f]">Modo Accesible</p>
+                    <span className="text-lg">♿</span><p className="flex-1 text-[10px] font-bold text-[#003e6f]">{t("accessibleMode")}</p>
                     <button onClick={() => setTransportMode("walking")} className="text-on-surface-variant"><span className="material-symbols-outlined text-sm">close</span></button>
                   </div>
                 )}
@@ -1196,7 +1196,7 @@ export default function MapaPage() {
                   <div className="flex gap-2">
                     <button onClick={calcularRuta} disabled={poisEnRuta.length < 1 || activeLoading}
                       className={`flex-1 py-3 rounded-xl font-headline font-black text-sm uppercase tracking-widest disabled:opacity-40 disabled:cursor-not-allowed ${isAccessibleMode ? "bg-[#fed000] text-[#003e6f]" : "bg-secondary text-on-secondary"}`}>
-                      {activeLoading ? (isAccessibleMode ? "Analizando..." : t("calculando")) : (isAccessibleMode ? "♿ Ruta Accesible" : t("calcularRuta"))}
+                      {activeLoading ? (isAccessibleMode ? t("analyzingAccessible") : t("calculando")) : (isAccessibleMode ? t("accessibleRouteCta") : t("calcularRuta"))}
                     </button>
                   </div>
                 </div>
