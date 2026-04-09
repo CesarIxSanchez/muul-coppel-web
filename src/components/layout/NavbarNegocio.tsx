@@ -42,7 +42,6 @@ export default function NavbarNegocio() {
   ];
 
   const getBusinessNavItems = () => [
-    { href: "/", label: "Principal" },
     { href: "/comunidad", label: "Comunidad" },
     { href: "/recursos", label: "Recursos" },
     { href: negocio ? `/negocio/${negocio.id}` : "#", label: "Mi Negocio" },
@@ -134,15 +133,12 @@ export default function NavbarNegocio() {
             alt="MUUL Logo"
             width={48}
             height={48}
-            className="h-12 w-12 object-contain"
+            className="h-12 w-12 object-contain cursor-pointer"
           />
           <div className="flex flex-col">
-            <Link
-              href="/"
-              className="text-2xl font-black text-white italic tracking-tighter leading-none hover:opacity-90 transition-opacity font-headline"
-            >
+            <span className="text-2xl font-black text-white italic tracking-tighter leading-none font-headline">
               MUUL
-            </Link>
+            </span>
             {negocio && (
               <p className="text-xs font-bold text-[#fed000] tracking-wide uppercase">{negocio.nombre}</p>
             )}
