@@ -24,9 +24,9 @@ Este proyecto combina mapas interactivos, rutas optimizadas, recomendaciones asi
 
 ## Resumen Ejecutivo
 
-MUUL is a web platform for intelligent tourism, local business discovery, and urban mobility, focused on experiences in Mexico for the MUUL 2026 context.
+MUUL es una plataforma web para un turismo inteligente, descubrimiento de negocios locales y movilidad urbana, enfocada en experiencias en Mexico para el contexto MUUL 2026.
 
-This project combines interactive maps, optimized routes, AI-assisted recommendations, internationalization and a social ecosystem for tourists and businesses.
+Este proyecto combina mapas interactivos, rutas optimizadas, recomendaciones asistidas por IA, internacionalizacion y un ecosistema social para turistas y negocios.
 
 ## Caracteristicas Principales
 
