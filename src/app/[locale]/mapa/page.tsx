@@ -174,6 +174,20 @@ export default function MapaPage() {
     ? (accessibleRoute.error || sorprendeme.error)
     : (mapboxOpt.error || sorprendeme.error);
 
+  const lugaresCercanosMuul = useMemo(() => {
+    if (!ubicacionUsuario) return [];
+
+    return [...allPois]
+      .filter((poi) => poi.verificado !== false && !String(poi.id).startsWith("mapbox_"))
+      .map((poi) => ({
+        poi,
+        distancia: haversine(ubicacionUsuario, [poi.latitud, poi.longitud]),
+      }))
+      .sort((a, b) => a.distancia - b.distancia)
+      .slice(0, 8)
+      .map(({ poi }) => poi);
+  }, [allPois, ubicacionUsuario]);
+
   /* ── Auth ── */
   useEffect(() => {
     const fetchUser = async () => {
@@ -1070,6 +1084,7 @@ export default function MapaPage() {
           onClose={() => setChatbotAbierto(false)}
           poi={selectedPoi}
           poisEnRuta={poisEnRuta}
+          lugaresCercanos={lugaresCercanosMuul}
           totalVisibles={filteredPois.length}
           idioma={locale}
         />
