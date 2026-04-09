@@ -13,8 +13,11 @@ import {
   ChevronRight,
   Globe,
   Bell,
-  Trash2
+  Trash2,
+  Menu,
+  X
 } from "lucide-react";
+import clsx from "clsx";
 
 type TabType = "cuenta" | "direcciones" | "rutas" | "resenas" | "ajustes" | "editar";
 
@@ -24,16 +27,20 @@ export default function PerfilPage() {
   const [perfil, setPerfil] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<TabType>("cuenta");
+  const [isSidebarOpen, setSidebarOpen] = useState(false);
 
   useEffect(() => {
     const fetchPerfil = async () => {
       try {
-        const {
-          data: { user },
-        } = await supabase.auth.getUser();
-        if (user) {
-          const { data } = await supabase.from("perfiles").select("*").eq("id", user.id).single();
-          setPerfil(data);
+        const { data, error } = await supabase.rpc('get_perfil_usuario_actual');
+        
+        if (error) {
+          console.error("Error fetching profile:", error);
+          throw error;
+        }
+
+        if (data && data.length > 0) {
+          setPerfil(data[0]);
         }
       } catch (err) {
         console.error(err);
@@ -61,9 +68,24 @@ export default function PerfilPage() {
     { id: "direcciones", icon: <MapPin size={20} />, label: "Direcciones" },
     { id: "rutas", icon: <Route size={20} />, label: "Mis Rutas" },
     { id: "resenas", icon: <Star size={20} />, label: "Mis Reseñas" },
-    { id: "editar", icon: <Settings size={20} />, label: "Editar Perfil" },
-    { id: "ajustes", icon: <Settings size={20} />, label: "Ajustes" },
+    { id: "editar", icon: <Settings size={20} />, label: "Ajustes" },
   ];
+
+  const tiers = [
+    { name: 'bronze', className: 'bg-[#a16207]/20 border-[#a16207]/30 text-[#fef3c7] shadow-[#a16207]/30' },
+    { name: 'silver', className: 'bg-slate-400/20 border-slate-300/40 text-slate-100 shadow-slate-400/30' },
+    { name: 'gold', className: 'bg-yellow-400/20 border-yellow-300/40 text-yellow-100 shadow-yellow-300/30' },
+  ];
+
+  const insigniasDestacadas = [
+    { emoji: "🌮", label: "Maestro Taquero", description: "Visita 10 taquerías verificadas." },
+    { emoji: "🏛️", label: "Explorador Prehispánico", description: "Completa la ruta de las 5 pirámides." },
+    { emoji: "🏖️", label: "Amante del Sol", description: "Visita 3 playas diferentes en un mes." },
+    { emoji: "🌶️", label: "Valiente del Chile", description: "Prueba 5 platillos picantes." },
+  ].map(insignia => ({
+    ...insignia,
+    tier: tiers[Math.floor(Math.random() * tiers.length)]
+  }));
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
@@ -71,10 +93,37 @@ export default function PerfilPage() {
   };
 
   return (
-    <main className="min-h-screen pt-20 bg-surface flex flex-col lg:flex-row">
+    <main className="min-h-screen pt-16 lg:pt-20 lg:ml-80 bg-surface flex flex-col lg:flex-row">
+      {/* Mobile Menu Button */}
+      <div className="lg:hidden fixed top-4 left-4 z-50">
+        <button 
+          onClick={() => setSidebarOpen(true)}
+          className="p-2 bg-white/80 backdrop-blur-sm rounded-full shadow-lg text-[#003e6f]"
+        >
+          <Menu size={24} />
+        </button>
+      </div>
+
       {/* Sidebar */}
-      <aside className="w-full lg:w-80 shrink-0 border-r border-outline-variant/10 p-8 flex flex-col gap-10 bg-white/50 backdrop-blur-md">
-        <div className="flex flex-col gap-4">
+      <aside className={clsx(
+        "fixed inset-y-0 left-0 z-50 w-80 shrink-0 border-r border-outline-variant/10 p-8 flex flex-col gap-10 bg-white/80 backdrop-blur-xl transition-transform duration-300 ease-in-out",
+        "lg:top-20 lg:h-[calc(100vh-5rem)]",
+        {
+          "translate-x-0": isSidebarOpen,
+          "-translate-x-full lg:translate-x-0": !isSidebarOpen,
+        }
+      )}>
+        {/* Mobile Close Button */}
+        <div className="lg:hidden absolute top-4 right-4">
+          <button 
+            onClick={() => setSidebarOpen(false)}
+            className="p-2 text-[#003e6f]/60 hover:text-[#003e6f]"
+          >
+            <X size={24} />
+          </button>
+        </div>
+        
+        <div className="flex flex-col gap-4 mt-8 lg:mt-0">
           <div className="flex items-center gap-4">
             <div className="w-14 h-14 rounded-full overflow-hidden border-2 border-primary-container shadow-sm">
               <img 
@@ -85,6 +134,11 @@ export default function PerfilPage() {
             </div>
             <div>
               <p className="text-primary font-headline italic text-lg leading-tight">Hola, <span className="font-bold">{perfil?.nombre_completo?.split(" ")[0] || "Usuario"}</span></p>
+              {perfil?.username && (
+                <p className="mt-1 inline-block bg-[#003e6f]/10 text-[#003e6f] text-[10px] font-bold tracking-wider px-2 py-0.5 rounded-md">
+                  @{perfil.username}
+                </p>
+              )}
               <p className="text-on-surface-variant text-[10px] uppercase font-label tracking-widest mt-1">Miembro desde 2023</p>
             </div>
           </div>
@@ -94,7 +148,10 @@ export default function PerfilPage() {
           {sidebarItems.map((item) => (
             <button 
               key={item.id}
-              onClick={() => setActiveTab(item.id)}
+              onClick={() => {
+                setActiveTab(item.id);
+                setSidebarOpen(false); // Close sidebar on selection
+              }}
               className={`flex items-center gap-4 px-6 py-4 rounded-full transition-all text-sm font-black uppercase tracking-widest ${
                 activeTab === item.id 
                   ? "bg-[#fed000] text-[#003e6f] shadow-lg shadow-[#fed000]/20" 
@@ -126,21 +183,33 @@ export default function PerfilPage() {
             {/* Hero Section */}
             <header className="relative w-full aspect-[21/9] md:aspect-[3/1] rounded-[2.5rem] overflow-hidden group shadow-2xl">
               <img 
-                src="https://images.unsplash.com/photo-1544013919-450f1fbcfa66?q=80&w=1200&h=400&auto=format&fit=crop" 
+                src="" 
                 alt="Paseo de la Reforma" 
                 className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
               />
-              <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/20 to-transparent z-10"></div>
+              <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/40 to-black/10 z-10"></div>
               <div className="relative z-20 h-full p-8 md:p-12 flex flex-col justify-center gap-4">
-                <span className="inline-block px-4 py-1.5 bg-secondary text-on-secondary text-[10px] font-black tracking-[0.2em] rounded uppercase self-start">
-                  EXPLORADOR DIAMANTE
-                </span>
                 <h1 className="text-4xl md:text-6xl lg:text-7xl font-headline italic font-light text-white leading-tight">
-                  {perfil?.nombre_completo || "Eduardo Mondragón"}
+                  {perfil?.nombre_completo || ""}
                 </h1>
-                <p className="text-white/80 font-body text-lg max-w-lg mb-4">
-                  Descubriendo los rincones mágicos de México con Muul y Coppel.
-                </p>
+
+                {/* Mockup de Insignias */}
+                <div className="flex flex-wrap gap-3 pt-2">
+                  {insigniasDestacadas.map((insignia, index) => (
+                    <div 
+                      key={insignia.label} 
+                      className={clsx(
+                        `flex items-center gap-2 backdrop-blur-sm rounded-full px-4 py-2 text-sm shadow-lg transition-all hover:shadow-xl border ${insignia.tier.className}`,
+                        {
+                          'hidden md:flex': index >= 1 // Oculta insignias después de la primera en pantallas pequeñas
+                        }
+                      )}
+                    >
+                      <span className="text-lg">{insignia.emoji}</span>
+                      <span className="font-bold tracking-wide">{insignia.label}</span>
+                    </div>
+                  ))}
+                </div>
               </div>
             </header>
 
@@ -156,6 +225,45 @@ export default function PerfilPage() {
                   <span className="text-6xl md:text-7xl font-headline italic font-light tracking-tighter">{stat.value}</span>
                 </div>
               ))}
+            </section>
+
+            {/* Insignias Destacadas */}
+            <section className="space-y-8">
+              <h2 className="text-4xl font-headline italic text-primary">Insignias Destacadas</h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                {insigniasDestacadas.map((insignia) => (
+                  <div key={insignia.label} className={`bg-surface-container-low p-8 rounded-[2.5rem] flex flex-col items-center text-center border hover:bg-white hover:shadow-xl transition-all ${insignia.tier.className}`}>
+                    <span className="text-6xl mb-4">{insignia.emoji}</span>
+                    <h3 className="font-headline font-bold text-xl text-on-surface mb-2">{insignia.label}</h3>
+                    <p className="text-sm text-on-surface-variant font-body">{insignia.description}</p>
+                  </div>
+                ))}
+              </div>
+            </section>
+
+            {/* Mis Insignias */}
+            <section className="space-y-8">
+              <h2 className="text-4xl font-headline italic text-primary">Mis Insignias</h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                {[
+                  { emoji: "🎨", label: "Mecenas del Arte", description: "Visita 5 museos o galerías." },
+                  { emoji: "☕", label: "Catador de Café", description: "Prueba cafés de 3 regiones distintas." },
+                  { emoji: "🎶", label: "Noctámbulo Musical", description: "Asiste a 3 conciertos en vivo." },
+                ].map((insignia) => {
+                  const randomTier = tiers[Math.floor(Math.random() * tiers.length)];
+                  return (
+                    <div key={insignia.label} className={`bg-surface-container-low p-8 rounded-[2.5rem] flex flex-col items-center text-center border hover:bg-white hover:shadow-xl transition-all ${randomTier.className}`}>
+                      <span className="text-6xl mb-4">{insignia.emoji}</span>
+                      <h3 className="font-headline font-bold text-xl text-on-surface mb-2">{insignia.label}</h3>
+                      <p className="text-sm text-on-surface-variant font-body">{insignia.description}</p>
+                    </div>
+                  );
+                })}
+                <div className="border-2 border-dashed border-outline-variant/30 p-8 rounded-[2.5rem] flex flex-col items-center justify-center gap-2 text-on-surface-variant hover:bg-surface-container-low transition-all cursor-pointer">
+                  <span className="text-4xl">🏆</span>
+                  <span className="font-bold text-center">Ver todas mis insignias</span>
+                </div>
+              </div>
             </section>
 
             {/* Reviews Section - The "Bottom Part" previously liked */}
@@ -400,51 +508,6 @@ export default function PerfilPage() {
                     className="flex-1 border-2 border-outline-variant/30 text-on-surface px-6 py-4 rounded-full font-headline font-bold text-lg hover:bg-surface-container-low transition-all">
                     Cancelar
                   </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {activeTab === "ajustes" && (
-          <div className="space-y-8 animate-fade-in-up">
-            <h2 className="text-4xl font-headline italic text-primary">Ajustes</h2>
-            <div className="bg-white rounded-[2.5rem] border border-outline-variant/10 overflow-hidden divide-y divide-outline-variant/5">
-              <div className="p-8 flex items-center justify-between hover:bg-surface-container-low transition-colors cursor-pointer group">
-                <div className="flex items-center gap-6">
-                  <div className="p-4 bg-tertiary-container/10 rounded-2xl text-tertiary">
-                    <Globe size={24} />
-                  </div>
-                  <div>
-                    <h3 className="font-headline font-bold text-xl">Idioma y Región</h3>
-                    <p className="text-sm text-on-surface-variant font-body">Español (México), Ciudad de México</p>
-                  </div>
-                </div>
-                <ChevronRight size={20} className="text-outline-variant group-hover:translate-x-1 transition-transform" />
-              </div>
-
-              <div className="p-8 flex items-center justify-between hover:bg-surface-container-low transition-colors cursor-pointer group">
-                <div className="flex items-center gap-6">
-                  <div className="p-4 bg-secondary-container/10 rounded-2xl text-secondary">
-                    <Bell size={24} />
-                  </div>
-                  <div>
-                    <h3 className="font-headline font-bold text-xl">Notificaciones</h3>
-                    <p className="text-sm text-on-surface-variant font-body">Gestionar alertas de rutas y beneficios</p>
-                  </div>
-                </div>
-                <ChevronRight size={20} className="text-outline-variant group-hover:translate-x-1 transition-transform" />
-              </div>
-
-              <div className="p-8 flex items-center justify-between hover:bg-surface-container-low transition-colors cursor-pointer group">
-                <div className="flex items-center gap-6">
-                  <div className="p-4 bg-error/10 rounded-2xl text-error">
-                    <Trash2 size={24} />
-                  </div>
-                  <div>
-                    <h3 className="font-headline font-bold text-xl text-error">Eliminar Cuenta</h3>
-                    <p className="text-sm text-on-surface-variant font-body">Borrar permanentemente tus datos de Muul</p>
-                  </div>
                 </div>
               </div>
             </div>
