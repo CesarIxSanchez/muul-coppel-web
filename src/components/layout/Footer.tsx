@@ -69,10 +69,10 @@ export default function Footer() {
           {}
           <a href="https://olamexico.org" target="_blank" rel="noopener noreferrer" className="cursor-pointer group">
             <Image
-              src="https://qewqnirwuptcudoflgkd.supabase.co/storage/v1/object/public/muul_media/olaMexicoLogo.jpeg"
+              src="https://qewqnirwuptcudoflgkd.supabase.co/storage/v1/object/public/muul_media/logo-full-white@2x.png"
               alt="OLA México"
               width={180}
-              height={80}
+              height={30}
               className="h-16 w-auto object-contain group-hover:opacity-80 transition-opacity"
             />
           </a>

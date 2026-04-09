@@ -291,7 +291,11 @@ export default function NegocioPerfilPage() {
           <img
             alt={negocio.nombre}
             className="w-full h-full object-cover"
-            src={negocio.foto_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(negocio.nombre)}&background=003e6f&color=fff&size=800`}
+            src={
+              (negocio.nombre.toLowerCase().includes('tino') || negocio.nombre.toLowerCase().includes('justino'))
+                ? 'https://qewqnirwuptcudoflgkd.supabase.co/storage/v1/object/public/muul_media/TacosTino.jpeg'
+                : (negocio.foto_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(negocio.nombre)}&background=003e6f&color=fff&size=800`)
+            }
           />
           <div className="absolute inset-0 bg-gradient-to-t from-primary/60 to-transparent"></div>
 
@@ -302,7 +306,11 @@ export default function NegocioPerfilPage() {
               <img
                 alt="Business Logo"
                 className="w-full h-full object-cover rounded-xl"
-                src={negocio.foto_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(negocio.nombre)}&background=003e6f&color=fff&size=400`}
+                src={
+                  (negocio.nombre.toLowerCase().includes('tino') || negocio.nombre.toLowerCase().includes('justino'))
+                    ? 'https://qewqnirwuptcudoflgkd.supabase.co/storage/v1/object/public/muul_media/TacosTino.jpeg'
+                    : (negocio.foto_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(negocio.nombre)}&background=003e6f&color=fff&size=400`)
+                }
               />
             </div>
             <div className="pb-2">
@@ -397,10 +405,10 @@ export default function NegocioPerfilPage() {
                   {productos.map((p: Producto) => (
                     <div key={p.id} className="group cursor-pointer">
                       {}
-                      <div className="aspect-[4/5] bg-surface-container-low rounded-2xl overflow-hidden mb-4 transition-transform duration-300 group-hover:scale-[1.02] flex items-center justify-center">
+                      <div className="aspect-[4/5] bg-white rounded-2xl overflow-hidden mb-4 transition-transform duration-300 group-hover:scale-[1.02] flex items-center justify-center p-4 border border-outline-variant/10 shadow-sm">
                         <img
                           alt={p.nombre}
-                          className="w-full h-full object-cover"
+                          className="w-full h-full object-contain mix-blend-multiply"
                           src={(p as any).foto_url || (p as any).imagen_url || MOCKUP_IMAGEN_URLS[p.id] || `https://images.unsplash.com/photo-1472851294608-062f824d29cc?q=80&w=1000&auto=format&fit=crop`}
                         />
                       </div>
