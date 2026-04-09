@@ -75,8 +75,8 @@
   },
   "mapa": {
     "cerrar": "Cerrar",
-  "explorar": "Explorar",
-  "compartirApps": "Compartir con apps",
+    "explorar": "Explorar",
+    "compartirApps": "Compartir con apps",
     "buscar": "Buscar en el mapa...",
     "todos": "Todos",
     "comida": "Comida",

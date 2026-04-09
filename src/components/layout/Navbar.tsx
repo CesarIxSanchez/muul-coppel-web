@@ -48,10 +48,10 @@ export default function Navbar() {
   const [selectedIndex, setSelectedIndex] = useState(-1);
 
   const idiomas = [
-    { code: "es" as const, label: "MX", flag: "https://flagcdn.com/w40/mx.png" },
-    { code: "en" as const, label: "US", flag: "https://flagcdn.com/w40/us.png" },
-    { code: "zh" as const, label: "CN", flag: "https://flagcdn.com/w40/cn.png" },
-    { code: "pt" as const, label: "BR", flag: "https://flagcdn.com/w40/br.png" },
+    { code: "es" as const, label: "MX", flag: "https://flagcdn.com/w80/mx.png" },
+    { code: "en" as const, label: "US", flag: "https://flagcdn.com/w80/us.png" },
+    { code: "zh" as const, label: "CN", flag: "https://flagcdn.com/w80/cn.png" },
+    { code: "pt" as const, label: "BR", flag: "https://flagcdn.com/w80/br.png" },
   ];
 
   const navItems = useMemo(
@@ -67,7 +67,7 @@ export default function Navbar() {
 
   const cambiarIdioma = (newLocale: "es" | "en" | "zh" | "pt") => {
     setIsLanguageMenuOpen(false);
-    router.push(pathname, { locale: newLocale });
+    router.push(pathname, { locale: newLocale, scroll: false });
   };
 
   const getCurrentLanguage = () => {
@@ -344,10 +344,16 @@ export default function Navbar() {
             <button
               type="button"
               onClick={() => setIsLanguageMenuOpen((prev) => !prev)}
-              className="flex items-center gap-2 text-[#003e6f] hover:bg-[#003e6f]/5 px-4 py-2 rounded-full transition-all border border-neutral-100/50"
+              className="flex items-center gap-2 text-[#003e6f] hover:bg-[#003e6f]/5 px-3 py-2 rounded-xl transition-all border border-neutral-100/50 bg-white/50 backdrop-blur-sm shadow-sm"
             >
-              <img src={getCurrentLanguage().flag} alt={getCurrentLanguage().label} className="w-5 h-3.5 object-cover rounded-sm shadow-sm" />
-              <span className="text-xs font-bold uppercase tracking-widest">{getCurrentLanguage().label}</span>
+              <div className="w-6 h-4 overflow-hidden rounded-[2px] border border-neutral-200 shadow-sm flex-shrink-0">
+                <img 
+                  src={getCurrentLanguage().flag} 
+                  alt={getCurrentLanguage().label} 
+                  className="w-full h-full object-cover"
+                />
+              </div>
+              <span className="text-[10px] font-black uppercase tracking-wider">{getCurrentLanguage().label}</span>
             </button>
 
             {isLanguageMenuOpen && (
@@ -365,7 +371,9 @@ export default function Navbar() {
                     }`}
                   >
                     <span className="flex items-center gap-3">
-                      <img src={idioma.flag} alt={idioma.label} className="w-5 h-3.5 object-cover rounded-sm border border-neutral-200" />
+                      <div className="w-6 h-4 overflow-hidden rounded-[2px] border border-neutral-200">
+                        <img src={idioma.flag} alt={idioma.label} className="w-full h-full object-cover" />
+                      </div>
                       <span>{idioma.label}</span>
                     </span>
                     {locale === idioma.code && <span className="w-1.5 h-1.5 bg-[#fed000] rounded-full"></span>}

@@ -8,6 +8,7 @@ import { useTranslations } from "next-intl";
 import type { Negocio, Producto } from "@/types/database";
 import { DUMMY_POIS } from "@/lib/dummy-data";
 import { getPremiumPhoto } from "@/lib/photo-engine";
+import { haversine } from "@/lib/haversine";
 
 const categoryEmojis: Record<string, string> = {
   comida: "🌮", tienda: "🛍️", servicios: "🏨", cultural: "🏛️", deportes: "⚽",
@@ -44,6 +45,8 @@ export default function NegocioPerfilPage() {
   const [prodGuardando, setProdGuardando] = useState(false);
   const [prodMsg, setProdMsg] = useState("");
 
+  const [distancia, setDistancia] = useState<string | null>(null);
+
   useEffect(() => {
     const fetchData = async () => {
       const normalizedId = id?.toString() ?? "";
@@ -58,6 +61,21 @@ export default function NegocioPerfilPage() {
           negocioData =
             negociosData.find((item) => slugify(item.nombre) === normalizedId || slugify(`${item.nombre}-${item.id}`) === normalizedId) ?? null;
         }
+      }
+
+      // Geolocation logic
+      if (typeof window !== "undefined" && navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition((pos) => {
+          const uLat = pos.coords.latitude;
+          const uLng = pos.coords.longitude;
+          
+          if (negocioData?.latitud && negocioData?.longitud) {
+            const d = haversine([uLat, uLng], [negocioData.latitud, negocioData.longitud]);
+            setDistancia(d < 1 ? `${(d * 1000).toFixed(0)}m` : `${d.toFixed(1)}km`);
+          }
+        }, (err) => {
+          console.warn("Geolocation error:", err);
+        }, { timeout: 10000 });
       }
 
       // Check dummy data if not found in DB
@@ -98,6 +116,10 @@ export default function NegocioPerfilPage() {
           if (dummy.especialidades) {
             (negocioData as any).especialidades = dummy.especialidades;
           }
+          if (dummy.telefono) (negocioData as any).telefono = dummy.telefono;
+          if (dummy.instagram) (negocioData as any).instagram = dummy.instagram;
+          if (dummy.facebook) (negocioData as any).facebook = dummy.facebook;
+
           if (dummy.productos) {
             const mappedProds: Producto[] = dummy.productos.map((dp: any) => ({
               id: `${dummy.id}-${dp.id}`,
@@ -244,6 +266,29 @@ export default function NegocioPerfilPage() {
                     </div>
                   </div>
                 )}
+                {distancia && (
+                  <div className="flex items-center justify-between p-6 bg-secondary/5 border border-secondary/10 rounded-2xl animate-fade-in md:col-span-2">
+                    <div className="flex items-center gap-4">
+                      <div className="w-12 h-12 rounded-full bg-secondary/20 flex items-center justify-center text-secondary">
+                        <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }}>near_me</span>
+                      </div>
+                      <div>
+                        <p className="text-[10px] font-black uppercase text-secondary tracking-widest">Estás a</p>
+                        <p className="text-xl font-headline font-black text-[#003e6f]">{distancia}</p>
+                      </div>
+                    </div>
+                    <Link 
+                      href={{
+                        pathname: '/mapa',
+                        query: { lat: negocio.latitud, lng: negocio.longitud, id: negocio.id }
+                      }}
+                      className="bg-secondary text-on-secondary px-6 py-3 rounded-xl font-headline font-bold text-xs uppercase tracking-widest shadow-lg shadow-secondary/20 active:scale-95 transition-all flex items-center gap-2"
+                    >
+                      <span className="material-symbols-outlined text-sm">map</span>
+                      Ver en mapa
+                    </Link>
+                  </div>
+                )}
               </div>
             </section>
 
@@ -327,20 +372,28 @@ export default function NegocioPerfilPage() {
                   </div>
                 )}
 
-                {(negocio.instagram || negocio.facebook) && (
+                {(negocio.instagram || negocio.facebook || (negocio as any).telefono) && (
                   <div className="space-y-4 pt-4 border-t border-outline-variant/10">
-                    <h4 className="font-headline font-bold text-xs uppercase tracking-[0.2em] text-on-surface-variant">Redes Sociales</h4>
-                    <div className="flex gap-4">
-                      {negocio.instagram && (
-                        <a href={`https://instagram.com/${negocio.instagram.replace('@', '')}`} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-pink-500/10 flex items-center justify-center text-pink-600 hover:bg-pink-500/20 transition-all">
-                          <span className="material-symbols-outlined text-xl">camera_alt</span>
-                        </a>
+                    <h4 className="font-headline font-bold text-xs uppercase tracking-[0.2em] text-on-surface-variant">Contacto</h4>
+                    <div className="space-y-3">
+                      {(negocio as any).telefono && (
+                        <div className="flex items-center gap-3 text-on-surface">
+                          <span className="material-symbols-outlined text-secondary" style={{ fontVariationSettings: "'FILL' 1" }}>phone_in_talk</span>
+                          <span className="text-sm font-bold">{(negocio as any).telefono}</span>
+                        </div>
                       )}
-                      {negocio.facebook && (
-                        <a href={`https://facebook.com/${negocio.facebook}`} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-blue-600/10 flex items-center justify-center text-blue-700 hover:bg-blue-600/20 transition-all">
-                          <span className="material-symbols-outlined text-xl">facebook</span>
-                        </a>
-                      )}
+                      <div className="flex gap-4">
+                        {negocio.instagram && (
+                          <a href={`https://instagram.com/${negocio.instagram.replace('@', '')}`} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-pink-500/10 flex items-center justify-center text-pink-600 hover:bg-pink-500/20 transition-all">
+                            <span className="material-symbols-outlined text-xl">camera_alt</span>
+                          </a>
+                        )}
+                        {negocio.facebook && (
+                          <a href={`https://facebook.com/${negocio.facebook}`} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-blue-600/10 flex items-center justify-center text-blue-700 hover:bg-blue-600/20 transition-all">
+                            <span className="material-symbols-outlined text-xl">facebook</span>
+                          </a>
+                        )}
+                      </div>
                     </div>
                   </div>
                 )}

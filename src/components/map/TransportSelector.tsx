@@ -71,8 +71,8 @@ export default function TransportSelector({ value, onChange, className = "" }: T
             onClick={() => onChange(mode.value)}
             title={mode.title}
             className={`
-              flex-1 flex flex-col items-center justify-center gap-0.5
-              py-2 rounded-xl text-[9px] font-black uppercase tracking-widest
+              flex-1 flex flex-col items-center justify-center gap-1.5
+              py-3 px-1 rounded-xl text-[8px] font-black uppercase tracking-tighter
               border transition-all duration-200
               ${isActive
                 ? isAccessible
@@ -83,22 +83,20 @@ export default function TransportSelector({ value, onChange, className = "" }: T
             `}
           >
             <span
-              className="material-symbols-outlined text-base"
-              style={isActive && isAccessible
-                ? { fontVariationSettings: "'FILL' 1" }
-                : isActive
+              className="material-symbols-outlined text-lg"
+              style={isActive
                 ? { fontVariationSettings: "'FILL' 1" }
                 : undefined
               }
             >
               {mode.icon}
             </span>
-            <span className="leading-none">{mode.label}</span>
+            <span className="leading-tight text-center">{mode.label}</span>
 
             {/* Accessibility badge */}
             {isAccessible && isActive && (
-              <span className="text-[7px] font-black bg-[#003e6f] text-white px-1 py-0.5 rounded-full leading-none mt-0.5">
-                ♿ OSM
+              <span className="text-[7px] font-black bg-[#003e6f] text-white px-1.5 py-0.5 rounded-full leading-none mt-0.5">
+                OSM
               </span>
             )}
           </button>
