@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useRef, useCallback } from "react";
+import { useEffect, useState, useRef, useCallback, useMemo } from "react";
 import { Link } from "@/i18n/navigation";
 import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
@@ -25,7 +25,7 @@ import AccessibilityFeaturesLayer from "@/components/map/AccessibilityFeaturesLa
 import { useGlobalSearch } from "@/hooks/useGlobalSearch";
 import { haversine } from "@/lib/haversine";
 import { useNearbySearch } from "@/hooks/useNearbySearch";
-import { DUMMY_POIS } from "@/lib/dummy-data";
+import { getLocalizedDummyPois } from "@/lib/dummy-data";
 
 mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_TOKEN!;
 
@@ -105,15 +105,17 @@ export default function MapaPage() {
   const router = useRouter();
   const pathname = usePathname();
 
+  const dummyPois = useMemo(() => getLocalizedDummyPois(locale), [locale]);
+
   const filters = [
     { label: t("todos"), emoji: "🗺️", value: "todos" },
     { label: t("comida"), emoji: "🍜", value: "comida" },
     { label: t("cultural"), emoji: "🏛️", value: "cultural" },
     { label: t("deportes"), emoji: "⚽", value: "deportes" },
     { label: t("tiendas"), emoji: "🛍️", value: "tienda" },
-    { label: "Hospedaje", emoji: "🏨", value: "hospedaje" },
-    { label: "Eventos", emoji: "🎟️", value: "eventos" },
-    { label: "Servicios", emoji: "🛠️", value: "servicios" },
+    { label: t("hospedaje"), emoji: "🏨", value: "hospedaje" },
+    { label: t("eventos"), emoji: "🎟️", value: "eventos" },
+    { label: t("servicios"), emoji: "🛠️", value: "servicios" },
   ];
 
   // ── Feature hooks ──
@@ -125,7 +127,7 @@ export default function MapaPage() {
   const { buscarCercanos, buscandoExternos } = useNearbySearch();
 
   // ── State ──
-  const [allPois, setAllPois] = useState<POI[]>(DUMMY_POIS as any);
+  const [allPois, setAllPois] = useState<POI[]>(dummyPois as any);
 
   const [filteredPois, setFilteredPois] = useState<POI[]>([]);
   const [selectedPoi, setSelectedPoi] = useState<POI | null>(null);
@@ -188,14 +190,14 @@ export default function MapaPage() {
       
       // Merge with dummy POIs
       const mergedPois = [...dbPois];
-      DUMMY_POIS.forEach(d => {
+      dummyPois.forEach(d => {
         if (!mergedPois.find(p => p.id === d.id)) mergedPois.push(d as any);
       });
       
       setAllPois(mergedPois);
     };
     fetchPois();
-  }, []);
+  }, [dummyPois, supabase]);
 
   /* ── Party URL param ── */
   useEffect(() => {

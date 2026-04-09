@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { Link } from "@/i18n/navigation";
 import { useTranslations } from "next-intl";
 import { haversine } from "@/lib/haversine";
+import { HOME_IMAGE_URLS } from "@/lib/dummy-data";
 
 const OFFERS_DATA = [
   { id: 1, name: "Tacos El Guero", lat: 19.423, lng: -99.163, desc: "20% de descuento en todos los tacos al pastor. Solo con código MUUL26.", off: "-20% OFF", type: "food" },
@@ -20,25 +21,33 @@ export default function HomePage() {
   const heroData = [
     { 
       id: "dummy-angel-independencia",
-      img: "https://images.unsplash.com/photo-1518182170546-07661fd94144?q=80&w=1920&auto=format&fit=crop", 
+      img: HOME_IMAGE_URLS.hero.angel,
       title: "Ángel de la Independencia", 
       lat: 19.4270, 
       lng: -99.1677 
     },
     { 
       id: "dummy-bellas-artes",
-      img: "https://images.unsplash.com/photo-1585464231473-746d24c039a2?q=80&w=1920&auto=format&fit=crop", 
+      img: HOME_IMAGE_URLS.hero.bellasArtes,
       title: "Palacio de Bellas Artes", 
       lat: 19.4352, 
       lng: -99.1412 
     },
     { 
       id: "dummy-chapultepec",
-      img: "https://images.unsplash.com/photo-1563911892437-1feda0179e1b?q=80&w=1920&auto=format&fit=crop", 
+      img: HOME_IMAGE_URLS.hero.chapultepec,
       title: "Castillo de Chapultepec", 
       lat: 19.4204, 
       lng: -99.1819 
     }
+  ];
+
+  const categoryCards = [
+    { href: "/mapa?filter=comida", icon: "restaurant", label: t("gastronomia"), image: HOME_IMAGE_URLS.categories.gastronomia },
+    { href: "/mapa?filter=hospedaje", icon: "apartment", label: t("hospedaje"), image: HOME_IMAGE_URLS.categories.hospedaje },
+    { href: "/mapa?filter=cultural", icon: "confirmation_number", label: t("cultural"), image: HOME_IMAGE_URLS.categories.cultural },
+    { href: "/mapa?filter=eventos", icon: "event", label: t("eventos"), image: HOME_IMAGE_URLS.categories.eventos },
+    { href: "/mapa?filter=servicios", icon: "construction", label: t("servicios"), image: HOME_IMAGE_URLS.categories.servicios },
   ];
 
   useEffect(() => {
@@ -91,7 +100,7 @@ export default function HomePage() {
         <div className="absolute bottom-12 left-1/2 -translate-x-1/2 z-20 flex items-center gap-6">
           {/* Previous Arrow */}
           <button 
-            onClick={() => setActiveHero((prev) => (prev - 1 + heroImages.length) % heroImages.length)}
+            onClick={() => setActiveHero((prev) => (prev - 1 + heroData.length) % heroData.length)}
             className="w-12 h-12 rounded-full bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center text-white hover:bg-white/20 transition-all group"
           >
             <span className="material-symbols-outlined group-hover:-translate-x-1 transition-transform">chevron_left</span>
@@ -119,10 +128,10 @@ export default function HomePage() {
         
         {/* Place Badge - Bottom Right */}
         <div className="absolute bottom-12 right-12 z-20 hidden md:flex flex-col items-end">
-          <div className="flex items-center gap-2 mb-2 font-label text-xs uppercase tracking-[0.2em]" style={{color: '#fed000', textShadow: '0 0 15px rgba(0,0,0,0.9)'}}>
-            <span className="w-2 h-2 rounded-full bg-[#fed000]"></span>
-            CURADURÍA EXCLUSIVA
-          </div>
+            <div className="flex items-center gap-2 mb-2 font-label text-xs uppercase tracking-[0.2em]" style={{color: '#fed000', textShadow: '0 0 15px rgba(0,0,0,0.9)'}}>
+              <span className="w-2 h-2 rounded-full bg-[#fed000]"></span>
+              {t("curaduriaExclusiva")}
+            </div>
           <span className="font-headline text-white text-xl font-bold tracking-widest bg-black/30 backdrop-blur-sm px-4 py-1.5 rounded-lg border border-white/10 shadow-xl">{heroData[activeHero].title}</span>
         </div>
 
@@ -145,14 +154,14 @@ export default function HomePage() {
               href={`/mapa?lat=${heroData[activeHero].lat}&lng=${heroData[activeHero].lng}&zoom=17&id=${heroData[activeHero].id}`}
               className="bg-[#fed000] text-[#003e6f] !text-[#003e6f] px-8 md:px-12 py-4 md:py-5 rounded-full font-headline font-black text-base md:text-lg hover:shadow-[0_0_20px_rgba(254,208,0,0.4)] transition-all flex items-center justify-center gap-2 group shadow-2xl"
             >
-              Comenzar viaje
+              {t("explorarMapa")}
               <span className="material-symbols-outlined group-hover:rotate-12 transition-transform">map</span>
             </Link>
             <a 
               href="#explorar-seccion"
               className="bg-white/20 backdrop-blur-md border-2 border-white/60 text-white !text-white px-8 md:px-12 py-4 md:py-5 rounded-full font-headline font-black text-base md:text-lg hover:bg-white/30 hover:border-white/80 transition-all shadow-lg flex items-center justify-center gap-2"
             >
-              Ver catálogo
+              {t("verCatalogo")}
               <span className="material-symbols-outlined">expand_more</span>
             </a>
           </div>
@@ -171,85 +180,22 @@ export default function HomePage() {
           </p>
         </div>
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 md:gap-6">
-          {/* Gastronomía */}
-          <Link href="/mapa?filter=comida" className="group relative aspect-[3/4] rounded-[2rem] overflow-hidden cursor-pointer shadow-lg hover:shadow-2xl transition-all duration-500">
-            <div 
-              className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110"
-              style={{
-                backgroundImage: 'linear-gradient(135deg, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.5) 100%), url("https://images.unsplash.com/photo-1565299585323-38d6b0865b47?q=80&w=600&auto=format&fit=crop")'
-              }}
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-[#001c39]/90 via-transparent to-transparent opacity-80" />
-            <div className="absolute bottom-0 left-0 right-0 p-6">
-              <span className="material-symbols-outlined text-white/50 mb-3 block group-hover:scale-110 group-hover:text-secondary transition-all">restaurant</span>
-              <h3 className="font-headline text-lg md:text-xl lg:text-2xl text-white font-black leading-tight">Gastronomía</h3>
-              <div className="h-1 w-8 bg-[#fed000] mt-4 rounded-full group-hover:w-16 transition-all duration-300" />
-            </div>
-          </Link>
-          
-          {/* Hospedaje */}
-          <Link href="/mapa?filter=hospedaje" className="group relative aspect-[3/4] rounded-[2rem] overflow-hidden cursor-pointer shadow-lg hover:shadow-2xl transition-all duration-500">
-            <div 
-              className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110"
-              style={{
-                backgroundImage: 'linear-gradient(135deg, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.5) 100%), url("https://images.unsplash.com/photo-1566073771259-6a8506099945?q=80&w=600&auto=format&fit=crop")'
-              }}
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-[#001c39]/90 via-transparent to-transparent opacity-80" />
-            <div className="absolute bottom-0 left-0 right-0 p-6">
-              <span className="material-symbols-outlined text-white/50 mb-3 block group-hover:scale-110 group-hover:text-secondary transition-all">apartment</span>
-              <h3 className="font-headline text-lg md:text-xl lg:text-2xl text-white font-black leading-tight">Hospedaje</h3>
-              <div className="h-1 w-8 bg-[#fed000] mt-4 rounded-full group-hover:w-16 transition-all duration-300" />
-            </div>
-          </Link>
-          
-          {/* Cultural */}
-          <Link href="/mapa?filter=cultural" className="group relative aspect-[3/4] rounded-[2rem] overflow-hidden cursor-pointer shadow-lg hover:shadow-2xl transition-all duration-500">
-            <div 
-              className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110"
-              style={{
-                backgroundImage: 'linear-gradient(135deg, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.5) 100%), url("https://images.unsplash.com/photo-1518709268805-4e9042af9f23?q=80&w=600&auto=format&fit=crop")'
-              }}
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-[#001c39]/90 via-transparent to-transparent opacity-80" />
-            <div className="absolute bottom-0 left-0 right-0 p-6">
-              <span className="material-symbols-outlined text-white/50 mb-3 block group-hover:scale-110 group-hover:text-secondary transition-all">confirmation_number</span>
-              <h3 className="font-headline text-lg md:text-xl lg:text-2xl text-white font-black leading-tight">Cultural</h3>
-              <div className="h-1 w-8 bg-[#fed000] mt-4 rounded-full group-hover:w-16 transition-all duration-300" />
-            </div>
-          </Link>
-
-          {/* Eventos */}
-          <Link href="/mapa?filter=eventos" className="group relative aspect-[3/4] rounded-[2rem] overflow-hidden cursor-pointer shadow-lg hover:shadow-2xl transition-all duration-500">
-            <div 
-              className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110"
-              style={{
-                backgroundImage: 'linear-gradient(135deg, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.5) 100%), url("https://images.unsplash.com/photo-1493225255756-d9584f8606e9?q=80&w=600&auto=format&fit=crop")'
-              }}
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-[#001c39]/90 via-transparent to-transparent opacity-80" />
-            <div className="absolute bottom-0 left-0 right-0 p-6">
-              <span className="material-symbols-outlined text-white/50 mb-3 block group-hover:scale-110 group-hover:text-secondary transition-all">event</span>
-              <h3 className="font-headline text-lg md:text-xl lg:text-2xl text-white font-black leading-tight">Eventos</h3>
-              <div className="h-1 w-8 bg-[#fed000] mt-4 rounded-full group-hover:w-16 transition-all duration-300" />
-            </div>
-          </Link>
-
-          {/* Servicios */}
-          <Link href="/mapa?filter=servicios" className="group relative aspect-[3/4] rounded-[2rem] overflow-hidden cursor-pointer shadow-lg hover:shadow-2xl transition-all duration-500">
-            <div 
-              className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110"
-              style={{
-                backgroundImage: 'linear-gradient(135deg, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.5) 100%), url("https://images.unsplash.com/photo-1581092580497-e0d23cbdf1dc?q=80&w=600&auto=format&fit=crop")'
-              }}
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-[#001c39]/90 via-transparent to-transparent opacity-80" />
-            <div className="absolute bottom-0 left-0 right-0 p-6">
-              <span className="material-symbols-outlined text-white/50 mb-3 block group-hover:scale-110 group-hover:text-secondary transition-all">construction</span>
-              <h3 className="font-headline text-lg md:text-xl lg:text-2xl text-white font-black leading-tight">Servicios</h3>
-              <div className="h-1 w-8 bg-[#fed000] mt-4 rounded-full group-hover:w-16 transition-all duration-300" />
-            </div>
-          </Link>
+          {categoryCards.map((card) => (
+            <Link key={card.href} href={card.href} className="group relative aspect-[3/4] rounded-[2rem] overflow-hidden cursor-pointer shadow-lg hover:shadow-2xl transition-all duration-500">
+              <div
+                className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110"
+                style={{
+                  backgroundImage: `linear-gradient(135deg, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.5) 100%), url("${card.image}")`
+                }}
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#001c39]/90 via-transparent to-transparent opacity-80" />
+              <div className="absolute bottom-0 left-0 right-0 p-6">
+                <span className="material-symbols-outlined text-white/50 mb-3 block group-hover:scale-110 group-hover:text-secondary transition-all">{card.icon}</span>
+                <h3 className="font-headline text-lg md:text-xl lg:text-2xl text-white font-black leading-tight">{card.label}</h3>
+                <div className="h-1 w-8 bg-[#fed000] mt-4 rounded-full group-hover:w-16 transition-all duration-300" />
+              </div>
+            </Link>
+          ))}
         </div>
       </section>
 
@@ -268,13 +214,13 @@ export default function HomePage() {
               <div 
                 className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105"
                 style={{
-                  backgroundImage: 'url("https://images.unsplash.com/photo-1518182170546-07661fd94144?q=80&w=800&h=1000&auto=format&fit=crop")'
+                  backgroundImage: `url("${HOME_IMAGE_URLS.trends.sanMiguel}")`
                 }}
               />
               <div className="absolute inset-0 bg-gradient-to-t from-[#001c39]/90 via-transparent to-transparent" />
               <div className="relative z-10 h-full flex flex-col justify-end p-10">
                 <div className="inline-flex items-center gap-3 mb-6 w-fit bg-[#fed000] px-5 py-2 rounded-xl shadow-lg">
-                  <span className="text-[#003e6f] text-xs font-headline font-black uppercase tracking-widest">🔥 Trending #1</span>
+                  <span className="text-[#003e6f] text-xs font-headline font-black uppercase tracking-widest">{t("trendingRank")}</span>
                 </div>
                 <h3 className="font-headline text-5xl md:text-6xl text-white font-black mb-6 leading-tight !text-white">{t("destinoPrincipal")}</h3>
                 <div className="flex gap-8">
@@ -291,7 +237,7 @@ export default function HomePage() {
               <div 
                 className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105"
                 style={{
-                  backgroundImage: 'linear-gradient(rgba(0,62,111,0.2), rgba(0,28,57,0.4)), url("https://images.pexels.com/photos/1624487/pexels-photo-1624487.jpeg?auto=compress&cs=tinysrgb&w=600&h=400")'
+                  backgroundImage: `linear-gradient(rgba(0,62,111,0.2), rgba(0,28,57,0.4)), url("${HOME_IMAGE_URLS.trends.puertoEscondido}")`
                 }}
               />
               <div className="absolute inset-0 bg-gradient-to-t from-[#001c39]/80 to-transparent" />
@@ -329,11 +275,11 @@ export default function HomePage() {
       <section className="py-24 md:py-32 bg-white px-6 md:px-12 max-w-[1440px] mx-auto overflow-visible">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-16 gap-8">
           <div>
-            <span className="font-label text-secondary tracking-widest text-xs uppercase mb-4 block font-black">⚡ OPORTUNIDADES MUUL</span>
-            <h2 className="font-headline text-5xl md:text-6xl text-[#003e6f] font-black leading-none">Ofertas <span className="text-secondary italic">Especiales</span></h2>
+            <span className="font-label text-secondary tracking-widest text-xs uppercase mb-4 block font-black">⚡ {t("ofertasTag")}</span>
+            <h2 className="font-headline text-5xl md:text-6xl text-[#003e6f] font-black leading-none">{t("ofertasTitulo")} <span className="text-secondary italic">{t("ofertasDestacado")}</span></h2>
           </div>
           <Link href="/ofertas" className="flex items-center gap-3 text-[#003e6f] font-headline font-black text-sm uppercase tracking-widest hover:text-secondary transition-colors group">
-            Ver todas las ofertas
+            {t("verTodasLasOfertas")}
             <span className="material-symbols-outlined group-hover:translate-x-1 transition-transform">arrow_forward</span>
           </Link>
         </div>
