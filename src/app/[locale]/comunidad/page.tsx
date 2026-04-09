@@ -9,10 +9,35 @@ import {
   SocialUser 
 } from "@/lib/social-dummy";
 import { SocialService } from "@/lib/services/social.service";
-import { useState, useEffect, Suspense } from "react";
+import { useState, useEffect, Suspense, Component, ReactNode } from "react";
 import Image from "next/image";
 import { createClient } from "@/lib/supabase/client";
 import { getPerfilCompat } from "@/lib/supabase/profileCompat";
+
+// Error boundary to catch render errors
+class ErrorBoundary extends Component<
+  { children: ReactNode; fallback?: ReactNode },
+  { hasError: boolean; error: Error | null }
+> {
+  constructor(props: { children: ReactNode; fallback?: ReactNode }) {
+    super(props);
+    this.state = { hasError: false, error: null };
+  }
+  static getDerivedStateFromError(error: Error) {
+    return { hasError: true, error };
+  }
+  render() {
+    if (this.state.hasError) {
+      return this.props.fallback || (
+        <div className="p-8 text-red-600 bg-red-50 rounded-xl">
+          <p className="font-bold">Error en Comunidad:</p>
+          <pre className="text-xs mt-2">{this.state.error?.message}</pre>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
 
 function PostCard({ post, currentUserId }: { post: SocialPost, currentUserId?: string | null }) {
   const t = useTranslations("comunidad");
@@ -135,9 +160,18 @@ function RankingBoard({ users }: { users: SocialUser[] }) {
 
 export default function ComunidadPage() {
   return (
-    <Suspense fallback={<div>Cargando comunidad...</div>}>
-      <ComunidadContent />
-    </Suspense>
+    <ErrorBoundary>
+      <Suspense fallback={
+        <div className="min-h-screen flex items-center justify-center">
+          <div className="text-center">
+            <div className="w-8 h-8 border-4 border-[#003e6f] border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+            <p className="text-neutral-500 font-body">Cargando comunidad...</p>
+          </div>
+        </div>
+      }>
+        <ComunidadContent />
+      </Suspense>
+    </ErrorBoundary>
   );
 }
 
@@ -321,7 +355,35 @@ function ComunidadContent() {
                 />
                 <label className="cursor-pointer text-neutral-400 hover:text-[#003e6f] transition-colors p-2 rounded-full hover:bg-neutral-100">
                   <span className="material-symbols-outlined text-[22px]">add_photo_alternate</span>
-                  <input type="file" accept="image}
+                  <input 
+                    type="file" 
+                    accept="image/*" 
+                    className="hidden" 
+                    onChange={handleImageSelect}
+                  />
+                </label>
+                <button 
+                  onClick={handleAddPost}
+                  disabled={!inputValue.trim() || isPublishing}
+                  className="bg-[#fed000] text-[#003e6f] px-6 py-2 rounded-full font-headline font-black text-sm hover:shadow-lg transition-all disabled:opacity-50"
+                >
+                  {isPublishing ? "..." : t("publicar")}
+                </button>
+              </div>
+
+              {selectedImage && (
+                <div className="mt-4 relative w-full h-48 rounded-xl overflow-hidden group">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={selectedImage} alt="Preview" className="w-full h-full object-cover" />
+                  <button 
+                    onClick={() => { setSelectedImage(null); setSelectedImageFile(null); }}
+                    className="absolute top-2 right-2 bg-black/50 text-white p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                  >
+                    <span className="material-symbols-outlined text-sm">close</span>
+                  </button>
+                </div>
+              )}
+            </div>
             <div className="flex flex-col">
               <h2 className="font-headline font-black text-xl text-[#003e6f] mb-6">{t("publicaciones")}</h2>
               {posts.map(post => (
