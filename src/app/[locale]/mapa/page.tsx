@@ -34,14 +34,27 @@ interface UserInfo { initials: string; nombre: string }
 
 /* ── Visit duration by category (minutes) ── */
 const DURACION_VISITA: Record<string, number> = {
-  cultural: 60, comida: 45, tienda: 30, deportes: 90, servicio: 20,
+  cultural: 60,
+  comida: 45,
+  tienda: 30,
+  deportes: 90,
+  servicio: 20,
+  servicios: 30,
+  hospedaje: 40,
+  eventos: 120,
 };
 
 /* ── Helpers ── */
 function getMarkerColor(cat: string): string {
   const m: Record<string, string> = {
-    comida: "#ffb3b3", cultural: "#b0c6fd", deportes: "#98d5a2",
-    tienda: "#8a8a8e", servicio: "#8a8a8e",
+    comida: "#ffb3b3",
+    cultural: "#b0c6fd",
+    deportes: "#98d5a2",
+    tienda: "#8a8a8e",
+    servicio: "#8a8a8e",
+    servicios: "#8a8a8e",
+    hospedaje: "#b9a5ff",
+    eventos: "#ff9ec4",
   };
   return m[cat] ?? "#8a8a8e";
 }
@@ -160,6 +173,20 @@ export default function MapaPage() {
   const activeError = isAccessibleMode
     ? (accessibleRoute.error || sorprendeme.error)
     : (mapboxOpt.error || sorprendeme.error);
+
+  const lugaresCercanosMuul = useMemo(() => {
+    if (!ubicacionUsuario) return [];
+
+    return [...allPois]
+      .filter((poi) => poi.verificado !== false && !String(poi.id).startsWith("mapbox_"))
+      .map((poi) => ({
+        poi,
+        distancia: haversine(ubicacionUsuario, [poi.latitud, poi.longitud]),
+      }))
+      .sort((a, b) => a.distancia - b.distancia)
+      .slice(0, 8)
+      .map(({ poi }) => poi);
+  }, [allPois, ubicacionUsuario]);
 
   /* ── Auth ── */
   useEffect(() => {
@@ -1057,6 +1084,7 @@ export default function MapaPage() {
           onClose={() => setChatbotAbierto(false)}
           poi={selectedPoi}
           poisEnRuta={poisEnRuta}
+          lugaresCercanos={lugaresCercanosMuul}
           totalVisibles={filteredPois.length}
           idioma={locale}
         />
