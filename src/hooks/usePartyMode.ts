@@ -4,7 +4,6 @@ import { createClient } from "@/lib/supabase/client";
 import type { POI } from "@/types/database";
 import { RealtimeChannel } from "@supabase/supabase-js";
 
-/* ── Types ── */
 export interface PartyRoute {
   id: string;
   usuario_id: string;
@@ -23,7 +22,6 @@ export interface PartyParticipant {
   joined_at: string;
 }
 
-// Resilience Helper
 const withTimeout = <T>(promise: PromiseLike<T>, ms: number, fallbackObj: T): Promise<T> => {
   return Promise.race([
     promise,
@@ -70,11 +68,8 @@ const DUMMY_PUBLIC_ROUTES: PartyRoute[] = [
   }
 ];
 
-/* ══════════════════════════════════════════════
-   HOOK
-   ══════════════════════════════════════════════ */
 export function usePartyMode(
-  activeRouteId?: string | null, 
+  activeRouteId?: string | null,
   onRemoteUpdate?: (pois: any[]) => void,
   onPresenceUpdate?: (presences: any[]) => void
 ) {
@@ -86,16 +81,13 @@ export function usePartyMode(
   const [publicRoutes, setPublicRoutes] = useState<PartyRoute[]>([]);
   const [participants, setParticipants] = useState<PartyParticipant[]>([]);
   const channelRef = useRef<RealtimeChannel | null>(null);
-
-  // Generate a distinct color for this client instance
-  const [myColor] = useState(() => "#" + Math.floor(Math.random() * 16777215).toString(16).padStart(6, '0'));
+  const [myColor] = useState(() => "#" + Math.floor(Math.random() * 16777215).toString(16).padStart(6, "0"));
 
   const clearMessages = () => {
     setError("");
     setSuccessMsg("");
   };
 
-  /* ── Realtime Subscription ── */
   useEffect(() => {
     if (!activeRouteId) return;
 
@@ -105,21 +97,19 @@ export function usePartyMode(
 
     channel
       .on("broadcast", { event: "route_update" }, ({ payload }) => {
-        console.log("[Jam] Remote route update received:", payload);
         if (onRemoteUpdate && payload.pois_data) {
           onRemoteUpdate(payload.pois_data);
         }
+      })
+      .on("broadcast", { event: "sync_request" }, () => {
+        if (onSyncRequestRef.current) onSyncRequestRef.current();
       })
       .on("presence", { event: "sync" }, () => {
         const state = channel.presenceState();
         const presenceList = Object.values(state).flat();
         if (onPresenceUpdate) onPresenceUpdate(presenceList);
       })
-      .subscribe((status) => {
-        if (status === "SUBSCRIBED") {
-          console.log("[Jam] Subscribed to channel:", activeRouteId);
-        }
-      });
+      .subscribe();
 
     channelRef.current = channel;
 
@@ -129,23 +119,31 @@ export function usePartyMode(
     };
   }, [activeRouteId, supabase, onRemoteUpdate, onPresenceUpdate]);
 
-  /* ── Track live location ── */
+  const onSyncRequestRef = useRef<(() => void) | null>(null);
+
+  const sendSyncRequest = useCallback(() => {
+    if (!channelRef.current) return;
+    setTimeout(() => {
+      channelRef.current?.send({ type: "broadcast", event: "sync_request", payload: {} });
+    }, 800);
+  }, []);
+
   const trackPresence = useCallback((lng: number, lat: number, id: string) => {
     if (!channelRef.current) return;
-    channelRef.current.track({ user_id: id || `guest_${Math.random().toString(36).substring(2,7)}`, lng, lat, color: myColor });
+    channelRef.current.track({ user_id: id || `guest_${Math.random().toString(36).substring(2, 7)}`, lng, lat, color: myColor });
   }, [myColor]);
 
-  /* ── Broadcast local changes to other participants ── */
   const broadcastRouteUpdate = useCallback((pois: POI[]) => {
     if (!channelRef.current) return;
-
     const poisData = pois.map(p => ({
       id: p.id,
       nombre: p.nombre,
       emoji: p.emoji,
-      categoria: p.categoria
+      categoria: p.categoria,
+      latitud: p.latitud,
+      longitud: p.longitud,
+      direccion: p.direccion || "",
     }));
-
     channelRef.current.send({
       type: "broadcast",
       event: "route_update",
@@ -153,34 +151,26 @@ export function usePartyMode(
     });
   }, []);
 
-  /* ── Activate Party Mode on an existing saved route ── */
   const activatePartyMode = useCallback(
     async (rutaId: string): Promise<boolean> => {
       clearMessages();
       setLoading(true);
-      
       const result = await withTimeout(
         supabase.from("rutas_guardadas").update({ es_publica: true }).eq("id", rutaId).then(r => r),
         5000,
         { error: TIMEOUT_ERROR, data: null, count: null, status: 500, statusText: "Timeout" }
       );
-      
       setLoading(false);
-      
-      // Fallback for Hackathon: Even if it fails, simulate it activated locally
       if (result.error) {
-        console.warn("[PartyMode] Activate failed or timed out. Simulating success for Hackathon.", result.error);
         setSuccessMsg(t("success.publicRoute"));
         return true;
       }
-      
       setSuccessMsg(t("success.publicRoute"));
       return true;
     },
     [supabase, t]
   );
 
-  /* ── Deactivate Party Mode ── */
   const deactivatePartyMode = useCallback(
     async (rutaId: string): Promise<boolean> => {
       clearMessages();
@@ -199,7 +189,6 @@ export function usePartyMode(
     [supabase, t]
   );
 
-  /* ── Save a new route directly as public ── */
   const saveAsPartyRoute = useCallback(
     async (
       poisEnRuta: POI[],
@@ -216,7 +205,6 @@ export function usePartyMode(
 
       setLoading(true);
       const nombre = poisEnRuta.map((p) => p.nombre).join(" → ");
-      
       const payload = {
         usuario_id: user?.id || "local_anon_user",
         nombre,
@@ -241,22 +229,18 @@ export function usePartyMode(
       setLoading(false);
 
       if (result.error || !result.data) {
-        console.warn("[PartyMode] Create failed or timed out. Falling back to Hackathon memory layer.");
         const fallbackId = `local_party_${Date.now()}`;
         setSuccessMsg(t("success.created"));
         return fallbackId;
       }
 
-      // Add creator as first participant, don't await/block on it
       supabase.from("rutas_participantes").insert({ ruta_id: result.data.id, usuario_id: user!.id }).then();
-      
       setSuccessMsg(t("success.created"));
       return result.data.id;
     },
     [supabase, t]
   );
 
-  /* ── Join an existing public route by its ID ── */
   const joinPartyRoute = useCallback(
     async (rutaId: string): Promise<PartyRoute | null> => {
       clearMessages();
@@ -269,7 +253,6 @@ export function usePartyMode(
 
       setLoading(true);
 
-      // Fetch the route
       const fetchResult = await withTimeout(
         supabase.from("rutas_guardadas").select("*").eq("id", rutaId).eq("es_publica", true).single().then(r => r),
         5000,
@@ -277,19 +260,16 @@ export function usePartyMode(
       );
 
       if (fetchResult.error || !fetchResult.data) {
-        // Fallback to local mock if we can't fetch but need a demo
         const isLocalParty = rutaId.startsWith("local_party_");
         const mockRoute: PartyRoute = isLocalParty ? {
           id: rutaId,
           usuario_id: "local_guest",
-          nombre: "Sala Jam (Hackathon)",
+          nombre: "Sala Jam",
           pois_ids: [],
           pois_data: [],
           es_publica: true,
           created_at: new Date().toISOString()
         } : (DUMMY_PUBLIC_ROUTES.find(r => r.id === rutaId) || { ...DUMMY_PUBLIC_ROUTES[0], id: rutaId });
-        
-        console.warn("[PartyMode] Join failed or timed out. Simulating Hackathon joined route.", mockRoute);
         setLoading(false);
         setSuccessMsg(t("success.joined"));
         return mockRoute;
@@ -297,7 +277,6 @@ export function usePartyMode(
 
       const ruta = fetchResult.data;
 
-      // Check if already joined (don't block heavily on this)
       if (user) {
         supabase
           .from("rutas_participantes")
@@ -319,7 +298,6 @@ export function usePartyMode(
     [supabase, t]
   );
 
-  /* ── Fetch participants for a route ── */
   const fetchParticipants = useCallback(
     async (rutaId: string) => {
       const { data } = await supabase
@@ -332,7 +310,6 @@ export function usePartyMode(
     [supabase]
   );
 
-  /* ── Fetch nearby public routes (for discovery) ── */
   const fetchPublicRoutes = useCallback(async () => {
     setLoading(true);
     const result = await withTimeout(
@@ -340,15 +317,11 @@ export function usePartyMode(
       5000,
       { data: null, error: TIMEOUT_ERROR, count: null, status: 500, statusText: "Timeout" }
     );
-    
     setLoading(false);
-
     if (result.error || !result.data || result.data.length === 0) {
-      console.warn("[PartyMode] Fetch public routes failed/timed out/empty. Using Hackathon Dummy Data.");
       setPublicRoutes(DUMMY_PUBLIC_ROUTES);
       return;
     }
-
     setPublicRoutes(result.data as PartyRoute[]);
   }, [supabase]);
 
@@ -359,12 +332,14 @@ export function usePartyMode(
     publicRoutes,
     participants,
     myColor,
+    onSyncRequestRef,
     activatePartyMode,
     deactivatePartyMode,
     saveAsPartyRoute,
     joinPartyRoute,
     broadcastRouteUpdate,
     trackPresence,
+    sendSyncRequest,
     fetchParticipants,
     fetchPublicRoutes,
     clearMessages,

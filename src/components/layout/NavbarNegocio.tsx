@@ -93,7 +93,7 @@ export default function NavbarNegocio() {
           parts.length >= 2 ? (parts[0][0] + parts[1][0]).toUpperCase() : nombre.substring(0, 2).toUpperCase();
         setUser({ initials, nombre, avatar_url: perfil?.avatar_url, userId: authUser.id });
 
-        // Use RPC to get business data (respects RLS)
+
         const { data: negocioData, error } = await supabase.rpc("get_negocio_usuario_actual");
 
         if (error || !negocioData || negocioData.length === 0) {
@@ -126,7 +126,7 @@ export default function NavbarNegocio() {
   return (
     <nav className="fixed top-0 w-full z-50 bg-gradient-to-r from-[#003e6f] to-[#005596] border-b border-[#003e6f]/20 shadow-[0_4px_30px_rgba(0,62,111,0.15)]">
       <div className="max-w-[1440px] mx-auto h-[80px] px-8 flex items-center justify-between gap-8">
-        {/* Logo & Business Name */}
+        {}
         <div className="flex items-center gap-4">
           <Image
             src="https://qewqnirwuptcudoflgkd.supabase.co/storage/v1/object/public/muul_media/logoblanco.png"
@@ -145,7 +145,7 @@ export default function NavbarNegocio() {
           </div>
         </div>
 
-        {/* Business Desktop Nav */}
+        {}
         <div className="hidden lg:flex gap-8 items-center">
           {getBusinessNavItems().map((item) => (
             <Link
@@ -162,9 +162,9 @@ export default function NavbarNegocio() {
           ))}
         </div>
 
-        {/* Right Section */}
+        {}
         <div className="flex items-center gap-4">
-          {/* Language Selector */}
+          {}
           <div className="relative" ref={languageMenuRef}>
             <button
               type="button"
@@ -210,7 +210,7 @@ export default function NavbarNegocio() {
 
           <div className="h-8 w-[1px] bg-white/20 hidden sm:block"></div>
 
-          {/* User Avatar or Login */}
+          {}
           {user ? (
             <div className="relative font-body" ref={profileMenuRef}>
               <button

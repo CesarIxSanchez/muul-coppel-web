@@ -1,7 +1,4 @@
-/* =============================================
-   MUUL — Preguntas predefinidas del Chatbot IA
-   5 preguntas por categoría × 4 idiomas
-   ============================================= */
+
 
 export interface PreguntaPredefinida {
   id: string;
@@ -203,7 +200,7 @@ export const preguntasPorCategoria: Record<string, PreguntaPredefinida[]> = {
   ],
 };
 
-/* ── Helper: get language key from locale ── */
+
 export type IdiomaKey = "texto_es" | "texto_en" | "texto_zh" | "texto_pt";
 
 export function getIdiomaKey(idioma: string): IdiomaKey {
@@ -220,7 +217,7 @@ export function getIdiomaKey(idioma: string): IdiomaKey {
   return map[idioma] || "texto_es";
 }
 
-/* ── Helper: get questions for a POI category ── */
+
 export function getPreguntasParaPOI(categoria: string): PreguntaPredefinida[] {
   return preguntasPorCategoria[categoria] || preguntasPorCategoria.servicio;
 }

@@ -3,7 +3,7 @@
 import { useState, useCallback } from "react";
 import type { POI } from "@/types/database";
 
-/* ── Types ── */
+
 export type TransportMode = "walking" | "cycling" | "driving";
 
 export interface OptimizedRoute {
@@ -16,7 +16,7 @@ export interface OptimizedRoute {
   legs: { distance: number; duration: number }[];
 }
 
-/* ── Formatters ── */
+
 function formatDistance(meters: number): string {
   return meters < 1000
     ? `${Math.round(meters)} m`
@@ -34,33 +34,28 @@ function formatDuration(seconds: number): string {
 const TOKEN = process.env.NEXT_PUBLIC_MAPBOX_TOKEN!;
 const OPT_BASE = "https://api.mapbox.com/optimized-trips/v1/mapbox";
 
-/* ══════════════════════════════════════════════
-   HOOK
-   ══════════════════════════════════════════════ */
+
 export function useMapboxOptimization() {
   const [route, setRoute] = useState<OptimizedRoute | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  /**
-   * Calls the Mapbox Optimization API v1.
-   * Returns the optimized route + POIs reordered by the API.
-   */
+  
   const calculateRoute = useCallback(
     async (
       pois: POI[],
-      userLocation: [number, number] | null, // [lat, lng]
+      userLocation: [number, number] | null,
       mode: TransportMode
     ): Promise<OptimizedRoute | null> => {
       if (pois.length < 1) return null;
 
-      // Forzar inicio desde turista
+
       if (!userLocation) {
         setError("No se detectó tu ubicación en tiempo real.");
         return null;
       }
 
-      const totalPoints = pois.length + 1; // user + pois
+      const totalPoints = pois.length + 1;
       if (totalPoints > 12) {
         setError("Máximo 12 puntos en la ruta");
         return null;
@@ -71,7 +66,7 @@ export function useMapboxOptimization() {
 
       try {
         const coords: [number, number][] = [];
-        coords.push([userLocation[1], userLocation[0]]); // first = source
+        coords.push([userLocation[1], userLocation[0]]);
         pois.forEach((p) => coords.push([p.longitud, p.latitud]));
 
         const coordStr = coords.map((c) => c.join(",")).join(";");
@@ -98,7 +93,7 @@ export function useMapboxOptimization() {
         const trip = data.trips[0];
         const rawWaypoints: { waypoint_index: number }[] = data.waypoints ?? [];
 
-        // Reorden robusto por waypoint_index (ignorando slot 0 = usuario)
+
         const poiWaypoints = rawWaypoints.slice(1);
         const orderedPois = poiWaypoints
           .map((wp, originalIdx) => ({ wpIndex: wp.waypoint_index, poi: pois[originalIdx] }))

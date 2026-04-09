@@ -23,7 +23,7 @@ export async function POST(request: NextRequest) {
 
     console.log("📋 Datos recibidos para negocio");
 
-    // Validar datos
+
     if (!nombrePropietario?.trim()) {
       return NextResponse.json(
         { error: "El nombre del propietario es requerido" },
@@ -73,7 +73,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Crear cliente Supabase con credenciales admin
+
     const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
     const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
@@ -97,7 +97,7 @@ export async function POST(request: NextRequest) {
 
     console.log("🔐 Cliente Supabase creado (SERVICE_ROLE)");
 
-    // Paso 1: Crear usuario en auth
+
     console.log("📝 Creando usuario en auth (tipo: negocio)...");
     const { data: authData, error: signUpError } = await supabase.auth.admin.createUser({
       email: email.toLowerCase().trim(),
@@ -132,7 +132,7 @@ export async function POST(request: NextRequest) {
     const userId = authData.user.id;
     console.log("✅ Usuario creado en auth:", userId);
 
-    // Paso 2: Guardar perfil del propietario usando RPC con SECURITY DEFINER
+
     console.log("🔄 Guardando perfil del propietario con RPC...");
     
     const { error: rpcError } = await supabase.rpc('guardar_perfil_negocio', {
@@ -163,7 +163,7 @@ export async function POST(request: NextRequest) {
 
     console.log("✅ Perfil del propietario guardado exitosamente");
 
-    // Paso 3: Crear negocio usando RPC con SECURITY DEFINER
+
     console.log("🏪 Creando negocio con RPC...");
     
     const { data: negocioResult, error: negocioError } = await supabase.rpc('crear_negocio', {

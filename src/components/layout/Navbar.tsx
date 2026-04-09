@@ -25,7 +25,7 @@ export default function Navbar() {
           return;
         }
 
-        // Get user profile using RPC (same as login.tsx does)
+
         const { data: perfilData, error: perfilError } = await supabase.rpc("get_perfil_usuario_actual");
 
         if (perfilError || !perfilData || perfilData.length === 0) {
@@ -52,7 +52,7 @@ export default function Navbar() {
 
     detectProfileType();
 
-    // Listen for auth changes
+
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange(() => {
@@ -62,7 +62,7 @@ export default function Navbar() {
     return () => subscription.unsubscribe();
   }, [supabase]);
 
-  // Show nothing while loading to prevent flash
+
   if (isLoading) {
     return (
       <nav className="fixed top-0 w-full z-50 bg-white/80 backdrop-blur-xl border-b border-neutral-200/50 h-[80px]" />

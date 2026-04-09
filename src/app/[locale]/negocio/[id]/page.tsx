@@ -23,7 +23,7 @@ const slugify = (value: string | null | undefined) => {
     .replace(/^-|-$/g, "");
 };
 
-// Mockup productos para taquería
+
 const MOCKUP_PRODUCTOS: Producto[] = [
   {
     id: "mock-1",
@@ -81,7 +81,7 @@ const MOCKUP_PRODUCTOS: Producto[] = [
   } as Producto,
 ];
 
-// URLs de imágenes para mockup productos
+
 const MOCKUP_IMAGEN_URLS: Record<string, string> = {
   "mock-1": "https://qewqnirwuptcudoflgkd.supabase.co/storage/v1/object/public/muul_media/pastor.webp",
   "mock-2": "https://qewqnirwuptcudoflgkd.supabase.co/storage/v1/object/public/muul_media/carnitas.jpg",
@@ -91,7 +91,7 @@ const MOCKUP_IMAGEN_URLS: Record<string, string> = {
   "mock-6": "https://loremflickr.com/400/500/torta,mexican",
 };
 
-// Resilience Helper
+
 const withTimeout = async <T,>(promise: Promise<T>, ms: number, fallbackObj: T): Promise<T> => {
   try {
     return await Promise.race([
@@ -141,7 +141,7 @@ export default function NegocioPerfilPage() {
         if (!negocioError && negocioData && Array.isArray(negocioData) && negocioData.length > 0) {
           const currentNegocio = { ...negocioData[0] } as Negocio;
           
-          // DEMO PATCH: Force Justino (Tacos Don Tino) to be near Santa Fe
+
           if (currentNegocio.nombre.toLowerCase().includes("tino") || currentNegocio.nombre.toLowerCase().includes("justino")) {
             currentNegocio.latitud = 19.3615;
             currentNegocio.longitud = -99.2740;
@@ -150,7 +150,7 @@ export default function NegocioPerfilPage() {
 
           setNegocio(currentNegocio);
 
-          // Fetch products for the real business
+
           const prodResult = await withTimeout(
              supabase.rpc('get_productos_by_negocio_id', { p_negocio_id: currentNegocio.id }) as unknown as Promise<any>,
              3000,
@@ -158,10 +158,10 @@ export default function NegocioPerfilPage() {
           );
           const productosData = prodResult.data;
           
-          // Usa mockup si no hay productos en BD
+
           setProductos((Array.isArray(productosData) && productosData.length > 0) ? productosData : MOCKUP_PRODUCTOS);
         } else {
-          // FALLBACK: Look in dummy data
+
           const foundDummy = dummyPois.find(p => p.id === id || slugify(p.nombre) === id);
           if (foundDummy) {
             const mapped: Negocio = {
@@ -203,7 +203,7 @@ export default function NegocioPerfilPage() {
     fetchData();
   }, [id, supabase, dummyPois]);
 
-  // Separate effect for distance to avoid dependency hell
+
   useEffect(() => {
     if (!negocio || !negocio.latitud || !negocio.longitud) return;
     
@@ -274,23 +274,11 @@ export default function NegocioPerfilPage() {
 
   return (
     <main className="bg-surface pt-24 pb-20">
-      {/* PROFILE HEADER */}
+      {}
       <section className="max-w-screen-2xl mx-auto px-8 mb-12">
-        {/* Hero Image */}
+        {}
         <div className="relative h-96 w-full rounded-3xl overflow-hidden mb-8">
-          {/* 
-            📸 IMAGEN DE FONDO DEL NEGOCIO 
-            
-            Opciones para URL:
-            1. negocio.foto_url (si existe en BD)
-            2. Agregar columna: ALTER TABLE negocios ADD COLUMN foto_url TEXT;
-            3. Supabase Storage: https://tu-bucket.supabase.co/storage/v1/object/public/...
-            4. URL externa de CDN
-            5. Fallback automático: getPremiumPhoto()
-            
-            Tamaño recomendado: 1200x400px o mayor
-            Formato: JPG/PNG
-          */}
+          {}
           <img
             alt={negocio.nombre}
             className="w-full h-full object-cover"
@@ -298,20 +286,10 @@ export default function NegocioPerfilPage() {
           />
           <div className="absolute inset-0 bg-gradient-to-t from-primary/60 to-transparent"></div>
 
-          {/* Logo y Nombre */}
+          {}
           <div className="absolute bottom-8 left-8 flex items-end gap-6">
             <div className="w-32 h-32 rounded-2xl bg-white p-1 shadow-2xl">
-              {/* 
-                📸 LOGO DEL NEGOCIO 
-                
-                Opciones:
-                1. Usar negocio.foto_url (mismo de arriba)
-                2. Agregar columna logo_url: ALTER TABLE negocios ADD COLUMN logo_url TEXT;
-                3. Avatar generado automáticamente (fallback actual)
-                
-                Tamaño recomendado: 256x256px (cuadrado)
-                Formato: PNG con transparencia preferible
-              */}
+              {}
               <img
                 alt="Business Logo"
                 className="w-full h-full object-cover rounded-xl"
@@ -333,16 +311,16 @@ export default function NegocioPerfilPage() {
           </div>
         </div>
 
-        {/* CONTENT GRID: Left (Main) + Right (Sidebar) */}
+        {}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
-          {/* LEFT: Description + Products */}
+          {}
           <div className="md:col-span-2">
-            {/* Descripción */}
+            {}
             {negocio.descripcion && (
               <p className="text-xl font-serif text-on-surface/80 leading-relaxed mb-8">{negocio.descripcion}</p>
             )}
 
-            {/* PRODUCTOS SECTION */}
+            {}
             <div className="mb-16">
               <div className="flex justify-between items-end mb-8">
                 <h2 className="text-3xl font-serif font-medium">Productos Destacados</h2>
@@ -357,7 +335,7 @@ export default function NegocioPerfilPage() {
                 )}
               </div>
 
-              {/* FORM PARA AGREGAR PRODUCTOS */}
+              {}
               {isOwner && showProductForm && (
                 <div className="bg-surface-container-low p-6 rounded-2xl mb-8 border border-outline-variant/10">
                   <form onSubmit={handleAddProduct} className="space-y-4">
@@ -399,7 +377,7 @@ export default function NegocioPerfilPage() {
                 </div>
               )}
 
-              {/* PRODUCT GRID */}
+              {}
               {productos.length === 0 ? (
                 <div className="flex flex-col items-center text-center py-12 space-y-4">
                   <span className="text-5xl">📦</span>
@@ -409,22 +387,7 @@ export default function NegocioPerfilPage() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                   {productos.map((p: Producto) => (
                     <div key={p.id} className="group cursor-pointer">
-                      {/* 
-                        📸 IMAGEN DE PRODUCTO 
-                        
-                        Opciones para URL:
-                        1. producto.imagen_url (si existe en BD)
-                        2. Agregar columna: ALTER TABLE productos ADD COLUMN imagen_url TEXT;
-                        3. Supabase Storage con estructura: /productos/{producto-id}/imagen.jpg
-                        4. URL externa de CDN
-                        5. Fallback: Avatar generado (actual)
-                        
-                        Tamaño recomendado: 400x500px (proporción 4:5)
-                        Formato: JPG/PNG
-                        
-                        Cambio del código:
-                        src={p.imagen_url || `https://ui-avatars.com/api/?name=${p.nombre}...`}
-                      */}
+                      {}
                       <div className="aspect-[4/5] bg-surface-container-low rounded-2xl overflow-hidden mb-4 transition-transform duration-300 group-hover:scale-[1.02] flex items-center justify-center">
                         <img
                           alt={p.nombre}
@@ -454,9 +417,9 @@ export default function NegocioPerfilPage() {
             </div>
           </div>
 
-          {/* RIGHT: SIDEBAR INFO */}
+          {}
           <div className="space-y-8">
-            {/* INFORMACIÓN PANEL */}
+            {}
             <div className="bg-surface-container-low p-8 rounded-3xl">
               <h3 className="text-xl font-serif font-medium mb-6">Información</h3>
               <ul className="space-y-4">
@@ -486,7 +449,7 @@ export default function NegocioPerfilPage() {
               </button>
             </div>
 
-            {/* STATS PANEL */}
+            {}
             <div className="bg-surface-container-low/50 p-8 rounded-3xl border border-outline-variant/10">
               <span className="px-2 py-1 bg-primary text-on-primary rounded-sm text-[10px] font-mono mb-4 inline-block">ESTADÍSTICAS</span>
               <h4 className="font-serif text-lg mb-2">Estado del Negocio</h4>
@@ -502,7 +465,7 @@ export default function NegocioPerfilPage() {
               </div>
             </div>
 
-            {/* REDES SOCIALES */}
+            {}
             {(negocio.instagram || negocio.facebook) && (
               <div className="bg-surface-container-low p-8 rounded-3xl">
                 <h4 className="font-serif text-lg mb-4">Contacto</h4>

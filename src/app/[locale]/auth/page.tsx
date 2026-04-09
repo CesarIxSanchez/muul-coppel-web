@@ -108,11 +108,11 @@ export default function AuthPage() {
 
   return (
     <div className="bg-surface font-body text-on-surface selection:bg-secondary-container selection:text-on-secondary-container">
-      {/* Ambient Decoration */}
+      {}
       <div className="fixed bottom-[-10rem] right-[-10rem] w-80 h-80 bg-secondary-container/20 blur-[100px] rounded-full -z-10"></div>
       <div className="fixed top-[-5rem] left-[-5rem] w-64 h-64 bg-primary/10 blur-[80px] rounded-full -z-10"></div>
 
-      {/* Header */}
+      {}
       <header className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-xl h-20 flex items-center px-8 md:px-16">
         <div className="flex items-center space-x-2">
           <span className="text-2xl font-black tracking-tight text-primary font-headline italic brand-clearspace">
@@ -126,9 +126,9 @@ export default function AuthPage() {
       </header>
 
       <main className="min-h-screen flex items-center justify-center pt-20 px-6">
-        {/* Asymmetric Layout Container */}
+        {}
         <div className="max-w-6xl w-full grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-          {/* Left Side: Editorial Content */}
+          {}
           <div className="hidden lg:flex lg:col-span-6 flex-col space-y-8 pr-12">
             <div className="space-y-4">
               <span className="font-label text-primary text-sm font-bold tracking-tighter uppercase">
@@ -142,7 +142,7 @@ export default function AuthPage() {
               </p>
             </div>
 
-            {/* Bento-style Small Highlights */}
+            {}
             <div className="grid grid-cols-2 gap-4">
               <div className="bg-surface-container-low p-6 rounded-xl space-y-2 border border-outline-variant/10">
                 <span className="material-symbols-outlined text-primary text-3xl">map</span>
@@ -157,20 +157,20 @@ export default function AuthPage() {
             </div>
           </div>
 
-          {/* Right Side: Registration Card */}
+          {}
           <div className="lg:col-span-6 flex justify-center">
             <div className="w-full max-w-md bg-surface-container-lowest p-10 rounded-[2rem] shadow-sm shadow-on-surface/5 relative overflow-hidden">
               <div className="absolute inset-0 paper-texture pointer-events-none"></div>
 
               <div className="relative z-10">
-                {/* Mobile Branding */}
+                {}
                 <div className="lg:hidden mb-8 flex justify-center">
                   <span className="text-3xl font-black tracking-tight text-primary font-headline italic">
                     MUUL
                   </span>
                 </div>
 
-                {/* Title */}
+                {}
                 <div className="text-center mb-10">
                   <h2 className="text-3xl font-headline italic text-primary mb-2">
                     {t("createAccount")}
@@ -180,14 +180,14 @@ export default function AuthPage() {
                   </p>
                 </div>
 
-                {/* Error Message */}
+                {}
                 {error && (
                   <div className="mb-6 p-4 bg-error/10 border border-error rounded-xl">
                     <p className="text-error text-sm font-medium">❌ {error}</p>
                   </div>
                 )}
 
-                {/* Success Message */}
+                {}
                 {success && (
                   <div className="mb-6 p-4 bg-tertiary/10 border border-tertiary rounded-xl">
                     <p className="text-tertiary text-sm font-medium">
@@ -196,9 +196,9 @@ export default function AuthPage() {
                   </div>
                 )}
 
-                {/* Registration Form */}
+                {}
                 <form className="space-y-4" onSubmit={handleSubmit}>
-                  {/* Nombre */}
+                  {}
                   <div className="space-y-1.5">
                     <label className="font-label text-xs font-bold text-primary px-1" htmlFor="nombre">
                       {t("fields.nombre")}
@@ -215,7 +215,7 @@ export default function AuthPage() {
                     />
                   </div>
 
-                  {/* Apellido */}
+                  {}
                   <div className="space-y-1.5">
                     <label className="font-label text-xs font-bold text-primary px-1" htmlFor="apellido">
                       {t("fields.apellido")}
@@ -232,7 +232,7 @@ export default function AuthPage() {
                     />
                   </div>
 
-                  {/* Username */}
+                  {}
                   <div className="space-y-1.5">
                     <label className="font-label text-xs font-bold text-primary px-1" htmlFor="username">
                       {t("fields.username")}
@@ -252,7 +252,7 @@ export default function AuthPage() {
                     </div>
                   </div>
 
-                  {/* Email */}
+                  {}
                   <div className="space-y-1.5">
                     <label className="font-label text-xs font-bold text-primary px-1" htmlFor="email">
                       {t("fields.email")}
@@ -269,7 +269,7 @@ export default function AuthPage() {
                     />
                   </div>
 
-                  {/* Telefono */}
+                  {}
                   <div className="space-y-1.5">
                     <label className="font-label text-xs font-bold text-primary px-1" htmlFor="telefono">
                       {t("fields.telefono")}
@@ -286,7 +286,7 @@ export default function AuthPage() {
                     />
                   </div>
 
-                  {/* Password */}
+                  {}
                   <div className="space-y-1.5">
                     <label className="font-label text-xs font-bold text-primary px-1" htmlFor="password">
                       {t("fields.password")}
@@ -303,7 +303,7 @@ export default function AuthPage() {
                     />
                   </div>
 
-                  {/* Confirm Password */}
+                  {}
                   <div className="space-y-1.5">
                     <label className="font-label text-xs font-bold text-primary px-1" htmlFor="confirmPassword">
                       {t("fields.confirmPassword")}
@@ -320,7 +320,7 @@ export default function AuthPage() {
                     />
                   </div>
 
-                  {/* Terms */}
+                  {}
                   <div className="flex items-start space-x-3 pt-2">
                     <input
                       className="w-5 h-5 mt-0.5 accent-primary rounded"
@@ -343,7 +343,7 @@ export default function AuthPage() {
                     </label>
                   </div>
 
-                  {/* Submit Button */}
+                  {}
                   <button
                     className="w-full h-12 bg-gradient-to-br from-primary to-primary-container text-white font-bold rounded-full shadow-lg shadow-primary/10 hover:brightness-105 active:scale-95 transition-all flex items-center justify-center space-x-2 mt-2 disabled:opacity-50"
                     type="submit"
@@ -354,7 +354,7 @@ export default function AuthPage() {
                   </button>
                 </form>
 
-                {/* Divider */}
+                {}
                 <div className="relative my-8">
                   <div className="absolute inset-0 flex items-center">
                     <div className="w-full border-t border-outline-variant/20"></div>
@@ -366,7 +366,7 @@ export default function AuthPage() {
                   </div>
                 </div>
 
-                {/* Social Buttons */}
+                {}
                 <div className="grid grid-cols-2 gap-4">
                   <button
                     className="flex items-center justify-center space-x-3 h-14 bg-surface-container-low rounded-full border border-outline-variant/10 hover:bg-surface-container-high transition-colors active:scale-95"
@@ -392,7 +392,7 @@ export default function AuthPage() {
                   </button>
                 </div>
 
-                {/* Link to Login */}
+                {}
                 <div className="mt-8 text-center">
                   <p className="text-sm text-on-surface-variant">
                     {t("loginPrompt")} {" "}
@@ -410,7 +410,7 @@ export default function AuthPage() {
         </div>
       </main>
 
-      {/* Footer */}
+      {}
       <footer className="mt-20 py-12 px-8 bg-surface-container-low">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center space-y-6 md:space-y-0">
           <div className="flex items-center space-x-6">

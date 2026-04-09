@@ -20,8 +20,8 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  // Matcher que incluye tanto la raíz como las rutas con idioma, 
-  // y también captura rutas sin prefijo para aplicar el locale por defecto.
+
+
   matcher: [
     "/", 
     "/(es|en|zh|pt)/:path*",

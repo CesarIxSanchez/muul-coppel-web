@@ -29,7 +29,7 @@ export default function AmigosPage() {
   const [requestSent, setRequestSent] = useState<Record<string, boolean>>({});
   const [searchLoading, setSearchLoading] = useState(false);
 
-  // Load friends from service (localStorage-seeded, future: Supabase)
+
   useEffect(() => {
     FriendsService.getAmigos().then((data) => {
       setAmigos(data);
@@ -37,7 +37,7 @@ export default function AmigosPage() {
     });
   }, []);
 
-  // Live search as user types
+
   useEffect(() => {
     if (!friendSearch.trim()) {
       setSearchResults([]);
@@ -73,7 +73,7 @@ export default function AmigosPage() {
           <p className="text-neutral-500 mt-4 font-body text-lg">{t("subtitulo")}</p>
         </div>
 
-        {/* Search bar */}
+        {}
         <div className="mb-8">
           <div className="relative">
             <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-neutral-400 text-base">search</span>
@@ -89,7 +89,7 @@ export default function AmigosPage() {
             )}
           </div>
 
-          {/* Search Results */}
+          {}
           {searchResults.length > 0 && (
             <div className="mt-2 bg-white border border-neutral-100 rounded-[1.5rem] shadow-lg overflow-hidden animate-fade-in">
               {searchResults.map(user => (
@@ -120,7 +120,7 @@ export default function AmigosPage() {
           )}
         </div>
 
-        {/* Friends list */}
+        {}
         {loading ? (
           <div className="space-y-4">
             {[1, 2, 3].map(i => (
@@ -179,7 +179,7 @@ export default function AmigosPage() {
           </div>
         )}
 
-        {/* Add friends CTA */}
+        {}
         <button
           onClick={() => document.querySelector('input')?.focus()}
           className="mt-12 w-full py-5 border-2 border-dashed border-neutral-200 rounded-[2rem] text-neutral-400 font-headline font-bold flex items-center justify-center gap-3 hover:border-[#003e6f]/20 hover:text-[#003e6f] transition-all group"

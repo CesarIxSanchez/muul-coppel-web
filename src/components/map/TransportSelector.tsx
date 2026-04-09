@@ -5,16 +5,16 @@ import type { TransportMode } from "@/hooks/useMapboxOptimization";
 
 export type RouteMode = TransportMode | "accessible" | "metro";
 
-/* ── Route color per mode ── */
+
 export function getRouteColorForMode(mode: RouteMode): string {
-  if (mode === "accessible") return "#003e6f"; // azul
-  if (mode === "metro") return "#e11d8a"; // magenta metro
-  if (mode === "walking") return "#22c55e"; // verde
-  if (mode === "cycling" || mode === "driving") return "#fed000"; // amarillo
+  if (mode === "accessible") return "#003e6f";
+  if (mode === "metro") return "#e11d8a";
+  if (mode === "walking") return "#22c55e";
+  if (mode === "cycling" || mode === "driving") return "#fed000";
   return "#22c55e";
 }
 
-/* ── Props ── */
+
 interface TransportSelectorProps {
   value: RouteMode;
   onChange: (mode: RouteMode) => void;
@@ -22,9 +22,7 @@ interface TransportSelectorProps {
   className?: string;
 }
 
-/* ══════════════════════════════════════════════
-   COMPONENT
-   ══════════════════════════════════════════════ */
+
 export default function TransportSelector({
   value,
   onChange,
@@ -33,7 +31,7 @@ export default function TransportSelector({
 }: TransportSelectorProps) {
   const t = useTranslations("mapa");
 
-  /* ── Mode config ── */
+  
   const OPTIONS: {
     value: TransportMode | "metro";
     label: string;

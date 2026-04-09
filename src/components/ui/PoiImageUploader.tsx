@@ -29,8 +29,8 @@ export default function PoiImageUploader({
     setIsUploading(true);
 
     try {
-      // Validate file
-      const maxSize = 5 * 1024 * 1024; // 5MB
+
+      const maxSize = 5 * 1024 * 1024;
       if (file.size > maxSize) {
         throw new Error('Image size must be less than 5MB');
       }
@@ -39,20 +39,20 @@ export default function PoiImageUploader({
         throw new Error('File must be an image');
       }
 
-      // Show preview
+
       const reader = new FileReader();
       reader.onloadend = () => {
         setPreviewUrl(reader.result as string);
       };
       reader.readAsDataURL(file);
 
-      // Upload to Supabase
+
       const imageUrl = await uploadPoiImage(file, poiId);
 
-      // Update preview with actual URL
+
       setPreviewUrl(imageUrl);
 
-      // Call callback
+
       onUploadComplete?.(imageUrl);
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Upload failed';

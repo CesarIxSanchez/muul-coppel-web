@@ -29,7 +29,7 @@ export async function GET() {
 
     console.log("✅ Cliente Supabase creado");
 
-    // Intenta SELECT simple
+
     console.log("🔄 Intentando SELECT...");
     const { data: perfiles, error: err } = await supabase
       .from("perfiles")

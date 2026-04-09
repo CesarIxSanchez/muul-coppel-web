@@ -2,14 +2,11 @@
 @tailwind components;
 @tailwind utilities;
 
-/* =============================================
-   MUUL — THE INTELLIGENT CURATOR
-   Design System: Editorial Intelligence
-   ============================================= */
+
 
 @import url('https://fonts.googleapis.com/css2?family=Newsreader:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap');
 
-/* --- Base Reset & Defaults --- */
+
 *,
 *::before,
 *::after {
@@ -29,7 +26,7 @@ body {
   min-height: 100vh;
 }
 
-/* --- Material Symbols --- */
+
 .material-symbols-outlined {
   font-family: 'Material Symbols Outlined';
   font-weight: normal;
@@ -88,28 +85,28 @@ body {
   font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
 }
 
-/* --- Intelligent Curator Utilities --- */
 
-/* Glass Panel (for floating headers/overlays) */
+
+
 .glass-panel {
   background: rgba(248, 249, 255, 0.85);
   backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px);
 }
 
-/* Glass Card (for elevated surfaces) */
+
 .glass-card {
   background: #ffffff;
   box-shadow: 0 10px 40px rgba(0, 50, 100, 0.08);
   border: 1px solid rgba(0, 62, 111, 0.05);
 }
 
-/* Editorial gradient background */
+
 .bg-editorial-gradient {
   background: linear-gradient(135deg, #003e6f, #005596);
 }
 
-/* Tonal surface shift (no-line rule — use bg shift instead of borders) */
+
 .tonal-shift {
   background-color: #eff3ff;
 }
@@ -118,12 +115,12 @@ body {
   background-color: #e4e7f4;
 }
 
-/* Ghost border (accessibility fallback — 15% opacity max) */
+
 .ghost-border {
   border: 1px solid rgba(196, 198, 208, 0.15);
 }
 
-/* Eyebrow text (metadata/labels) */
+
 .eyebrow, .font-label {
   font-family: 'Space Grotesk', monospace;
   font-size: 0.6875rem;
@@ -133,7 +130,7 @@ body {
   color: #005596;
 }
 
-/* Editorial serif heading */
+
 .editorial-heading, h1, h2, h3, h4 {
   font-family: 'Newsreader', Georgia, serif;
   font-weight: 700;
@@ -145,13 +142,13 @@ body {
   font-weight: 700;
 }
 
-/* Solo tipografía, sin forzar color */
+
 .font-headline {
   font-family: 'Newsreader', Georgia, serif;
   font-weight: 700;
 }
 
-/* Editorial serif heading */
+
 .editorial-heading, h1, h2, h3, h4 {
   font-family: 'Newsreader', Georgia, serif;
   font-weight: 700;
@@ -162,7 +159,7 @@ body {
   font-family: 'Plus Jakarta Sans', sans-serif;
 }
 
-/* --- Scrollbar Styling --- */
+
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
@@ -181,20 +178,20 @@ body {
   background: #94a3b8;
 }
 
-/* --- Selection Color --- */
+
 ::selection {
   background-color: #fed000;
   color: #201c00;
 }
 
-/* --- Focus Ring Override --- */
+
 *:focus-visible {
   outline: 2px solid rgba(0, 62, 111, 0.4);
   outline-offset: 2px;
   border-radius: 0.25rem;
 }
 
-/* --- Animation Utilities --- */
+
 .animate-fade-in-up {
   animation: fadeInUp 0.5s ease forwards;
 }
@@ -219,7 +216,7 @@ body {
   animation: fadeIn 0.2s ease-out forwards;
 }
 
-/* Staggered children animation */
+
 .stagger-children > * {
   opacity: 0;
   animation: fadeInUp 0.5s ease forwards;
@@ -232,7 +229,7 @@ body {
 .stagger-children > *:nth-child(5) { animation-delay: 0.25s; }
 .stagger-children > *:nth-child(6) { animation-delay: 0.30s; }
 
-/* --- Gradient Text Utility --- */
+
 .gradient-text-brand {
   background: linear-gradient(135deg, #003e6f, #005596);
   -webkit-background-clip: text;
@@ -240,7 +237,7 @@ body {
   background-clip: text;
 }
 
-/* --- Input base override --- */
+
 input[type="email"],
 input[type="text"],
 input[type="password"],
@@ -271,13 +268,13 @@ textarea::placeholder {
   color: rgba(0, 28, 57, 0.4);
 }
 
-/* Mapbox GL Fix */
+
 .mapboxgl-map {
   width: 100%;
   height: 100%;
 }
 
-/* --- Pill Button Utility --- */
+
 .btn-pill {
   border-radius: 9999px;
   font-family: 'Plus Jakarta Sans', sans-serif;
@@ -289,7 +286,7 @@ textarea::placeholder {
   filter: brightness(1.05);
 }
 
-/* --- No-Line Card Hover --- */
+
 .card-hover {
   transition: all 0.3s ease;
 }
@@ -299,7 +296,7 @@ textarea::placeholder {
   transform: translateY(-2px);
 }
 
-/* Base transitions for theme switching if needed */
+
 body, nav, div, section, footer {
   transition: background-color 0.3s ease, border-color 0.3s ease;
 }

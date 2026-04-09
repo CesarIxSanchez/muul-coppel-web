@@ -1,10 +1,4 @@
-/**
- * Business Service — SUPABASE REAL version
- *
- * updateNegocio   → supabase.from('negocios').update(...)
- * updateCaracteristicas → DELETE + INSERT en negocio_caracteristicas
- * getStats        → rpc('get_negocio_stats') con fallback deterministico
- */
+
 
 type NegocioUpdate = {
   foto_url?: string;
@@ -22,7 +16,7 @@ type Caracteristicas = {
   accesibilidad: boolean;
 };
 
-// ─── local override cache (backup when Supabase is unavailable) ───────────────
+
 const getKey = (id: string) => `muul_negocio_${id}`;
 
 const getLocalCache = (id: string) => {
@@ -34,7 +28,7 @@ const setLocalCache = (id: string, data: object) => {
     localStorage.setItem(getKey(id), JSON.stringify(data));
 };
 
-// ─── Service ─────────────────────────────────────────────────────────────────
+
 export const BusinessService = {
   async getLocalOverrides(id: string) {
     return getLocalCache(id);
@@ -45,7 +39,7 @@ export const BusinessService = {
       const { createClient } = await import("../supabase/client");
       const supabase = createClient();
 
-      // Build the update payload with Supabase column names
+
       const payload: Record<string, string | undefined> = {};
       if (updates.foto_url    !== undefined) payload.foto_url    = updates.foto_url;
       if (updates.banner_url  !== undefined) payload.banner_url  = updates.banner_url;
@@ -59,7 +53,7 @@ export const BusinessService = {
       console.warn("[BusinessService] updateNegocio fallback to local", e);
     }
 
-    // Always also update local cache (offline resilience)
+
     const existing = getLocalCache(id) ?? {};
     setLocalCache(id, { ...existing, updates: { ...(existing.updates ?? {}), ...updates } });
     return { success: true };
@@ -70,7 +64,7 @@ export const BusinessService = {
       const { createClient } = await import("../supabase/client");
       const supabase = createClient();
 
-      // Delete existing, then re-insert enabled ones
+
       await supabase.from("negocio_caracteristicas").delete().eq("negocio_id", id);
 
       const toInsert = Object.entries(caracteristicas)
@@ -100,7 +94,7 @@ export const BusinessService = {
         supabase.from("productos").select("*", { count: "exact", head: true }).eq("negocio_id", id),
       ]);
 
-      // Rating from reseñas
+
       const { data: reseñas } = await supabase.from("resenas").select("calificacion").eq("negocio_id", id);
       const calificacion = reseñas && reseñas.length > 0
         ? reseñas.reduce((sum, r) => sum + r.calificacion, 0) / reseñas.length
@@ -108,7 +102,7 @@ export const BusinessService = {
 
       return { visitas: visitas ?? 0, productos: productos ?? 0, calificacion };
     } catch {
-      // Deterministic fallback so numbers look stable per negocio
+
       const seed = id.charCodeAt(0) || 50;
       return { visitas: 200 + (seed % 300), productos: 5 + (seed % 20), calificacion: 4 + (seed % 10) / 10 };
     }

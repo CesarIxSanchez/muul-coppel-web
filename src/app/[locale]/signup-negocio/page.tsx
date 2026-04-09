@@ -14,26 +14,26 @@ export default function SignupNegocioPage() {
   const [success, setSuccess] = useState(false);
 
   const [formData, setFormData] = useState({
-    // Propietario
+
     nombrePropietario: "",
     apellidoPropietario: "",
     cp: "",
     telefonoPropietario: "",
     correoPropietario: "",
     
-    // Negocio
+
     nombreNegocio: "",
     categoriaNegocio: "comercio_tiendas",
-    latitud: 19.4326, // CDMX default
+    latitud: 19.4326,
     longitud: -99.1677,
     direccion: "",
     
-    // Autenticación
+
     email: "",
     password: "",
     confirmPassword: "",
     
-    // Características
+
     caracteristicas: {
       pago_tarjeta: false,
       transferencias: false,
@@ -117,25 +117,25 @@ export default function SignupNegocioPage() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          // Propietario
+
           nombrePropietario: formData.nombrePropietario,
           apellidoPropietario: formData.apellidoPropietario,
           cp: formData.cp,
           telefonoPropietario: formData.telefonoPropietario,
           correoPropietario: formData.correoPropietario || null,
 
-          // Negocio
+
           nombreNegocio: formData.nombreNegocio,
           categoriaNegocio: formData.categoriaNegocio,
           latitud: formData.latitud,
           longitud: formData.longitud,
           direccion: formData.direccion,
 
-          // Auth
+
           email: formData.email,
           password: formData.password,
           
-          // Características
+
           caracteristicas: Object.keys(formData.caracteristicas).filter(
             (key) => formData.caracteristicas[key as keyof typeof formData.caracteristicas]
           ),
@@ -154,15 +154,15 @@ export default function SignupNegocioPage() {
       }
 
       setSuccess(true);
-      // Redirigir al perfil del negocio con su ID
+
       setTimeout(() => {
         if (data.data?.negocio_id) {
           router.push(`/negocio/${data.data.negocio_id}`);
         } else if (data.data?.user_id) {
-          // Fallback: si no viene negocio_id, usar user_id
+
           router.push(`/negocio/${data.data.user_id}`);
         } else {
-          // Si no hay IDs, ir a home
+
           router.push("/");
         }
       }, 2000);
@@ -177,12 +177,12 @@ export default function SignupNegocioPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#003e6f] to-[#0d5fa0] flex items-center justify-center p-4">
       <div className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full p-8">
-        {/* Header */}
+        {}
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900 mb-2">Registra tu Negocio</h1>
           <p className="text-gray-600">Paso {currentStep} de 3</p>
           
-          {/* Progress bar */}
+          {}
           <div className="mt-4 flex gap-2">
             {[1, 2, 3].map((step) => (
               <div
@@ -216,7 +216,7 @@ export default function SignupNegocioPage() {
             handleNextStep();
           }
         }}>
-          {/* PASO 1: Datos del Propietario */}
+          {}
           {currentStep === 1 && (
             <div className="space-y-4">
               <h2 className="text-xl font-semibold text-gray-900 mb-6">Datos del Propietario</h2>
@@ -293,7 +293,7 @@ export default function SignupNegocioPage() {
             </div>
           )}
 
-          {/* PASO 2: Datos del Negocio */}
+          {}
           {currentStep === 2 && (
             <div className="space-y-4">
               <h2 className="text-xl font-semibold text-gray-900 mb-6">Datos del Negocio</h2>
@@ -385,7 +385,7 @@ export default function SignupNegocioPage() {
             </div>
           )}
 
-          {/* PASO 3: Características del Negocio */}
+          {}
           {currentStep === 3 && (
             <div className="space-y-4">
               <h2 className="text-xl font-semibold text-gray-900 mb-6">Características del Negocio</h2>
@@ -419,7 +419,7 @@ export default function SignupNegocioPage() {
             </div>
           )}
 
-          {/* Botones de navegación */}
+          {}
           <div className="flex gap-3 mt-8">
             {currentStep > 1 && (
               <button
@@ -441,7 +441,7 @@ export default function SignupNegocioPage() {
           </div>
         </form>
 
-        {/* Footer */}
+        {}
         <p className="text-center text-gray-600 text-sm mt-6">
           ¿Ya tienes cuenta?{" "}
           <Link href="/login" className="text-[#003e6f] font-semibold hover:underline">

@@ -11,7 +11,7 @@ export default function RecursosPage() {
   return (
     <main className="min-h-screen pt-24 pb-16 px-6 bg-surface">
       <div className="max-w-[1440px] mx-auto">
-        {/* Header */}
+        {}
         <section className="mb-16 space-y-4 p-12 rounded-3xl bg-gradient-to-r from-[#003e6f] to-[#005596]">
           <h1 className="text-5xl md:text-6xl xl:text-7xl font-headline italic text-white leading-[0.92]">
             Coppel Emprende
@@ -22,7 +22,7 @@ export default function RecursosPage() {
           </p>
         </section>
 
-        {/* Recurso Card */}
+        {}
         <section className="max-w-2xl mx-auto">
           <a
             href="https://www.fundacioncoppel.org/coppel-emprende/"
@@ -30,7 +30,7 @@ export default function RecursosPage() {
             rel="noopener noreferrer"
             className="group rounded-2xl border border-outline-variant/20 overflow-hidden bg-white shadow-lg hover:shadow-2xl transition-all duration-300 flex flex-col"
           >
-            {/* Imagen */}
+            {}
             <div className="w-full h-64 bg-gradient-to-br from-[#003e6f]/10 to-[#fed000]/10 flex items-center justify-center overflow-hidden relative">
               {imagenUrl ? (
                 <img 
@@ -48,7 +48,7 @@ export default function RecursosPage() {
                   </div>
                 </div>
               )}
-              {/* Overlay on hover */}
+              {}
               <div className="absolute inset-0 bg-gradient-to-t from-[#003e6f]/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-center pb-4">
                 <span className="material-symbols-outlined text-white text-3xl">
                   open_in_new
@@ -56,7 +56,7 @@ export default function RecursosPage() {
               </div>
             </div>
 
-            {/* Content */}
+            {}
             <div className="p-8 flex flex-col flex-1 text-center">
               <h3 className="font-headline italic text-3xl text-[#003e6f] mb-3 group-hover:text-[#005596] transition-colors">
                 Fundación Coppel Emprende
@@ -75,7 +75,7 @@ export default function RecursosPage() {
 
         </section>
 
-        {/* CTA Section */}
+        {}
         <section className="mt-20 rounded-3xl bg-gradient-to-r from-[#003e6f] to-[#005596] p-12 text-white text-center space-y-6">
           <h2 className="text-4xl md:text-5xl font-headline italic">
             ¿Necesitas más ayuda?

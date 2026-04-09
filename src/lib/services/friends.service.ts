@@ -1,10 +1,4 @@
-/**
- * Friends Service — SUPABASE REAL version
- *
- * Requires migration 002_social_and_gamification.sql (tabla amistades).
- *
- * Fallback: localStorage con seed data estático si Supabase no responde.
- */
+
 
 type Friend = {
   id: string;
@@ -19,7 +13,7 @@ type Friend = {
 
 type SearchResult = { id: string; name: string; username: string; avatar: string };
 
-// ─── Static seed for decorative "relleno" (used as fallback only) ───────────
+
 const SEED_FRIENDS: Friend[] = [
   { id: "f1", name: "Carlos Rivera",   username: "@carlos_explorador", status: "Explorando Roma Norte",      online: true,  avatar: "https://i.pravatar.cc/150?u=carlos", lat: 19.4174, lng: -99.1609 },
   { id: "f2", name: "Ana Martínez",    username: "@viajera66",          status: "Desconectada hace 2 horas", online: false, avatar: "https://i.pravatar.cc/150?u=ana"    },
@@ -34,7 +28,7 @@ const loadLocalFriends = (): Friend[] => {
   try {
     const raw = localStorage.getItem(FRIENDS_LS_KEY);
     if (raw) return JSON.parse(raw);
-    // First load: seed
+
     localStorage.setItem(FRIENDS_LS_KEY, JSON.stringify(SEED_FRIENDS));
     return SEED_FRIENDS;
   } catch { return SEED_FRIENDS; }
@@ -45,7 +39,7 @@ const saveLocalFriends = (friends: Friend[]) => {
     localStorage.setItem(FRIENDS_LS_KEY, JSON.stringify(friends));
 };
 
-// ─── Service ─────────────────────────────────────────────────────────────────
+
 export const FriendsService = {
   async getAmigos(): Promise<Friend[]> {
     try {
@@ -82,7 +76,7 @@ export const FriendsService = {
       if (error) throw error;
       return true;
     } catch {
-      // Fallback: local
+
       saveLocalFriends(loadLocalFriends().filter(f => f.id !== id));
       return true;
     }
@@ -92,7 +86,7 @@ export const FriendsService = {
     try {
       const { createClient } = await import("../supabase/client");
       const supabase = createClient();
-      // Uses the existing buscar_usuarios RPC from schema.sql
+
       const { data, error } = await supabase.rpc("buscar_usuarios", { query });
       if (error) throw error;
       if (data && data.length > 0) {
@@ -107,7 +101,7 @@ export const FriendsService = {
       console.warn("[FriendsService] Search fallback", e);
     }
 
-    // Local search fallback
+
     const SEARCHABLE: SearchResult[] = [
       { id: "su1", name: "Sofía Navarro",    username: "@sofia_cdmx",   avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200" },
       { id: "su2", name: "Valentina Orozco", username: "@vale_fit",     avatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=200" },
@@ -130,12 +124,12 @@ export const FriendsService = {
         id_receptor: userId,
         estado: "aceptada",
       });
-      if (error && !error.message.includes("unique")) throw error; // ignore duplicate
+      if (error && !error.message.includes("unique")) throw error;
     } catch (e) {
       console.warn("[FriendsService] solicitarAmistad fallback", e);
     }
 
-    // Always return the friend object for optimistic UI update
+
     const newFriend: Friend = {
       id: `friend_${Date.now()}`,
       name: userName,
@@ -145,7 +139,7 @@ export const FriendsService = {
       avatar: userAvatar,
     };
 
-    // Also persist locally as backup
+
     const friends = loadLocalFriends();
     friends.unshift(newFriend);
     saveLocalFriends(friends);

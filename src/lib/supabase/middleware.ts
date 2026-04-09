@@ -35,7 +35,7 @@ export async function updateSession(request: NextRequest) {
     }
   );
 
-  // Refresh session - important for Server Components
+
   await supabase.auth.getUser();
 
   return supabaseResponse;

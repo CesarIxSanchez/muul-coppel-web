@@ -1,12 +1,9 @@
-/**
- * Calcula la distancia en km entre dos puntos geográficos
- * usando la fórmula de Haversine.
- */
+
 export function haversine(
-  a: [number, number], // [lat, lng]
-  b: [number, number]  // [lat, lng]
+  a: [number, number],
+  b: [number, number]
 ): number {
-  const R = 6371; // Radio de la Tierra en km
+  const R = 6371;
   const dLat = toRad(b[0] - a[0]);
   const dLng = toRad(b[1] - a[1]);
   const sinLat = Math.sin(dLat / 2);
@@ -21,10 +18,7 @@ function toRad(deg: number): number {
   return (deg * Math.PI) / 180;
 }
 
-/**
- * Optimiza el orden de los POIs usando Nearest Neighbor (TSP heurístico).
- * Comienza desde `origen` y visita el punto más cercano en cada paso.
- */
+
 export function optimizarOrdenTSP<T extends { latitud: number; longitud: number }>(
   puntos: T[],
   origen?: [number, number]
@@ -35,7 +29,7 @@ export function optimizarOrdenTSP<T extends { latitud: number; longitud: number 
   const ordenados: T[] = [];
   let actual: [number, number] = origen ?? [pendientes[0].latitud, pendientes[0].longitud];
 
-  // Si no hay origen externo, sacamos el primer punto como inicio
+
   if (!origen) {
     ordenados.push(pendientes.shift()!);
     actual = [ordenados[0].latitud, ordenados[0].longitud];

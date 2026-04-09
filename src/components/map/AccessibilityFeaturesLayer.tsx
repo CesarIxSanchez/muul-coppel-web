@@ -14,7 +14,7 @@ interface Props {
   map: mapboxgl.Map | null;
   features: AccessibilityFeature[];
   visible: boolean;
-  routeCoordinates?: [number, number][]; // ✅ NUEVO: coordenadas de la ruta
+  routeCoordinates?: [number, number][];
 }
 
 export default function AccessibilityFeaturesLayer({
@@ -26,7 +26,7 @@ export default function AccessibilityFeaturesLayer({
   useEffect(() => {
     if (!map || !visible) return;
 
-    // ✅ Filtrar features que están cerca de la ruta (dentro de 100m)
+
     const filteredFeatures = routeCoordinates
       ? features.filter((feature) => {
           return routeCoordinates.some((coord) => {
@@ -37,12 +37,12 @@ export default function AccessibilityFeaturesLayer({
             const distance = Math.sqrt(
               Math.pow(lat2 - lat1, 2) + Math.pow(lng2 - lng1, 2)
             );
-            return distance < 0.01; // ~1 km en decimal degrees
+            return distance < 0.01;
           });
         })
       : features;
 
-    // Limpiar layer anterior
+
     if (map.getSource("accessibility-points")) {
       if (map.getLayer("accessibility-points"))
         map.removeLayer("accessibility-points");

@@ -60,7 +60,7 @@ export default function SignupTuristaPage() {
     setError(null);
 
     try {
-      // Call the API endpoint
+
       const response = await fetch("/api/auth/signup-turista", {
         method: "POST",
         headers: {
@@ -98,7 +98,7 @@ export default function SignupTuristaPage() {
         terms: false,
       });
 
-      // Redirect after 2 seconds
+
       setTimeout(() => {
         router.push("/perfil");
       }, 2000);
@@ -134,7 +134,7 @@ export default function SignupTuristaPage() {
   return (
     <main className="min-h-screen flex items-center justify-center pt-20 px-6 md:px-0 bg-surface">
       <div className="max-w-6xl w-full grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-        {/* Left: Editorial Content */}
+        {}
         <div className="hidden lg:flex lg:col-span-6 flex-col space-y-8 pr-12">
           <div className="space-y-4">
             <span className="font-label text-primary text-sm font-bold tracking-tighter uppercase">
@@ -148,7 +148,7 @@ export default function SignupTuristaPage() {
             </p>
           </div>
 
-          {/* Bento Highlights */}
+          {}
           <div className="grid grid-cols-2 gap-4">
             <div className="bg-surface-container-low p-6 rounded-xl space-y-2 border border-outline-variant/10">
               <span className="material-symbols-outlined text-primary">explore</span>
@@ -163,10 +163,10 @@ export default function SignupTuristaPage() {
           </div>
         </div>
 
-        {/* Right: Signup Card */}
+        {}
         <div className="lg:col-span-6 flex justify-center">
           <div className="w-full max-w-md bg-surface-container-lowest p-10 md:p-12 rounded-[2rem] shadow-sm border border-outline-variant/10">
-            {/* Mobile Branding */}
+            {}
             <div className="lg:hidden mb-8 flex justify-center">
               <span className="text-3xl font-black tracking-tight text-primary font-headline italic">MUUL</span>
             </div>
@@ -178,23 +178,23 @@ export default function SignupTuristaPage() {
               </p>
             </div>
 
-            {/* Success Message */}
+            {}
             {success && (
               <div className="mb-6 p-4 bg-tertiary-container/20 border border-tertiary-container rounded-xl text-tertiary-container font-body text-sm">
                 {t("successMessage")}
               </div>
             )}
 
-            {/* Error Message */}
+            {}
             {error && (
               <div className="mb-6 p-4 bg-error/10 border border-error rounded-xl text-error font-body text-sm">
                 ✗ {error}
               </div>
             )}
 
-            {/* Form */}
+            {}
             <form className="space-y-4" onSubmit={handleSubmit}>
-              {/* Nombre */}
+              {}
               <div className="space-y-1.5">
                 <label className="font-label text-xs font-bold text-primary px-1" htmlFor="nombre">
                   NOMBRE
@@ -212,7 +212,7 @@ export default function SignupTuristaPage() {
                 />
               </div>
 
-              {/* Apellido */}
+              {}
               <div className="space-y-1.5">
                 <label className="font-label text-xs font-bold text-primary px-1" htmlFor="apellido">
                   {t("fields.apellido")}
@@ -230,7 +230,7 @@ export default function SignupTuristaPage() {
                 />
               </div>
 
-              {/* Username */}
+              {}
               <div className="space-y-1.5">
                 <label className="font-label text-xs font-bold text-primary px-1" htmlFor="username">
                   {t("fields.username")}
@@ -251,7 +251,7 @@ export default function SignupTuristaPage() {
                 </div>
               </div>
 
-              {/* Email */}
+              {}
               <div className="space-y-1.5">
                 <label className="font-label text-xs font-bold text-primary px-1" htmlFor="email">
                   {t("fields.email")}
@@ -269,7 +269,7 @@ export default function SignupTuristaPage() {
                 />
               </div>
 
-              {/* Teléfono */}
+              {}
               <div className="space-y-1.5">
                 <label className="font-label text-xs font-bold text-primary px-1" htmlFor="telefono">
                   {t("fields.telefono")}
@@ -287,7 +287,7 @@ export default function SignupTuristaPage() {
                 />
               </div>
 
-              {/* Password */}
+              {}
               <div className="space-y-1.5">
                 <label className="font-label text-xs font-bold text-primary px-1" htmlFor="password">
                   {t("fields.password")}
@@ -305,7 +305,7 @@ export default function SignupTuristaPage() {
                 />
               </div>
 
-              {/* Confirm Password */}
+              {}
               <div className="space-y-1.5">
                 <label className="font-label text-xs font-bold text-primary px-1" htmlFor="confirmPassword">
                   {t("fields.confirmPassword")}
@@ -323,7 +323,7 @@ export default function SignupTuristaPage() {
                 />
               </div>
 
-              {/* Terms */}
+              {}
               <div className="flex items-start space-x-2 px-1 pt-2">
                 <input
                   id="terms"
@@ -346,7 +346,7 @@ export default function SignupTuristaPage() {
                 </label>
               </div>
 
-              {/* Submit Button */}
+              {}
               <button
                 type="submit"
                 disabled={loading || success}
@@ -357,7 +357,7 @@ export default function SignupTuristaPage() {
               </button>
             </form>
 
-            {/* Divider */}
+            {}
             <div className="relative my-8">
               <div className="absolute inset-0 flex items-center">
                 <div className="w-full border-t border-outline-variant/20"></div>
@@ -369,7 +369,7 @@ export default function SignupTuristaPage() {
               </div>
             </div>
 
-            {/* Social Signups */}
+            {}
             <div className="grid grid-cols-2 gap-4">
               <button
                 onClick={handleGoogleSignup}
@@ -390,7 +390,7 @@ export default function SignupTuristaPage() {
               </button>
             </div>
 
-            {/* Login Link */}
+            {}
             <div className="mt-8 text-center">
               <p className="text-sm text-on-surface-variant font-body">
                 {t("loginPrompt")} {" "}

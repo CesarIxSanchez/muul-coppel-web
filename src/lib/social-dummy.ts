@@ -11,12 +11,12 @@ export type SocialPost = {
   id: string;
   user_id: string;
   content: string;
-  image_urls: string[]; // Prepared for future Supabase storage transition
+  image_urls: string[];
   likes: number;
   dislikes: number;
   comments: number;
   created_at: string;
-  is_friend: boolean; // Flag to prioritize in feed
+  is_friend: boolean;
   user: SocialUser;
 };
 
@@ -30,7 +30,7 @@ export type CommunityRoute = {
   cover_image: string;
 };
 
-// ─── DUMMY DATA ──────────────────────────────────────────
+
 
 export const DUMMY_SOCIAL_USERS: Record<string, SocialUser> = {
   'u1': {

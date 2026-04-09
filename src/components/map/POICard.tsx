@@ -4,18 +4,18 @@ import { useState } from "react";
 import type { POI } from "@/types/database";
 import { getPremiumPhoto } from "@/lib/photo-engine";
 
-/* ── Types ── */
+
 interface POICardProps {
   poi: POI;
   isInRoute: boolean;
-  routeIndex: number; // -1 if not in route
+  routeIndex: number;
   onClose: () => void;
   onToggleRoute: (poi: POI) => void;
   onAskAI: (poi: POI) => void;
   t: (key: string, params?: Record<string, any>) => string;
 }
 
-/* ── Helpers ── */
+
 function isOpenNow(poi: POI): boolean {
   if (!poi.horario_apertura || !poi.horario_cierre) return false;
   const now = new Date();
@@ -35,9 +35,7 @@ function formatHorario(poi: POI, t: (k: string, p?: any) => string): string {
     : `${t("cerrado")} · ${t("abre", { hora: poi.horario_apertura })}`;
 }
 
-/* ══════════════════════════════════════════════
-   COMPONENT
-   ══════════════════════════════════════════════ */
+
 export default function POICard({
   poi,
   isInRoute,
@@ -54,7 +52,7 @@ export default function POICard({
 
   return (
     <div className="absolute bottom-[180px] md:bottom-10 left-4 right-4 md:left-1/2 md:right-auto md:-translate-x-1/2 md:w-[420px] bg-white/95 backdrop-blur-2xl rounded-[40px] shadow-2xl overflow-hidden border border-white/20 z-50 animate-fade-in-up">
-      {/* Photo Banner */}
+      {}
       <div className="h-44 w-full relative overflow-hidden bg-slate-100">
         <img
           src={finalPhotoUrl}

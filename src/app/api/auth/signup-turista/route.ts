@@ -22,7 +22,7 @@ export async function POST(request: NextRequest) {
       telefono,
     });
 
-    // Validar datos
+
     if (!nombre?.trim()) {
       return NextResponse.json(
         { error: "El nombre es requerido" },
@@ -60,7 +60,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Crear cliente Supabase con credenciales admin
+
     const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
     const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
@@ -86,7 +86,7 @@ export async function POST(request: NextRequest) {
     console.log("URL:", supabaseUrl);
     console.log("Service Key presente:", !!supabaseServiceKey);
 
-    // Paso 1: Crear usuario en auth
+
     console.log("📝 Creando usuario en auth...");
     const { data: authData, error: signUpError } = await supabase.auth.admin.createUser({
       email: email.toLowerCase().trim(),
@@ -121,7 +121,7 @@ export async function POST(request: NextRequest) {
     const userId = authData.user.id;
     console.log("✅ Usuario creado en auth:", userId);
 
-    // Paso 2: Guardar perfil usando RPC con SECURITY DEFINER
+
     console.log("🔄 Guardando perfil con RPC...");
     
     const { error: rpcError } = await supabase.rpc('guardar_perfil_turista', {
@@ -152,7 +152,7 @@ export async function POST(request: NextRequest) {
 
     console.log("✅ Perfil guardado exitosamente");
     
-    // Obtener el perfil creado
+
     const { data: profileData } = await supabase
       .from("perfiles")
       .select("id")

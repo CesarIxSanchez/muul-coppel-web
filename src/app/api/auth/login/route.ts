@@ -9,7 +9,7 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const { email, password } = body;
 
-    // Validar inputs
+
     if (!email?.trim()) {
       return NextResponse.json(
         { error: "El correo es requerido" },
@@ -31,7 +31,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Crear cliente con service role key
+
     const supabase = createClient(supabaseUrl, supabaseServiceKey, {
       auth: {
         autoRefreshToken: false,
@@ -39,7 +39,7 @@ export async function POST(request: NextRequest) {
       },
     });
 
-    // Listar usuarios para encontrar por email
+
     const { data: users, error: listError } =
       await supabase.auth.admin.listUsers();
 
@@ -50,7 +50,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Buscar usuario por email
+
     const user = users.users.find((u) => u.email === email);
 
     if (!user) {
@@ -60,11 +60,11 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Nota: No podemos verificar la contraseña en el backend sin exponer secrets.
-    // En producción, implementa un flow seguro:
-    // Option 1: Usar Supabase Auth JS client en el frontend
-    // Option 2: Usar un servicio externo de authentication
-    // Por ahora retornamos el usuario si existe
+
+
+
+
+
 
     const { data: profile } = await supabase
       .from("perfiles")
@@ -72,10 +72,10 @@ export async function POST(request: NextRequest) {
       .eq("id", user.id)
       .single();
 
-    // Obtener tipo_cuenta del user metadata
+
     const tipo_cuenta = user.user_metadata?.tipo_cuenta || "turista";
 
-    // Si es negocio, obtener el ID del negocio
+
     let negocio_id = null;
     if (tipo_cuenta === "negocio") {
       const { data: negocioData } = await supabase

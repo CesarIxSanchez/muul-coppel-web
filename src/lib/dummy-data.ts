@@ -2,7 +2,7 @@ import type { POI } from "@/types/database";
 import { SANTA_FE_POIS } from "./santa-fe-dummy-data";
 
 export type SupportedLocale = "es" | "en" | "pt" | "zh";
-// Break circular dependency: SupportedLocale is now defined locally here too.
+
 type LocalizedValue<T> = Record<SupportedLocale, T>;
 
 interface LocalizedProductSeed {
@@ -214,7 +214,7 @@ const POI_SEEDS: PoiSeed[] = [
       product("bk2", "Café de Grano Casa Péndulo", 240, "Mezcla de la casa 500g."),
     ],
   },
-  // GASTRONOMIA (5)
+
   {
     id: "gastro-taqueria-orinoco-roma",
     nombre: "Taquería Orinoco Roma",
@@ -336,7 +336,7 @@ const POI_SEEDS: PoiSeed[] = [
     ],
   },
 
-  // HOSPEDAJE (5)
+
   {
     id: "hospedaje-four-seasons-reforma",
     nombre: "Four Seasons Hotel Mexico City",
@@ -458,7 +458,7 @@ const POI_SEEDS: PoiSeed[] = [
     ],
   },
 
-  // CULTURAL (5)
+
   {
     id: "cultural-angel-independencia",
     nombre: "Ángel de la Independencia",
@@ -580,7 +580,7 @@ const POI_SEEDS: PoiSeed[] = [
     ],
   },
 
-  // EVENTOS (5)
+
   {
     id: "eventos-auditorio-nacional",
     nombre: "Auditorio Nacional",
@@ -702,7 +702,7 @@ const POI_SEEDS: PoiSeed[] = [
     ],
   },
 
-  // SERVICIOS (5)
+
   {
     id: "servicios-wework-reforma-latino",
     nombre: "WeWork Reforma Latino",

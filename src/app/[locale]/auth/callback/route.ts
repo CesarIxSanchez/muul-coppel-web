@@ -9,7 +9,7 @@ export async function GET(request: Request) {
   const next = searchParams.get("next") ?? "/";
   const flow = searchParams.get("flow") ?? "signup";
 
-  // Leer locale desde cookie de next-intl
+
   const cookieHeader = request.headers.get("cookie") ?? "";
   const localeCookie = cookieHeader
     .split(";")
@@ -66,7 +66,7 @@ export async function GET(request: Request) {
         const telefono =
           user.phone || metadata.phone || metadata.phone_number || metadata.mobile || "";
 
-        // Obtener tipo_cuenta del metadata (por defecto turista)
+
         const tipo_cuenta = metadata.tipo_cuenta || "turista";
 
         if (flow === "signin") {
@@ -82,7 +82,7 @@ export async function GET(request: Request) {
             });
           }
 
-          // Redirigir basándose en tipo_cuenta desde la base de datos
+
           const { data: perfilData } = await supabase
             .from("perfiles")
             .select("tipo_cuenta")
@@ -92,7 +92,7 @@ export async function GET(request: Request) {
           const dbTipoCuenta = perfilData?.tipo_cuenta || tipo_cuenta;
 
           if (dbTipoCuenta === "negocio") {
-            // Obtener ID del negocio
+
             const { data: negocioData } = await supabase
               .from("negocios")
               .select("id")
@@ -104,13 +104,13 @@ export async function GET(request: Request) {
             }
           }
 
-          // Default: redireccionar al siguiente parámetro o al perfil de turista
+
           const defaultPath = next === "/" ? "/perfil" : next;
           return NextResponse.redirect(`${origin}/${safeLocale}${defaultPath}`);
         }
 
         if (existingProfile) {
-          // Consultar tipo_cuenta de la base de datos
+
           const { data: perfilData } = await supabase
             .from("perfiles")
             .select("tipo_cuenta")
@@ -163,7 +163,7 @@ export async function GET(request: Request) {
           p_idioma: safeLocale,
         });
 
-        // Consultar tipo_cuenta de la base de datos
+
         const { data: perfilFinalData } = await supabase
           .from("perfiles")
           .select("tipo_cuenta")
@@ -172,7 +172,7 @@ export async function GET(request: Request) {
 
         const finalTipoCuenta = perfilFinalData?.tipo_cuenta || tipo_cuenta;
 
-        // Redirigir basándose en tipo_cuenta de la base de datos
+
         if (finalTipoCuenta === "negocio") {
           const { data: negocioData } = await supabase
             .from("negocios")

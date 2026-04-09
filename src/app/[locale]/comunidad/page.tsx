@@ -24,13 +24,13 @@ function PostCard({ post, currentUserId }: { post: SocialPost, currentUserId?: s
     const newLiked = !liked;
     setLiked(newLiked);
     setLikes(newLiked ? likes + 1 : likes - 1);
-    // Real Supabase toggle (no-op if not authenticated)
+
     await SocialService.toggleLike(post.id);
   };
 
   return (
     <div className="bg-white rounded-[2rem] border border-outline-variant/20 shadow-sm p-6 mb-6 hover:shadow-md transition-shadow">
-      {/* Header */}
+      {}
       <div className="flex justify-between items-start mb-4">
         <div className="flex gap-4 items-center group">
           <Link href={`/perfil?id=${post.user.id}`} className="relative w-14 h-14 rounded-full overflow-hidden border-2 border-[#003e6f]/10 shadow-sm transition-transform group-hover:scale-105">
@@ -62,19 +62,19 @@ function PostCard({ post, currentUserId }: { post: SocialPost, currentUserId?: s
         </button>
       </div>
 
-      {/* Content */}
+      {}
       <p className="text-on-surface text-base mb-4 font-body leading-relaxed">
         {post.content}
       </p>
 
-      {/* Images */}
+      {}
       {post.image_urls.length > 0 && (
         <div className="w-full h-64 md:h-80 relative rounded-2xl overflow-hidden mb-4 shadow-sm border border-outline-variant/10">
           <Image src={post.image_urls[0]} alt="Post media" fill className="object-cover" />
         </div>
       )}
 
-      {/* Footer Actions */}
+      {}
       <div className="flex items-center gap-6 mt-4 pt-4 border-t border-outline-variant/10">
         <button 
           onClick={handleLike}
@@ -148,7 +148,7 @@ function ComunidadContent() {
   const [posts, setPosts] = useState<SocialPost[]>([]);
   const [ranking, setRanking] = useState<SocialUser[]>(DUMMY_RANKING.slice(0, 5));
 
-  // Load real ranking from Supabase (get_ranking RPC)
+
   useEffect(() => {
     const loadRanking = async () => {
       try {
@@ -164,7 +164,7 @@ function ComunidadContent() {
           })));
         }
       } catch {
-        // fallback to DUMMY_RANKING already set as default
+
       }
     };
     loadRanking();
@@ -198,7 +198,7 @@ function ComunidadContent() {
     fetchUser();
   }, [supabase]);
 
-  // Recover draft from Map
+
   const [isDraftLoading, setIsDraftLoading] = useState(false);
 
   useEffect(() => {
@@ -212,7 +212,7 @@ function ComunidadContent() {
         setIsDraftLoading(true);
         setSelectedImage(draftImage);
         
-        // Convert base64 to File object more reliably
+
         const convertDataUrlToFile = async (dataUrl: string) => {
           try {
             const res = await fetch(dataUrl);
@@ -228,7 +228,7 @@ function ComunidadContent() {
         convertDataUrlToFile(draftImage);
       }
       
-      // Clear draft from storage
+
       sessionStorage.removeItem("muul_draft_text");
       sessionStorage.removeItem("muul_draft_image");
     }
@@ -248,7 +248,7 @@ function ComunidadContent() {
           if (publicUrl) {
             finalImageUrls = [publicUrl];
           } else {
-            // Fallback to local dataURL if cloud upload failed
+
             if (selectedImage) finalImageUrls = [selectedImage];
           }
         } catch (uploadError) {
@@ -260,7 +260,7 @@ function ComunidadContent() {
       const userId = currentUser?.id || 'me';
       const newPost = await SocialService.createPost(userId, inputValue, finalImageUrls);
       
-      // Update UI immediately (works for both real and local-fallback posts)
+
       setPosts(prev => [newPost, ...prev]);
       setInputValue("");
       setSelectedImage(null);
@@ -288,7 +288,7 @@ function ComunidadContent() {
   return (
     <main className="min-h-screen bg-[#f8fafd] pt-24 pb-20">
       <div className="max-w-[1440px] mx-auto px-4 md:px-6 lg:px-12">
-        {/* Header */}
+        {}
         <div className="mb-12">
           <div className="inline-flex items-center gap-2 mb-4 font-label text-xs uppercase tracking-[0.2em] text-[#005596] font-black">
             ✨ Red Social Muul
@@ -299,9 +299,9 @@ function ComunidadContent() {
 
         <div className="flex flex-col-reverse lg:flex-row gap-8 lg:gap-12">
           
-          {/* Main Feed Column */}
+          {}
           <div className="flex-1 lg:max-w-2xl">
-            {/* Create Post Input */}
+            {}
             <div className={`bg-white rounded-[2rem] border border-outline-variant/20 shadow-md p-6 mb-8 transition-colors ${isPublishing ? 'opacity-50 pointer-events-none' : 'hover:border-secondary'}`}>
               <div className="flex gap-4 items-center">
                 <div className="w-12 h-12 rounded-full overflow-hidden flex items-center justify-center shrink-0 border-2 border-slate-100 bg-gradient-to-br from-[#003e6f] to-[#005596] text-white font-black text-lg shadow-inner">
@@ -321,32 +321,7 @@ function ComunidadContent() {
                 />
                 <label className="cursor-pointer text-neutral-400 hover:text-[#003e6f] transition-colors p-2 rounded-full hover:bg-neutral-100">
                   <span className="material-symbols-outlined text-[22px]">add_photo_alternate</span>
-                  <input type="file" accept="image/*" className="hidden" onChange={handleImageSelect} />
-                </label>
-                <button 
-                  onClick={handleAddPost}
-                  disabled={!inputValue.trim() || isDraftLoading}
-                  className="bg-[#fed000] text-[#003e6f] h-12 px-6 rounded-full font-headline font-black text-sm uppercase tracking-widest transition-colors shadow-sm disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-[0_0_15px_rgba(254,208,0,0.4)]"
-                >
-                  {isDraftLoading ? 'Procesando...' : isPublishing ? '...' : t("publicar")}
-                </button>
-              </div>
-              {selectedImage && (
-                <div className="mt-4 relative">
-                  <div className="w-full h-48 rounded-2xl overflow-hidden border border-outline-variant/10">
-                    <img src={selectedImage} alt="Preview" className="w-full h-full object-cover" />
-                  </div>
-                  <button 
-                    onClick={() => { setSelectedImage(null); setSelectedImageFile(null); }}
-                    className="absolute top-2 right-2 bg-black/60 text-white w-8 h-8 rounded-full flex items-center justify-center hover:bg-black/80 transition-colors"
-                  >
-                    ✕
-                  </button>
-                </div>
-              )}
-            </div>
-
-            {/* Posts Feed */}
+                  <input type="file" accept="image}
             <div className="flex flex-col">
               <h2 className="font-headline font-black text-xl text-[#003e6f] mb-6">{t("publicaciones")}</h2>
               {posts.map(post => (
@@ -355,7 +330,7 @@ function ComunidadContent() {
             </div>
           </div>
 
-          {/* Right Sidebar - Ranking */}
+          {}
           <div className="w-full lg:w-[400px] shrink-0">
             <RankingBoard users={ranking} />
           </div>

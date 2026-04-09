@@ -84,7 +84,7 @@ export default function TiendasPage() {
       setLoadingStores(true);
       
       const mocked: Negocio[] = [
-        // Hardcoded critical stores for debugging and guarantee
+
         {
           id: 'h-csf',
           propietario_id: 'dummy',
@@ -115,7 +115,7 @@ export default function TiendasPage() {
           activo: true,
           created_at: new Date().toISOString(),
         },
-        // Plus other localized dummy pois
+
         ...dummyPois.map(p => ({
           id: p.id,
           propietario_id: 'dummy',
@@ -138,7 +138,7 @@ export default function TiendasPage() {
 
       setNegocios(mocked);
       setFilteredNegocios(mocked);
-      setLoadingStores(false); // Render immediately
+      setLoadingStores(false);
 
       try {
         const { data } = await supabase.from("negocios").select("*").eq("activo", true).order("created_at", { ascending: false });
@@ -198,7 +198,7 @@ export default function TiendasPage() {
     setHorarioApertura(""); setHorarioCierre("");
     setGpsActive(false); setLatitud(null); setLongitud(null); setAceptaTerminos(false);
 
-    // Refresh data correctly (do not overwrite with ONLY supabase data)
+
     const { data: newData } = await supabase.from("negocios").select("*").eq("activo", true).order("created_at", { ascending: false });
     if (newData) { 
       const mocked: Negocio[] = dummyPois.map(p => ({
@@ -215,7 +215,7 @@ export default function TiendasPage() {
 
   return (
       <main className="min-h-screen">
-        {/* ===== TIENDAS REGISTRADAS ===== */}
+        {}
         <section className="relative pt-20 pb-16 px-6 overflow-hidden">
           <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-primary/10 blur-[120px] rounded-full pointer-events-none" />
           <div className="absolute top-20 right-0 w-[400px] h-[400px] bg-secondary/5 blur-[100px] rounded-full pointer-events-none" />

@@ -5,23 +5,25 @@ import { useTranslations } from "next-intl";
 import type { POI } from "@/types/database";
 import { usePartyMode, type PartyRoute } from "@/hooks/usePartyMode";
 
-/* ── Types ── */
+
 interface PartyModeModalProps {
   isOpen: boolean;
   onClose: () => void;
-  /** If provided, shows "activate party mode" for this already-saved route */
+  
   savedRouteId?: string;
-  /** POIs in current unsaved route — to create a new party route */
+  
   poisEnRuta?: POI[];
   distanciaTexto?: string;
   duracionTexto?: string;
-  /** Called when user joins a public route and wants to load its POIs */
+  
   onLoadRoute?: (pois: { id: string; nombre: string; emoji: string; categoria: string }[]) => void;
   activePartyId?: string | null;
   onPartyIdChange?: (id: string | null) => void;
+  
+  onJoinSuccess?: () => void;
 }
 
-/* ── Copy to clipboard util ── */
+
 async function copyToClipboard(text: string): Promise<boolean> {
   try {
     await navigator.clipboard.writeText(text);
@@ -33,9 +35,7 @@ async function copyToClipboard(text: string): Promise<boolean> {
 
 type Tab = "mi_ruta" | "unirse" | "explorar";
 
-/* ══════════════════════════════════════════════
-   COMPONENT
-   ══════════════════════════════════════════════ */
+
 export default function PartyModeModal({
   isOpen,
   onClose,
@@ -46,6 +46,7 @@ export default function PartyModeModal({
   onLoadRoute,
   activePartyId,
   onPartyIdChange,
+  onJoinSuccess,
 }: PartyModeModalProps) {
   const tp = useTranslations("partyMode");
   const {
@@ -104,9 +105,14 @@ export default function PartyModeModal({
     const ruta = await joinPartyRoute(id);
     if (ruta?.id && onPartyIdChange) {
       onPartyIdChange(ruta.id);
+
+      onJoinSuccess?.();
     }
     if (ruta?.pois_data && onLoadRoute) {
       onLoadRoute(ruta.pois_data);
+      onClose();
+    } else if (ruta?.id) {
+
       onClose();
     }
   };
@@ -131,7 +137,7 @@ export default function PartyModeModal({
 
   return (
     <div className="fixed inset-0 z-[110] flex items-end sm:items-center justify-center p-0 sm:p-4">
-      {/* Backdrop */}
+      {}
       <div
         className="absolute inset-0 bg-surface-dim/80 backdrop-blur-sm"
         onClick={onClose}
@@ -139,7 +145,7 @@ export default function PartyModeModal({
 
       <div className="relative w-full sm:max-w-md bg-surface-container-lowest rounded-t-3xl sm:rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh] border border-outline-variant/10 animate-fade-in-up">
 
-        {/* Header */}
+        {}
         <div className="p-5 border-b border-outline-variant/10 flex items-center justify-between shrink-0">
           <div>
             <h2 className="font-headline font-black text-on-surface text-base flex items-center gap-2">
@@ -157,7 +163,7 @@ export default function PartyModeModal({
           </button>
         </div>
 
-        {/* Tabs */}
+        {}
         <div className="flex border-b border-outline-variant/10 shrink-0">
           {(["mi_ruta", "unirse", "explorar"] as Tab[]).map((tabKey) => (
             <button
@@ -176,10 +182,10 @@ export default function PartyModeModal({
           ))}
         </div>
 
-        {/* Content */}
+        {}
         <div className="flex-1 overflow-y-auto" style={{ scrollbarWidth: "none" }}>
 
-          {/* ── MI RUTA TAB ── */}
+          {}
           {tab === "mi_ruta" && (
             <div className="p-5 space-y-4">
               {!activePartyId ? (
@@ -232,7 +238,7 @@ export default function PartyModeModal({
                     </p>
                   </div>
 
-                  {/* Share actions */}
+                  {}
                   <div className="grid grid-cols-2 gap-2">
                     <button
                       onClick={handleCopyLink}
@@ -252,7 +258,7 @@ export default function PartyModeModal({
                     </button>
                   </div>
 
-                  {/* Participants */}
+                  {}
                   <div className="space-y-2">
                     <p className="text-[10px] font-black text-on-surface-variant uppercase tracking-widest">
                       {tp("participants", { count: participants.length })}
@@ -280,7 +286,7 @@ export default function PartyModeModal({
             </div>
           )}
 
-          {/* ── UNIRSE TAB ── */}
+          {}
           {tab === "unirse" && (
             <div className="p-5 space-y-4">
               <p className="text-sm text-on-surface-variant leading-relaxed">
@@ -305,7 +311,7 @@ export default function PartyModeModal({
             </div>
           )}
 
-          {/* ── EXPLORAR TAB ── */}
+          {}
           {tab === "explorar" && (
             <div className="p-5 space-y-3">
               {loading ? (

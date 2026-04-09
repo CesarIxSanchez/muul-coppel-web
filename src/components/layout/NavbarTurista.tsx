@@ -39,7 +39,7 @@ export default function NavbarTurista() {
   const t = useTranslations("nav");
   const dummyPois = useMemo(() => getLocalizedDummyPois(locale), [locale]);
 
-  // Search state
+
   const searchRef = useRef<HTMLDivElement>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
@@ -75,7 +75,7 @@ export default function NavbarTurista() {
 
   const isActive = (path: string) => pathname === path || (path !== "/" && pathname?.startsWith(path));
 
-  // Search logic
+
   useEffect(() => {
     const timer = setTimeout(async () => {
       if (searchQuery.trim().length < 2) {
@@ -243,7 +243,7 @@ export default function NavbarTurista() {
   return (
     <nav className="fixed top-0 w-full z-50 bg-white/80 backdrop-blur-xl border-b border-neutral-200/50 shadow-[0_4px_20px_rgba(0,18,50,0.03)]">
       <div className="max-w-[1440px] mx-auto h-[80px] px-8 flex items-center justify-between gap-8">
-        {/* Logo */}
+        {}
         <div className="flex items-center gap-3">
           <Image
             src="https://qewqnirwuptcudoflgkd.supabase.co/storage/v1/object/public/muul_media/Logopng.png"
@@ -260,7 +260,7 @@ export default function NavbarTurista() {
           </Link>
         </div>
 
-        {/* Desktop Nav */}
+        {}
         <div className="hidden lg:flex gap-10 items-center">
           {navItems.map((item) => (
             <Link
@@ -277,9 +277,9 @@ export default function NavbarTurista() {
           ))}
         </div>
 
-        {/* Right Section */}
+        {}
         <div className="flex items-center gap-4">
-          {/* Search Bar - Desktop Only */}
+          {}
           <div className="hidden xl:flex relative w-64 group" ref={searchRef}>
             <input
               type="text"
@@ -297,7 +297,7 @@ export default function NavbarTurista() {
               search
             </span>
 
-            {/* Results Dropdown */}
+            {}
             {isSearchVisible && (
               <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-neutral-200 rounded-2xl shadow-[0_20px_50px_rgba(0,18,50,0.12)] overflow-hidden z-[100] max-h-96 overflow-y-auto animate-fade-in">
                 {isSearching && (
@@ -334,7 +334,7 @@ export default function NavbarTurista() {
             )}
           </div>
 
-          {/* Language Selector */}
+          {}
           <div className="relative" ref={languageMenuRef}>
             <button
               type="button"
@@ -380,7 +380,7 @@ export default function NavbarTurista() {
 
           <div className="h-8 w-[1px] bg-neutral-200 hidden sm:block"></div>
 
-          {/* User Avatar or Login */}
+          {}
           {user ? (
             <div className="relative font-body" ref={profileMenuRef}>
               <button

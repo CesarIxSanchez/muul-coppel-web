@@ -139,7 +139,7 @@ const LINES: Record<string, MetroLine> = {
   },
 };
 
-type Coord = [number, number]; // [lat, lng]
+type Coord = [number, number];
 
 interface Edge {
   to: string;

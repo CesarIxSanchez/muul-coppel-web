@@ -62,7 +62,7 @@ export default function PerfilDinamicoPage() {
         const currentNegocio = negocioData[0];
         setNegocio(currentNegocio);
 
-        // Fetch products for the business
+
         const { data: productosData, error: productosError } = await supabase.rpc('get_productos_by_negocio_id', { p_negocio_id: currentNegocio.id });
 
         if (productosError) {
@@ -71,7 +71,7 @@ export default function PerfilDinamicoPage() {
           setProductos(productosData || []);
         }
 
-        // Geolocation logic
+
         if (typeof window !== "undefined" && navigator.geolocation) {
           navigator.geolocation.getCurrentPosition((pos) => {
             const uLat = pos.coords.latitude;
@@ -120,7 +120,7 @@ export default function PerfilDinamicoPage() {
       return;
     }
     
-    // Assuming the RPC returns the new product, we refetch to be safe
+
     const { data: productosData } = await supabase.rpc('get_productos_by_negocio_id', { p_negocio_id: negocio.id });
     if (productosData) setProductos(productosData);
 
@@ -168,7 +168,7 @@ export default function PerfilDinamicoPage() {
 
   return (
     <main className="max-w-[1440px] mx-auto min-h-screen pb-28 md:pb-0">
-        {/* HERO */}
+        {}
         <header className="relative h-[400px] md:h-[500px] w-full overflow-hidden">
           <div className="absolute inset-0">
             <img 
@@ -197,10 +197,10 @@ export default function PerfilDinamicoPage() {
           </div>
         </header>
 
-        {/* CONTENT */}
+        {}
         <div className="px-6 md:px-12 py-12 flex flex-col lg:flex-row gap-12">
           <div className="flex-grow space-y-20">
-            {/* Info */}
+            {}
             <section className="space-y-8 animate-fade-in-up">
               <div className="flex items-center gap-4">
                 <h2 className="text-3xl font-headline font-bold uppercase tracking-tight">{t("infoGeneral")}</h2>
@@ -266,7 +266,7 @@ export default function PerfilDinamicoPage() {
               </div>
             </section>
 
-            {/* Products */}
+            {}
             <section className="space-y-8" id="productos">
               <div className="flex items-center justify-between">
                 <h2 className="text-3xl font-headline font-bold uppercase tracking-tight">{isOwner ? t("misProductos") : t("productos")}</h2>
@@ -321,7 +321,7 @@ export default function PerfilDinamicoPage() {
             </section>
           </div>
 
-          {/* SIDEBAR */}
+          {}
           <aside className="w-full lg:w-96">
             <div className="sticky top-28 space-y-8">
               <div className="bg-surface-container-low rounded-2xl p-8 space-y-8 border border-outline-variant/10">
@@ -384,7 +384,7 @@ export default function PerfilDinamicoPage() {
                 </div>
               </div>
 
-              {/* Promotional section removed */}
+              {}
             </div>
           </aside>
         </div>

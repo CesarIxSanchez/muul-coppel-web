@@ -28,7 +28,7 @@ function normalizePerfil(row: any, source: "perfiles_old" | "perfiles_new" | "us
 }
 
 export async function getPerfilCompat(supabase: AnySupabase, userId: string): Promise<Perfil | null> {
-  // Consultar única tabla: perfiles
+
   const res = await supabase
     .from("perfiles")
     .select("id,nombre,apellido,nombre_completo,tipo_cuenta,idioma,foto_url,ciudad,created_at")
@@ -47,7 +47,7 @@ export async function updateIdiomaCompat(
   userId: string,
   idioma: string
 ): Promise<boolean> {
-  // Actualizar idioma en tabla perfiles
+
   const result = await supabase
     .from("perfiles")
     .update({ idioma })

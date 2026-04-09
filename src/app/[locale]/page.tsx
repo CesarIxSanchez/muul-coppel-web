@@ -80,9 +80,9 @@ export default function HomePage() {
 
   return (
     <main className="pt-20 bg-white">
-      {/* Hero Section - Premium Background */}
+      {}
       <section className="relative h-[600px] md:h-[800px] w-full overflow-hidden bg-black">
-        {/* Background Images with Overlay */}
+        {}
         {heroData.map((item, idx) => (
           <div 
             key={item.img}
@@ -93,12 +93,12 @@ export default function HomePage() {
           />
         ))}
         
-        {/* Gradient Overlay - Subtle for text readability */}
+        {}
         <div className="absolute inset-0" style={{background: 'linear-gradient(to top, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0) 50%, rgba(0,0,0,0) 100%)'}} />
         
-        {/* Navigation Controls */}
+        {}
         <div className="absolute bottom-12 left-1/2 -translate-x-1/2 z-20 flex items-center gap-6">
-          {/* Previous Arrow */}
+          {}
           <button 
             onClick={() => setActiveHero((prev) => (prev - 1 + heroData.length) % heroData.length)}
             className="w-12 h-12 rounded-full bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center text-white hover:bg-white/20 transition-all group"
@@ -106,7 +106,7 @@ export default function HomePage() {
             <span className="material-symbols-outlined group-hover:-translate-x-1 transition-transform">chevron_left</span>
           </button>
 
-          {/* Dots */}
+          {}
           <div className="flex gap-3">
             {heroData.map((_, idx) => (
               <button
@@ -117,7 +117,7 @@ export default function HomePage() {
             ))}
           </div>
 
-          {/* Next Arrow */}
+          {}
           <button 
             onClick={() => setActiveHero((prev) => (prev + 1) % heroData.length)}
             className="w-12 h-12 rounded-full bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center text-white hover:bg-white/20 transition-all group"
@@ -126,7 +126,7 @@ export default function HomePage() {
           </button>
         </div>
         
-        {/* Hero label */}
+        {}
         <div className="absolute top-24 right-6 md:right-12 z-20">
           <div className="rounded-2xl border border-white/20 bg-black/35 backdrop-blur-md px-4 py-3 shadow-xl">
             <p className="font-headline text-base font-bold !text-white md:text-lg">
@@ -135,20 +135,20 @@ export default function HomePage() {
           </div>
         </div>
 
-        {/* Content */}
+        {}
         <div className="relative z-10 h-full max-w-[1440px] mx-auto px-6 md:px-12 flex flex-col justify-center items-start">
           
-          {/* Main Headline */}
+          {}
           <h1 className="font-headline text-6xl md:text-7xl lg:text-8xl max-w-5xl leading-[1.1] mb-6 md:mb-8 font-black tracking-tight" style={{color: '#FFFFFF', textShadow: '0 0 50px rgba(0,0,0,1), 3px 3px 12px rgba(0,0,0,0.9), 0 0 20px rgba(0,0,0,0.8)'}}>
             {t("titulo")} <br className="hidden md:block" /><span className="italic font-light" style={{color: '#FFFFFF'}}>{t("tituloDestacado")}</span>
           </h1>
           
-          {/* Subheading */}
+          {}
           <p className="text-lg md:text-xl max-w-2xl mb-10 md:mb-12 font-body leading-relaxed" style={{color: '#FFFFFF', textShadow: '0 0 30px rgba(0,0,0,1), 2px 2px 8px rgba(0,0,0,0.9)'}}>
             {t("subtitulo")}
           </p>
           
-          {/* CTA Buttons */}
+          {}
           <div className="flex flex-col sm:flex-row gap-4 pt-4">
             <Link
               href={`/mapa?lat=${heroData[activeHero].lat}&lng=${heroData[activeHero].lng}&zoom=17&id=${heroData[activeHero].id}`}
@@ -168,7 +168,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Category Cards - Explore by Interest */}
+      {}
       <section id="explorar-seccion" className="py-24 md:py-32 bg-white px-6 md:px-12 max-w-[1440px] mx-auto scroll-mt-20">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-20 gap-8">
           <div>
@@ -199,7 +199,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Trending Destinations - Light Theme Refined */}
+      {}
       <section className="py-24 md:py-32 bg-[#f3f6ff]">
         <div className="max-w-[1440px] mx-auto px-6 md:px-12">
           <div className="flex flex-col items-center text-center mb-20">
@@ -209,7 +209,7 @@ export default function HomePage() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-4 md:grid-rows-2 gap-8 h-auto md:h-[700px]">
-            {/* Main Featured Card */}
+            {}
             <div className="md:col-span-2 md:row-span-2 relative rounded-[3rem] overflow-hidden shadow-2xl hover:shadow-[0_30px_60px_rgba(0,62,111,0.15)] transition-all duration-500 group cursor-pointer h-80 md:h-full border border-white/20">
               <div 
                 className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105"
@@ -232,7 +232,7 @@ export default function HomePage() {
               </div>
             </div>
 
-            {/* Puerto Escondido */}
+            {}
             <div className="md:col-span-2 relative rounded-[3rem] overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-500 group cursor-pointer h-80 md:h-auto">
               <div 
                 className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105"
@@ -251,7 +251,7 @@ export default function HomePage() {
               </div>
             </div>
 
-            {/* Custom Stats Cards - More Premium Light Style */}
+            {}
             <div className="bg-[#003e6f] rounded-[3rem] p-10 text-white flex flex-col justify-between shadow-xl transition-all hover:-translate-y-2 border border-white/10">
               <span className="material-symbols-outlined text-5xl opacity-50">insights</span>
               <div>
@@ -271,7 +271,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Offers Section - Premium Card Grid */}
+      {}
       <section className="py-24 md:py-32 bg-white px-6 md:px-12 max-w-[1440px] mx-auto overflow-visible">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-16 gap-8">
           <div>
@@ -285,7 +285,7 @@ export default function HomePage() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {/* Card 1 */}
+          {}
           <div className="group relative bg-[#f8faff] rounded-[2.5rem] p-8 md:p-10 border border-[#003e6f]/5 shadow-sm hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 overflow-hidden">
             <div className="absolute top-0 right-0 w-32 h-32 bg-secondary/10 rounded-bl-[5rem] -mr-8 -mt-8 group-hover:scale-110 transition-transform duration-500" />
             <div className="relative z-10 flex flex-col h-full">
@@ -311,7 +311,7 @@ export default function HomePage() {
             </div>
           </div>
 
-          {/* Card 2 */}
+          {}
           <div className="group relative bg-[#003e6f] rounded-[2.5rem] p-8 md:p-10 shadow-xl shadow-[#003e6f]/20 hover:shadow-[#003e6f]/40 hover:-translate-y-2 transition-all duration-500 overflow-hidden">
             <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-bl-[5rem] -mr-8 -mt-8 group-hover:scale-110 transition-transform duration-500" />
             <div className="relative z-10 flex flex-col h-full">
@@ -337,7 +337,7 @@ export default function HomePage() {
             </div>
           </div>
 
-          {/* Card 3 */}
+          {}
           <div className="group relative bg-[#fffcf0] rounded-[2.5rem] p-8 md:p-10 border border-[#fed000]/20 shadow-sm hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 overflow-hidden">
             <div className="absolute top-0 right-0 w-32 h-32 bg-[#fed000]/10 rounded-bl-[5rem] -mr-8 -mt-8 group-hover:scale-110 transition-transform duration-500" />
             <div className="relative z-10 flex flex-col h-full">

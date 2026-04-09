@@ -36,7 +36,7 @@ export default function MobileNav() {
         await navigator.clipboard.writeText(shareUrl);
       }
     } catch {
-      // Intentionally ignored.
+
     }
     setIsMoreOpen(false);
   };

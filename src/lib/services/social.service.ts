@@ -1,11 +1,4 @@
-/**
- * Social Service — SUPABASE REAL version
- *
- * Requires migration 002_social_and_gamification.sql to be executed first.
- *
- * Fallback: if Supabase returns empty feed (table just created, no rows yet),
- * it injects the static seed posts so the UI never looks empty.
- */
+
 import { DUMMY_POSTS, DUMMY_SOCIAL_USERS, type SocialPost } from "../social-dummy";
 
 const LOCAL_POSTS_KEY = "muul_local_posts";
@@ -54,7 +47,7 @@ export const SocialService = {
       console.warn("[SocialService] Supabase unavailable or timeout, using local/dummy only", e);
     }
 
-    // Merge with local posts from localStorage
+
     const localPostsRaw = typeof window !== 'undefined' ? localStorage.getItem(LOCAL_POSTS_KEY) : null;
     if (localPostsRaw) {
       try {
@@ -65,8 +58,8 @@ export const SocialService = {
       }
     }
 
-    // Final merge: DUMMY_POSTS + Supabase + Local
-    // We unique them by ID to avoid duplicates
+
+
     const allPosts = [...posts];
     const dummyIds = new Set(allPosts.map(p => p.id));
     
@@ -77,10 +70,10 @@ export const SocialService = {
     }
 
     return allPosts.sort((a, b) => {
-      // Keep local posts at the top, then by date
+
       if (a.id.startsWith('local_') && !b.id.startsWith('local_')) return -1;
       if (!a.id.startsWith('local_') && b.id.startsWith('local_')) return 1;
-      return 0; // Or refine by date if needed
+      return 0;
     });
   },
 
@@ -113,7 +106,7 @@ export const SocialService = {
     } catch (e: any) {
       console.error("[SocialService] Error en createPost (using resilience fallback):", e);
       
-      // PERSISTENCE FALLBACK: Save to LocalStorage if Supabase fails/denied
+
       const localPost: SocialPost = {
         id: `local_${Date.now()}`,
         user_id: userId,

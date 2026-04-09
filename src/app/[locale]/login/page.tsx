@@ -154,8 +154,8 @@ export default function LoginPage() {
   };
 
   useEffect(() => {
-    // If user comes back from OAuth and this page is restored from cache,
-    // ensure actions are not left in a blocked loading state.
+
+
     setLoading(false);
 
     const unlockUi = () => setLoading(false);
@@ -197,10 +197,10 @@ export default function LoginPage() {
           return;
         }
 
-        // Esperar un momento para que se establezca la sesión
+
         await new Promise(resolve => setTimeout(resolve, 500));
 
-        // Consultar perfil en la base de datos usando RPC para obtener tipo_cuenta
+
         const { data: perfilData, error: perfilError } = await supabase.rpc('get_perfil_usuario_actual');
 
         if (perfilError || !perfilData || perfilData.length === 0) {
@@ -214,7 +214,7 @@ export default function LoginPage() {
         console.log("Tipo de cuenta:", tipo_cuenta);
         console.log("Perfil seleccionado:", profile);
 
-        // Validar que el tipo de cuenta coincida con el perfil seleccionado
+
         if (profile === "negocio" && tipo_cuenta !== "negocio") {
           setErrorMessage(t("negocioNoRegistrado") || "El negocio no está registrado");
           setLoading(false);
@@ -228,7 +228,7 @@ export default function LoginPage() {
         }
 
         if (tipo_cuenta === "negocio") {
-          // Obtener el negocio del usuario usando RPC
+
           console.log("Buscando negocio para usuario:", data.user.id);
           
           try {
@@ -262,7 +262,7 @@ export default function LoginPage() {
             return;
           }
         } else {
-          // Redirigir al perfil de turista
+
           console.log("Redirigiendo a perfil turista - tipo_cuenta:", tipo_cuenta);
           setLoading(false);
           await router.push("/perfil");
@@ -270,9 +270,9 @@ export default function LoginPage() {
         }
       }
 
-      // REGISTRO - Usar RPC functions directamente
+
       if (profile === "turista") {
-        // Validar campos
+
         if (!touristRegister.firstName.trim()) {
           setErrorMessage(t("requiredFields"));
           return;
@@ -360,7 +360,7 @@ export default function LoginPage() {
           return;
         }
       } else {
-        // NEGOCIO - Validar campos
+
         if (!businessRegister.ownerFirstName.trim()) {
           setErrorMessage(t("requiredFields"));
           return;
@@ -413,7 +413,7 @@ export default function LoginPage() {
           return;
         }
 
-        // Guardar perfil del propietario con RPC
+
         const { error: profileError } = await supabase.rpc("guardar_perfil_negocio", {
           p_id: authData.user.id,
           p_nombre: businessRegister.ownerFirstName.trim(),
@@ -430,7 +430,7 @@ export default function LoginPage() {
           return;
         }
 
-        // Crear negocio con RPC
+
         const { data: negocioData, error: negocioError } = await supabase.rpc("crear_negocio", {
           p_propietario_id: authData.user.id,
           p_nombre: businessRegister.businessName.trim(),
@@ -452,7 +452,7 @@ export default function LoginPage() {
           return;
         }
 
-        // Obtener el negocio del usuario usando RPC
+
         try {
           const { data: negocioData2, error: negocioQueryError } = await supabase.rpc('get_negocio_usuario_actual');
 
@@ -472,7 +472,7 @@ export default function LoginPage() {
         return;
       }
 
-      // Para registro de turista
+
       router.push("/perfil");
     } catch (error) {
       console.error("Auth error:", error);

@@ -97,8 +97,8 @@ function PerfilContent() {
     const fetchPerfil = async () => {
       const { data: { session } } = await supabase.auth.getSession();
       
-      // HACKATHON: Mocking public profile routing based on ?id
-      // Dynamic lookup from our social user registry for perfect data consistency
+
+
       if (profileId && (!session || session.user.id !== profileId)) {
         setIsPublicView(true);
         
@@ -146,7 +146,7 @@ function PerfilContent() {
         
         if (error) {
           console.error("Error fetching profile:", error);
-          // HACKATHON: Fallback - build profile from auth session metadata
+
           if (session?.user) {
             const meta = session.user.user_metadata;
             setPerfil({
@@ -162,7 +162,7 @@ function PerfilContent() {
         } else if (data && data.length > 0) {
           setPerfil(data[0]);
         } else if (session?.user) {
-          // RPC returned empty - build from auth
+
           const meta = session.user.user_metadata;
           setPerfil({
             nombre_completo: meta?.nombre_completo || meta?.full_name || session.user.email?.split('@')[0] || 'Usuario',
@@ -176,7 +176,7 @@ function PerfilContent() {
         }
       } catch (err) {
         console.error(err);
-        // Ultimate fallback
+
         if (session?.user) {
           const meta = session.user.user_metadata;
           setPerfil({
@@ -304,7 +304,7 @@ function PerfilContent() {
 
   return (
     <main className="min-h-screen pt-16 lg:pt-20 bg-surface flex flex-col lg:flex-row">
-      {/* Menu Button */}
+      {}
       <div className="fixed top-20 left-4 z-50 lg:top-4">
         <button 
           onClick={() => setSidebarOpen(true)}
@@ -314,16 +314,16 @@ function PerfilContent() {
         </button>
       </div>
 
-      {/* Sidebar Modal */}
+      {}
       <aside className={clsx(
         "fixed inset-y-0 left-0 z-50 w-80 shrink-0 border-r border-outline-variant/10 p-8 flex flex-col gap-10 bg-white/80 backdrop-blur-xl transition-transform duration-300 ease-in-out",
-        "lg:top-0 lg:h-full", // Full height on desktop
+        "lg:top-0 lg:h-full",
         {
           "translate-x-0": isSidebarOpen,
           "-translate-x-full": !isSidebarOpen,
         }
       )}>
-        {/* Close Button */}
+        {}
         <div className="absolute top-4 right-4">
           <button 
             onClick={() => setSidebarOpen(false)}
@@ -360,7 +360,7 @@ function PerfilContent() {
               key={item.id}
               onClick={() => {
                 setActiveTab(item.id);
-                setSidebarOpen(false); // Close sidebar on selection
+                setSidebarOpen(false);
               }}
               className={`flex items-center gap-4 px-6 py-4 rounded-full transition-all text-sm font-black uppercase tracking-widest ${
                 activeTab === item.id 
@@ -386,7 +386,7 @@ function PerfilContent() {
         </div>
       </aside>
 
-      {/* Main Content */}
+      {}
       <div className={clsx(
         "flex-1 overflow-y-auto p-8 lg:p-12 space-y-12 max-w-6xl mx-auto w-full transition-all duration-300",
         {
@@ -395,7 +395,7 @@ function PerfilContent() {
       )}>
         {activeTab === "cuenta" && (
           <div className="space-y-12 animate-fade-in-up">
-            {/* Hero Section */}
+            {}
             <header className="relative w-full aspect-[21/9] md:aspect-[3/1] rounded-[2.5rem] overflow-hidden group shadow-2xl">
               <img 
                 src="https://qewqnirwuptcudoflgkd.supabase.co/storage/v1/object/public/muul_media/banderas.jpg" 
@@ -408,7 +408,7 @@ function PerfilContent() {
                   {perfil?.nombre_completo || ""}
                 </h1>
 
-                {/* Mockup de Insignias */}
+                {}
                 <div className="flex flex-wrap gap-3 pt-2">
                   {insigniasDestacadas.map((insignia, index) => (
                     <div 
@@ -416,7 +416,7 @@ function PerfilContent() {
                       className={clsx(
                         `flex items-center gap-2 backdrop-blur-sm rounded-full px-4 py-2 text-sm shadow-lg transition-all hover:shadow-xl border ${insignia.tier.className}`,
                         {
-                          'hidden md:flex': index >= 1 // Oculta insignias después de la primera en pantallas pequeñas
+                          'hidden md:flex': index >= 1
                         }
                       )}
                     >
@@ -428,7 +428,7 @@ function PerfilContent() {
               </div>
             </header>
 
-            {/* Stats Grid */}
+            {}
             <section className="grid grid-cols-1 md:grid-cols-3 gap-8">
               {[
                 { label: t("rutasCompletadas"), value: "24", color: "bg-[#003e6f]" },
@@ -442,7 +442,7 @@ function PerfilContent() {
               ))}
             </section>
 
-            {/* Insignias Destacadas */}
+            {}
             <section className="space-y-8">
               <h2 className="text-4xl font-headline italic text-primary">Insignias Destacadas</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
@@ -456,7 +456,7 @@ function PerfilContent() {
               </div>
             </section>
 
-            {/* Mis Insignias */}
+            {}
             <section className="space-y-8">
               <h2 className="text-4xl font-headline italic text-primary">Mis Insignias Recientes</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
@@ -479,7 +479,7 @@ function PerfilContent() {
           </div>
         )}
 
-        {/* --- NUEVAS SECCIONES SOCIALES --- */}
+        {}
         {activeTab === "publicaciones" && (
           <div className="space-y-8 animate-fade-in-up">
             <h2 className="text-4xl font-headline italic text-primary">Mis Publicaciones</h2>
@@ -642,7 +642,7 @@ function PerfilContent() {
           <div className="space-y-8 animate-fade-in-up">
             <h2 className="text-4xl font-headline italic text-primary">{t("misResenas")}</h2>
             <div className="grid grid-cols-1 gap-8">
-              {/* Review Card 1 */}
+              {}
               <div className="group bg-surface-container-lowest p-6 md:p-10 rounded-[2.5rem] flex flex-col md:flex-row gap-10 transition-all hover:shadow-2xl hover:bg-white border border-outline-variant/5">
                 <div className="w-full md:w-64 aspect-video md:aspect-square rounded-3xl overflow-hidden shrink-0 bg-surface-container-low shadow-inner">
                   <img 
@@ -677,7 +677,7 @@ function PerfilContent() {
             <h2 className="text-4xl font-headline italic text-primary">{t("editarPerfil")}</h2>
             <div className="bg-white rounded-[2.5rem] border border-outline-variant/10 overflow-hidden p-8 md:p-12">
               <div className="max-w-2xl space-y-8">
-                {/* Avatar Upload */}
+                {}
                 <div className="space-y-4">
                   <label className="block text-lg font-headline font-bold">{t("fotoPerfil")}</label>
                   <div className="flex items-center gap-6">
@@ -694,7 +694,7 @@ function PerfilContent() {
                   </div>
                 </div>
 
-                {/* Basic Info */}
+                {}
                 <div className="space-y-4">
                   <label className="block text-lg font-headline font-bold">{t("nombreCompleto")}</label>
                   <input 
@@ -725,7 +725,7 @@ function PerfilContent() {
                   </div>
                 </div>
 
-                {/* Bio */}
+                {}
                 <div className="space-y-4">
                   <label className="block font-headline font-bold">Biografía</label>
                   <textarea 
@@ -735,7 +735,7 @@ function PerfilContent() {
                   />
                 </div>
 
-                {/* Banner */}
+                {}
                 <div className="space-y-4">
                   <label className="block font-headline font-bold">Banner</label>
                   <div className="w-full aspect-video rounded-2xl overflow-hidden border-2 border-outline-variant/30 bg-surface-container-low">
@@ -750,7 +750,7 @@ function PerfilContent() {
                   </button>
                 </div>
 
-                {/* Actions */}
+                {}
                 <div className="flex gap-4 pt-4">
                   <button className="flex-1 bg-primary text-on-primary px-6 py-4 rounded-full font-headline font-bold text-lg hover:brightness-110 transition-all">
                     {t("guardarCambios")}
@@ -767,7 +767,7 @@ function PerfilContent() {
         )}
       </div>
 
-      {/* Backdrop Overlay */}
+      {}
       {isSidebarOpen && (
         <div
           className="fixed inset-0 z-40 bg-black/20"

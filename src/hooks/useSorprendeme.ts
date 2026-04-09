@@ -43,7 +43,7 @@ export function useSorprendeme() {
           opciones.radioKm ??
           calcularRadioDesdeZoom(opciones.currentZoom ?? 14);
 
-        // 1️⃣ Filtrar POIs locales por categoría y distancia
+
         let resultado: POI[] = pois
           .filter((p) => {
             const dist = haversine(ubicacionUsuario, [p.latitud, p.longitud]);
@@ -52,10 +52,10 @@ export function useSorprendeme() {
             const matchDistancia = dist <= radioFinal;
             return matchCategoria && matchDistancia;
           })
-          .sort(() => Math.random() - 0.5) // ✅ Shuffle aleatorio SIEMPRE
+          .sort(() => Math.random() - 0.5)
           .slice(0, opciones.cantidad ?? 8);
 
-        // 2️⃣ Si POIs locales son pocos, agregar de Mapbox
+
         if (resultado.length < (opciones.cantidad ?? 8)) {
           try {
             const mapboxToken = process.env.NEXT_PUBLIC_MAPBOX_TOKEN;
@@ -84,7 +84,7 @@ export function useSorprendeme() {
               const mapboxData = await mapboxRes.json();
               const poisMapbox: POI[] = (mapboxData.features ?? [])
                 .map((f: any) => ({
-                  id: `mapbox_${f.id}_${Math.random()}`, // ✅ ID único cada vez
+                  id: `mapbox_${f.id}_${Math.random()}`,
                   nombre: f.text || f.place_name,
                   descripcion: f.place_name,
                   categoria: opciones.categoria || "tienda",
@@ -106,7 +106,7 @@ export function useSorprendeme() {
                     haversine(ubicacionUsuario, [p.latitud, p.longitud]) <=
                       radioFinal
                 )
-                .sort(() => Math.random() - 0.5) // ✅ Shuffle Mapbox también
+                .sort(() => Math.random() - 0.5)
                 .slice(0, (opciones.cantidad ?? 8) - resultado.length);
 
               resultado = [...resultado, ...poisMapbox].slice(0, opciones.cantidad ?? 8);

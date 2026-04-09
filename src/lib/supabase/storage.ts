@@ -2,12 +2,7 @@ import { createClient } from "@/lib/supabase/client";
 
 const STORAGE_BUCKET = "poi-images";
 
-/**
- * Upload an image to Supabase Storage
- * @param file - The image file to upload
- * @param poiId - The POI ID (used as folder)
- * @returns The public URL of the uploaded image
- */
+
 export async function uploadPoiImage(
   file: File,
   poiId: string
@@ -19,7 +14,7 @@ export async function uploadPoiImage(
   const filePath = `pois/${poiId}/${fileName}`;
 
   try {
-    // First, delete old images for this POI
+
     const { data: existingFiles } = await supabase.storage
       .from(STORAGE_BUCKET)
       .list(`pois/${poiId}`);
@@ -33,7 +28,7 @@ export async function uploadPoiImage(
         .remove(filesToDelete);
     }
 
-    // Upload new image
+
     const { error: uploadError } = await supabase.storage
       .from(STORAGE_BUCKET)
       .upload(filePath, file, { upsert: true });
@@ -42,7 +37,7 @@ export async function uploadPoiImage(
       throw new Error(`Upload failed: ${uploadError.message}`);
     }
 
-    // Get public URL
+
     const { data } = supabase.storage
       .from(STORAGE_BUCKET)
       .getPublicUrl(filePath);
@@ -54,10 +49,7 @@ export async function uploadPoiImage(
   }
 }
 
-/**
- * Delete a POI image from storage
- * @param poiId - The POI ID
- */
+
 export async function deletePoiImage(poiId: string): Promise<void> {
   const supabase = createClient();
 
@@ -80,11 +72,7 @@ export async function deletePoiImage(poiId: string): Promise<void> {
   }
 }
 
-/**
- * Get the public URL for a POI image
- * @param poiId - The POI ID
- * @param fileName - The file name (optional, uses the first image if not provided)
- */
+
 export async function getPoiImageUrl(
   poiId: string,
   fileName?: string
@@ -99,7 +87,7 @@ export async function getPoiImageUrl(
       return data.publicUrl;
     }
 
-    // Get the first image if no specific file is provided
+
     const { data: files } = await supabase.storage
       .from(STORAGE_BUCKET)
       .list(`pois/${poiId}`);

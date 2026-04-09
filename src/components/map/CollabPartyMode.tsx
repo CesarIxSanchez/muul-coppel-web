@@ -22,7 +22,7 @@ export default function CollabPartyMode({
   const prevCountRef = useRef(participants.length);
 
   useEffect(() => {
-    // Show toast if participant count increased
+
     if (participants.length > prevCountRef.current && prevCountRef.current > 0) {
       setJustJoined(true);
       const timer = setTimeout(() => setJustJoined(false), 3000);
@@ -36,7 +36,7 @@ export default function CollabPartyMode({
   return (
     <div className="absolute top-4 left-1/2 -translate-x-1/2 z-40 flex flex-col items-center gap-2">
       
-      {/* Toast Notification for new friend joining */}
+      {}
       <div className={`bg-[#003e6f] text-white text-[10px] font-bold px-3 py-1.5 rounded-full shadow-lg transition-all duration-500 transform ${justJoined ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-4 pointer-events-none'}`}>
         {t("collabJoined")}
       </div>

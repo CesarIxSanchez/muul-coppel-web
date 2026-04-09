@@ -15,7 +15,7 @@ import { useTranslations, useLocale } from "next-intl";
 import { useRouter, usePathname } from "@/i18n/navigation";
 import { applyMuulMapStyle } from "@/lib/mapStyle";
 
-// ── Feature hooks & components ──
+
 import { useMapboxOptimization, type TransportMode } from "@/hooks/useMapboxOptimization";
 import { useAccessibleRoute } from "@/hooks/useAccessibleRoute";
 import { usePartyMode } from "@/hooks/usePartyMode";
@@ -33,10 +33,10 @@ import { getLocalizedDummyPois } from "@/lib/dummy-data";
 
 mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_TOKEN!;
 
-/* ── Types ── */
+
 interface UserInfo { initials: string; nombre: string }
 
-/* ── Visit duration by category (minutes) ── */
+
 const DURACION_VISITA: Record<string, number> = {
   cultural: 60,
   comida: 45,
@@ -48,7 +48,7 @@ const DURACION_VISITA: Record<string, number> = {
   eventos: 120,
 };
 
-/* ── Helpers ── */
+
 function getMarkerColor(cat: string): string {
   const m: Record<string, string> = {
     comida: "#ffb3b3",
@@ -75,7 +75,7 @@ function isOpenNow(poi: POI): boolean {
   return cur >= apertura && cur <= cierre;
 }
 
-// Utility to check if a string is a valid UUID
+
 function isUuid(val: string): boolean {
   return /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(val);
 }
@@ -173,7 +173,7 @@ async function insertRutaCompatible(
   return { data: null, error: new Error("No se pudo guardar la ruta tras varios intentos de compatibilidad") };
 }
 
-// Robust insert helper for the hackathon
+
 async function safeInsertRuta(supabase: any, payload: any) {
   let currentPayload = { ...payload };
   const maxAttempts = 3;
@@ -204,7 +204,7 @@ async function safeInsertRuta(supabase: any, payload: any) {
 
     const msg = getSupabaseErrorMessage(result.error).toLowerCase();
     
-    // RLS Permission Denied Fix for Hackathon
+
     if (msg.includes("permission denied") || msg.includes("row-level security")) {
       try {
         const localRoutes = JSON.parse(localStorage.getItem("muul_local_routes") || "[]");
@@ -222,7 +222,7 @@ async function safeInsertRuta(supabase: any, payload: any) {
     }
 
     if (msg.includes("invalid input syntax for type uuid") && "pois_ids" in currentPayload) {
-      // Clean non-uuid IDs
+
       const rawPoisIds = Array.isArray(currentPayload.pois_ids) ? (currentPayload.pois_ids as string[]) : [];
       currentPayload = { ...currentPayload, pois_ids: rawPoisIds.filter(isUuid) };
       continue;
@@ -249,7 +249,7 @@ function calcularHorasLlegada(poisRuta: POI[], duracionSegundos: number): string
   });
 }
 
-/* ── Helper: Sort POIs by proximity to origin ── */
+
 const ordenarPorCercaniaAlOrigen = (
   pois: POI[],
   origen: [number, number] | null
@@ -264,9 +264,7 @@ const ordenarPorCercaniaAlOrigen = (
   );
 };
 
-/* ══════════════════════════════════════════════
-   PAGE COMPONENT
-   ══════════════════════════════════════════════ */
+
 export default function MapaPage() {
   const supabase = createClient();
   const mapContainer = useRef<HTMLDivElement>(null);
@@ -295,7 +293,7 @@ export default function MapaPage() {
     { label: t("servicios"), emoji: "🛠️", value: "servicios" },
   ];
 
-  // ── Feature hooks ──
+
   const mapboxOpt = useMapboxOptimization();
   const accessibleRoute = useAccessibleRoute();
   const metroRoute = useMetroRoute();
@@ -305,7 +303,7 @@ export default function MapaPage() {
   const { buscarLugarGlobal, buscandoGlobal } = useGlobalSearch();
   const { buscarCercanos, buscandoExternos } = useNearbySearch();
 
-  // ── State ──
+
   const [allPois, setAllPois] = useState<POI[]>(dummyPois as any);
 
   useEffect(() => {
@@ -379,7 +377,7 @@ export default function MapaPage() {
   const [savedRouteIdForParty, setSavedRouteIdForParty] = useState<string | undefined>();
   const [showAccessibilityFeatures, setShowAccessibilityFeatures] = useState(true);
 
-  /* ── Derived ── */
+  
   const isAccessibleMode = transportMode === "accessible";
   const isMetroMode = transportMode === "metro";
   const metroCity = useMemo(() => getMetroCityByLocation(ubicacionUsuario), [ubicacionUsuario]);
@@ -432,7 +430,7 @@ export default function MapaPage() {
       .map(({ poi }) => poi);
   }, [allPois, ubicacionUsuario]);
 
-  /* ── Auth ── */
+  
   useEffect(() => {
     const fetchUser = async () => {
       const { data: { user } } = await supabase.auth.getUser();
@@ -453,7 +451,7 @@ export default function MapaPage() {
     return () => subscription.unsubscribe();
   }, []);
 
-  /* ── Load POIs ── */
+  
   useEffect(() => {
     const fetchPois = async () => {
       try {
@@ -474,16 +472,13 @@ export default function MapaPage() {
     fetchPois();
   }, [supabase]);
 
-  /* ── Party URL param ── */
+  
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     if (params.get("party")) setPartyModalOpen(true);
   }, []);
 
-  /* ──────────────────────────────────────────────
-     CORE: Fetch nearby POIs (Supabase + Mapbox)
-     Triggered on map load, map move, and user location
-     ────────────────────────────────────────────── */
+  
   const fetchNearbyPois = useCallback(async () => {
     if (!mapRef.current) return;
     const center = mapRef.current.getCenter();
@@ -501,14 +496,14 @@ export default function MapaPage() {
     }
   }, [buscarCercanos]);
 
-  // Initial fetch + map move listener
+
   useEffect(() => {
     if (!mapLoaded) return;
 
-    // Initial fetch
+
     fetchNearbyPois().then(() => setInitialLoadDone(true));
 
-    // Re-fetch when user moves the map
+
     const onMoveEnd = () => fetchNearbyPois();
     mapRef.current?.on("moveend", onMoveEnd);
 
@@ -517,7 +512,7 @@ export default function MapaPage() {
     };
   }, [mapLoaded, fetchNearbyPois]);
 
-  /* ── Filter POIs & Sort by Distance ── */
+  
   useEffect(() => {
     let result = [...allPois];
 
@@ -533,7 +528,7 @@ export default function MapaPage() {
       );
     }
 
-    // Sort by proximity if we have user location
+
     if (ubicacionUsuario) {
       result.sort((a, b) =>
         haversine(ubicacionUsuario, [a.latitud, a.longitud]) -
@@ -544,7 +539,7 @@ export default function MapaPage() {
     setFilteredPois(result);
   }, [activeFilter, searchQuery, allPois, soloAbiertos, ubicacionUsuario]);
 
-  /* ── Init map ── */
+  
   useEffect(() => {
     if (!mapContainer.current || mapRef.current) return;
     const map = new mapboxgl.Map({
@@ -562,7 +557,7 @@ export default function MapaPage() {
     return () => { map.remove(); mapRef.current = null; };
   }, []);
 
-  /* ── User location (real-time) ── */
+  
   useEffect(() => {
     if (!mapLoaded) return;
     if (!navigator.geolocation) return;
@@ -574,7 +569,7 @@ export default function MapaPage() {
       const coords: [number, number] = [pos.coords.latitude, pos.coords.longitude];
       setUbicacionUsuario(coords);
 
-      // centrar solo una vez si no hay target en URL
+
       if (!hasTarget && mapRef.current && !centeredOnceRef.current) {
         mapRef.current.flyTo({ center: [coords[1], coords[0]], zoom: 14, duration: 1200 });
         centeredOnceRef.current = true;
@@ -582,7 +577,7 @@ export default function MapaPage() {
     };
 
     const onError = () => {
-      // fallback solo si aún no hay ubicación
+
       setUbicacionUsuario((prev) => prev ?? [19.4326, -99.1332]);
     };
 
@@ -606,7 +601,7 @@ export default function MapaPage() {
     };
   }, [mapLoaded]);
 
-  /* ── Target focus from URL ── */
+  
   useEffect(() => {
     if (!mapLoaded || !mapRef.current) return;
     
@@ -643,7 +638,7 @@ export default function MapaPage() {
     }
   }, [mapLoaded, allPois.length]);
 
-  /* ── Route toggle ── */
+  
   const togglePoiEnRuta = useCallback((poi: POI) => {
     setPoisEnRuta((prev) => {
       const exists = prev.find((p) => p.id === poi.id);
@@ -663,7 +658,7 @@ export default function MapaPage() {
     mapRef.current?.flyTo({ center: [poi.longitud, poi.latitud], zoom: 14, duration: 1000 });
   }, []);
 
-  /* ── Calculate route ── */
+  
   const calcularRuta = async (overridePois?: POI[]) => {
     const targetPois = overridePois || poisEnRuta;
     if (targetPois.length < 1) {
@@ -671,7 +666,7 @@ export default function MapaPage() {
       return;
     }
 
-    // Forzar que la primera parada sea la más cercana al usuario
+
     const poisBase = ordenarPorCercaniaAlOrigen(targetPois, ubicacionUsuario);
 
     if (isAccessibleMode) {
@@ -713,18 +708,39 @@ export default function MapaPage() {
     }
   };
 
-  // ── Jam Realtime Logic (placed here to access all resolved state/functions) ──
+
   const handleRemoteUpdate = useCallback((remotePois: any[]) => {
-    const resolved = remotePois
-      .map((rp) => allPois.find((p) => p.id === rp.id))
-      .filter(Boolean) as POI[];
+    if (!remotePois || remotePois.length === 0) return;
+
+
+
+    const resolved: POI[] = remotePois.map((rp) => {
+      const local = allPois.find((p) => p.id === rp.id);
+      if (local) return local;
+
+      return {
+        id: rp.id,
+        nombre: rp.nombre || "Lugar",
+        emoji: rp.emoji || "📍",
+        categoria: rp.categoria || "servicios",
+        latitud: rp.latitud ?? 19.3625,
+        longitud: rp.longitud ?? -99.2740,
+        direccion: rp.direccion || "",
+        foto_url: null,
+        verificado: false,
+        precio_rango: null,
+        horario_apertura: "09:00",
+        horario_cierre: "21:00",
+        created_at: new Date().toISOString(),
+      } as POI;
+    }).filter(p => p.latitud && p.longitud);
     
     if (resolved.length > 0) {
       setPoisEnRuta(prev => {
         const currentIds = prev.map(p => p.id).join(",");
         const newIds = resolved.map(p => p.id).join(",");
         
-        // Anti-Ping-Pong Lock: si los destinos son idénticos, abortamos la actualización para no disparar un ciclo infinito
+
         if (currentIds === newIds) return prev;
         
         if (mostrarItinerario) {
@@ -735,30 +751,40 @@ export default function MapaPage() {
     }
   }, [allPois, mostrarItinerario, calcularRuta]);
 
+
   const [livePresences, setLivePresences] = useState<any[]>([]);
   const poisRef = useRef<POI[]>([]);
   poisRef.current = poisEnRuta;
 
-  // Creamos un ref mutable para el callback y así evitar ciclos infinitos en el hook
+
   const presenceCallbackRef = useRef<(p: any[]) => void>();
   presenceCallbackRef.current = (presences: any[]) => {
     setLivePresences(prev => {
-      // Auto-Sync: Forzar envío a los recién llegados
+
       if (presences.length > prev.length && poisRef.current.length > 0) {
-         // Tiny delay to ensure connection is steady
+
          setTimeout(() => broadcastRouteUpdate(poisRef.current), 500);
       }
       return presences;
     });
   };
 
-  const { broadcastRouteUpdate, participants, fetchParticipants, trackPresence, myColor } = usePartyMode(
+  const { broadcastRouteUpdate, participants, fetchParticipants, trackPresence, myColor, onSyncRequestRef, sendSyncRequest } = usePartyMode(
     activePartyId, 
     handleRemoteUpdate, 
     useCallback((p) => presenceCallbackRef.current?.(p), [])
   );
 
-  // Poll for participants when party is active
+
+  useEffect(() => {
+    onSyncRequestRef.current = () => {
+      if (poisRef.current.length > 0) {
+        broadcastRouteUpdate(poisRef.current);
+      }
+    };
+  }, [broadcastRouteUpdate, onSyncRequestRef]);
+
+
   useEffect(() => {
     if (!activePartyId) return;
     fetchParticipants(activePartyId);
@@ -768,14 +794,14 @@ export default function MapaPage() {
     return () => clearInterval(interval);
   }, [activePartyId, fetchParticipants]);
 
-  // Broadcast local changes
+
   useEffect(() => {
     if (activePartyId && poisEnRuta.length > 0) {
       broadcastRouteUpdate(poisEnRuta);
     }
   }, [poisEnRuta, activePartyId, broadcastRouteUpdate]);
 
-  // ── Jam Realtime Presence & Render Logic ──
+
   const presenceMarkersRef = useRef<{ [userId: string]: mapboxgl.Marker }>({});
 
   useEffect(() => {
@@ -784,7 +810,7 @@ export default function MapaPage() {
 
     const interval = setInterval(() => {
       if (mapRef.current) {
-        // Enviar ubicación (ubicacionUsuario o el centro del mapa si navega)
+
         const center = ubicacionUsuario || [mapRef.current.getCenter().lng, mapRef.current.getCenter().lat];
         trackPresence(center[0], center[1], localId);
       }
@@ -799,7 +825,7 @@ export default function MapaPage() {
     const currentMarkers = presenceMarkersRef.current;
     const activeIds = new Set(livePresences.map(p => p.user_id));
 
-    // Remove old disconnected users
+
     Object.keys(currentMarkers).forEach(id => {
       if (!activeIds.has(id)) {
         currentMarkers[id].remove();
@@ -807,7 +833,7 @@ export default function MapaPage() {
       }
     });
 
-    // Add or update markers based on hex identity
+
     livePresences.forEach(presence => {
       const { user_id, lng, lat, color } = presence;
       if (!currentMarkers[user_id]) {
@@ -815,7 +841,7 @@ export default function MapaPage() {
         el.className = "w-4 h-4 rounded-full border-2 border-white shadow-xl shadow-black/30 animate-pulse transition-all";
         el.style.backgroundColor = color || "#000000";
         
-        // Add a micro-tooltip with "Colaborador" text
+
         const tooltip = document.createElement("div");
         tooltip.innerHTML = user_id.includes(myColor?.replace("#","") || "xx") ? "Tú" : "Colaborador";
         tooltip.className = "absolute -top-6 left-1/2 -translate-x-1/2 bg-surface-container-highest text-on-surface text-[10px] font-black px-2 py-0.5 rounded-full shadow-md whitespace-nowrap opacity-0 transition-opacity hover:opacity-100 cursor-pointer pointer-events-auto";
@@ -835,7 +861,7 @@ export default function MapaPage() {
     });
   }, [livePresences, activePartyId, myColor]);
 
-  // Clean presence on exit
+
   useEffect(() => {
     if (!activePartyId) {
        Object.values(presenceMarkersRef.current).forEach(m => m.remove());
@@ -863,13 +889,13 @@ export default function MapaPage() {
     });
   };
 
-  /* ── Save route ── */
+  
   const guardarRuta = async () => {
     if (guardando) return;
     setGuardando(true);
     setGuardadoMsg(t("guardando") + "...");
 
-    // Backup reset to avoid getting stuck
+
     const securityTimeout = setTimeout(() => {
       setGuardando(false);
       setGuardadoMsg("✕ Error: Timeout");
@@ -944,16 +970,16 @@ export default function MapaPage() {
     const { data: { user } } = await supabase.auth.getUser();
     let allMergedRoutes: any[] = [];
     
-    // 1. Get from Supabase
+
     if (user) {
       const { data: dbData } = await supabase.from("rutas_guardadas").select("*").eq("usuario_id", user.id).order("created_at", { ascending: false });
       if (dbData) allMergedRoutes = [...dbData];
     }
 
-    // 2. Merge with Local (resilience mode)
+
     try {
       const localData = JSON.parse(localStorage.getItem("muul_local_routes") || "[]");
-      // Filter out those already in DB if they were synced (future)
+
       allMergedRoutes = [...localData, ...allMergedRoutes];
     } catch (e) {}
 
@@ -974,7 +1000,7 @@ export default function MapaPage() {
   const cargarRutaEnMapa = async (pois_info: any[]) => {
     if (!pois_info || pois_info.length === 0) return;
     
-    // Resolve full objects from IDs or partial objects
+
     const poisParaRuta = pois_info.map((item) => {
       const targetId = typeof item === 'string' ? item : (item.id || item);
       return allPois.find((p) => p.id === targetId);
@@ -985,24 +1011,24 @@ export default function MapaPage() {
       return;
     }
 
-    // 1. Sync state
+
     setPoisEnRuta(poisParaRuta);
     setMostrarGuardadas(false);
     setMostrarItinerario(true);
     setMobileSheetOpen(false);
 
-    // 2. Clear previous and calculate new immediately
+
     mapboxOpt.clearRoute();
     accessibleRoute.clearRoute();
     metroRoute.clearRoute();
     
-    // Tiny delay to ensure state starts transition, but we use direct reference for calculation
+
     setTimeout(() => {
       calcularRuta(poisParaRuta);
     }, 100);
   };
 
-  /* ── Sorpréndeme ── */
+  
   const handleSorprendeme = async () => {
     if (!ubicacionUsuario) {
       mapboxOpt.setError(t("requireUserLocation"));
@@ -1011,7 +1037,7 @@ export default function MapaPage() {
 
     const currentZoom = mapRef.current?.getZoom() ?? 14;
 
-    // 1️⃣ Generar POIs aleatorios (nueva lista cada vez)
+
     const poisSeleccionados = await sorprendeme.generarRutaAleatoria(
       allPois,
       ubicacionUsuario,
@@ -1028,23 +1054,23 @@ export default function MapaPage() {
       return;
     }
 
-    // 2️⃣ ✅ REEMPLAZAR completamente la ruta anterior
+
     setPoisEnRuta(poisSeleccionados);
 
-    // 3️⃣ Limpiar rutas previas
+
     clearMapRoutes();
     mapboxOpt.clearRoute();
     accessibleRoute.clearRoute();
     metroRoute.clearRoute();
     setMostrarItinerario(false);
 
-    // 4️⃣ Hacer scroll al listado (mobile)
+
     if (itinerarioRef.current) {
       itinerarioRef.current.scrollIntoView({ behavior: "smooth" });
     }
   };
 
-  /* ── Share helpers ── */
+  
   const copiarItinerario = () => {
     if (poisEnRuta.length === 0 || !activeRoute) return;
     const horas = calcularHorasLlegada(poisEnRuta, activeRoute.duracion_segundos);
@@ -1117,17 +1143,17 @@ export default function MapaPage() {
     setGuardando(true);
 
     try {
-      // 1. Capture the map journey as an image
+
       if (!mapRef.current) throw new Error("Mapa no listo");
       
       const mapCanvas = mapRef.current.getCanvas();
       const mapImageData = mapCanvas.toDataURL("image/png");
       
-      // 2. Prepare the post data to send via draft
+
       const nombres = poisEnRuta.map(p => p.nombre).join(" → ");
       const text = `🗺️ ¡Acabo de crear una nueva ruta en Muul! 📍 Recorrido: ${nombres}\n📏 Distancia: ${activeRoute.distancia_texto} ⏱️ Tiempo estimado: ${activeRoute.duracion_texto}\n\n#Muul #Aventura #Turismo`;
 
-      // 3. Save to draft in sessionStorage
+
       sessionStorage.setItem("muul_draft_text", text);
       sessionStorage.setItem("muul_draft_image", mapImageData);
       
@@ -1143,7 +1169,7 @@ export default function MapaPage() {
     }
   };
 
-  /* ── Render markers ── */
+  
   useEffect(() => {
     if (!mapRef.current || !mapLoaded) return;
     markersRef.current.forEach((m) => m.remove());
@@ -1186,7 +1212,7 @@ export default function MapaPage() {
     }
   }, [filteredPois, mapLoaded, poisEnRuta, handleSelectPoi, ubicacionUsuario]);
 
-  /* ── Draw route on map ── */
+  
   useEffect(() => {
     if (!mapRef.current || !mapLoaded) return;
     if (animationRef.current !== null) { cancelAnimationFrame(animationRef.current); animationRef.current = null; }
@@ -1200,7 +1226,7 @@ export default function MapaPage() {
     });
 
     if (isAccessibleMode) {
-      // ✅ Accesible: solo azul
+
       mapRef.current.addLayer({
         id: "main-glow",
         type: "line",
@@ -1241,7 +1267,7 @@ export default function MapaPage() {
       animationRef.current = requestAnimationFrame(animate);
     }
 
-    // ✅ Add markers for the photo/capture
+
     const markersGeoJSON: any = {
       type: "FeatureCollection",
       features: poisEnRuta.map((poi, idx) => ({
@@ -1293,7 +1319,7 @@ export default function MapaPage() {
     return `${t("abierto")} · ${t("cierra", { hora: poi.horario_cierre })}`;
   };
 
-  /* ── Accessibility score badge ── */
+  
   const AccessibilityScoreBadge = ({ score }: { score: number }) => {
     const color = score >= 70 ? "#98d5a2" : score >= 40 ? "#fed000" : "#ffb3b3";
     const label = score >= 70 ? t("accessibilityHigh") : score >= 40 ? t("accessibilityMedium") : t("accessibilityLow");
@@ -1308,18 +1334,15 @@ export default function MapaPage() {
     );
   };
 
-  // Helper: is this POI from Supabase (verified) or Mapbox (external)?
+
   const isVerifiedPoi = (poi: POI) => !String(poi.id).startsWith("mapbox_");
 
-  /* ═══════════════════════════════════════
-     RENDER — identical JSX to your current version,
-     only data source changed (allPois instead of pois/mapboxPois split)
-  ═══════════════════════════════════════ */
+  
   return (
     <div className="h-screen flex flex-col overflow-hidden pt-[80px] bg-surface text-on-surface font-body">
       <main className="flex flex-1 overflow-hidden">
 
-        {/* Desktop sidebar */}
+        {}
         <aside className="hidden md:flex flex-col h-full w-20 bg-surface-container-low space-y-8 py-8 items-center border-r border-outline-variant/10">
           <Link href="/" className="w-12 h-12 flex items-center justify-center rounded-xl text-on-surface-variant hover:bg-surface-container-highest/50 transition-all">
             <span className="material-symbols-outlined">explore</span>
@@ -1344,7 +1367,7 @@ export default function MapaPage() {
 
         <div className="flex-1 flex overflow-hidden">
 
-          {/* ── Desktop left panel ── */}
+          {}
           <div className="hidden md:flex w-[360px] flex-col bg-surface-container-lowest relative z-30 border-r border-outline-variant/10">
             {!mostrarItinerario ? (
               <>
@@ -1452,7 +1475,7 @@ export default function MapaPage() {
                 </div>
               </>
             ) : (
-              /* ── Itinerary view ── */
+              
               <>
                 <div ref={itinerarioRef} className="flex flex-col flex-1 overflow-hidden bg-surface-container-lowest">
                   <div className="p-6 border-b border-outline-variant/10">
@@ -1605,18 +1628,18 @@ export default function MapaPage() {
             )}
           </div>
 
-          {/* ── Map area ── */}
+          {}
           <div className="flex-1 relative overflow-hidden">
             <div ref={mapContainer} className="absolute inset-0" />
 
-            {/* Realtime Jam Visuals */}
+            {}
             <CollabPartyMode
               routeId={activePartyId ?? undefined}
               participants={participants}
               onInvite={() => setPartyModalOpen(true)}
             />
 
-            {/* ✅ Sorpréndeme en mapa (botón amarillo con dado) */}
+            {}
             <button
               onClick={handleSorprendeme}
               disabled={sorprendeme.loading || activeLoading || !ubicacionUsuario}
@@ -1629,7 +1652,7 @@ export default function MapaPage() {
               <span className="text-xs font-black uppercase tracking-wider">{t("sorprendeme")}</span>
             </button>
 
-            {/* Accessibility features on map */}
+            {}
             <AccessibilityFeaturesLayer
               map={mapRef.current}
               features={isAccessibleMode && accessibleRoute.route ? accessibleRoute.route.accessibilityFeatures : []}
@@ -1637,7 +1660,7 @@ export default function MapaPage() {
               routeCoordinates={activeRoute?.geometry.coordinates as [number, number][]}
             />
 
-            {/* Sticky AI button only on map */}
+            {}
             <button
               onClick={() => {
                 setChatbotAbierto(true);
@@ -1655,14 +1678,14 @@ export default function MapaPage() {
               </span>
             </button>
 
-            {/* POI card — enhanced with photo */}
+            {}
             {selectedPoi && !mostrarItinerario && (
               <POICard poi={selectedPoi} isInRoute={isInRoute(selectedPoi)} routeIndex={poisEnRuta.findIndex((p) => p.id === selectedPoi.id)} onClose={() => setSelectedPoi(null)} onToggleRoute={togglePoiEnRuta} onAskAI={() => { setChatbotAbierto(true); setMobileSheetOpen(false); }} t={t} />
             )}
           </div>
         </div>
 
-        {/* ── Saved routes modal ── */}
+        {}
         {mostrarGuardadas && (
           <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
             <div className="absolute inset-0 bg-surface-dim/80 backdrop-blur-sm" onClick={() => setMostrarGuardadas(false)} />
@@ -1711,6 +1734,7 @@ export default function MapaPage() {
           activePartyId={activePartyId}
           onPartyIdChange={setActivePartyId}
           onLoadRoute={(pois_data) => cargarRutaEnMapa(pois_data)}
+          onJoinSuccess={sendSyncRequest}
         />
 
         <ChatModal
@@ -1724,7 +1748,7 @@ export default function MapaPage() {
         />
       </main>
 
-      {/* ═══ MOBILE BOTTOM SHEET ═══ */}
+      {}
       <div className={`md:hidden fixed inset-x-0 bottom-[60px] z-40 bg-surface-container-low rounded-t-2xl shadow-2xl border-t border-outline-variant/10 flex flex-col transition-all duration-300 ease-in-out ${mobileSheetOpen ? "h-[72vh]" : "h-[160px]"}`}>
         <button onClick={() => setMobileSheetOpen((v) => !v)} className="flex flex-col items-center pt-3 pb-2 w-full shrink-0">
           <div className="w-10 h-1 rounded-full bg-outline-variant mb-2" />
@@ -1886,7 +1910,7 @@ export default function MapaPage() {
         )}
       </div>
 
-      {/* ═══ MOBILE BOTTOM NAV ═══ */}
+      {}
       <div className="md:hidden fixed bottom-0 left-0 right-0 bg-surface-container-low/95 backdrop-blur-md border-t border-outline-variant/10 py-3 z-50">
         <div className="flex justify-around items-center px-4">
           <Link href="/" className="flex flex-col items-center gap-1 text-on-surface-variant"><span className="material-symbols-outlined">explore</span><span className="text-[10px] font-bold uppercase tracking-tighter">{tn("explorar")}</span></Link>

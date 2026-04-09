@@ -109,7 +109,7 @@ export default function NegocioPerfilCompleto() {
   if (!negocio)
     return (
       <main className="min-h-screen pt-20 pb-12">
-        {/* BANNER */}
+        {}
         <div className="relative h-72 bg-gradient-to-br from-primary/20 to-secondary/20 overflow-hidden">
           <img 
             src="https://qewqnirwuptcudoflgkd.supabase.co/storage/v1/object/public/muul_media/TacosTino.jpeg" 
@@ -120,9 +120,9 @@ export default function NegocioPerfilCompleto() {
         </div>
 
         <div className="max-w-7xl mx-auto px-6 py-12">
-          {/* Header */}
+          {}
           <div className="flex flex-col md:flex-row gap-8 mb-12">
-            {/* Avatar */}
+            {}
             <div className="w-40 h-40 rounded-full overflow-hidden border-4 border-white shadow-xl -mt-32 shrink-0 bg-surface-container-low">
               <img 
                 src="https://qewqnirwuptcudoflgkd.supabase.co/storage/v1/object/public/muul_media/TacosTino.jpeg" 
@@ -131,7 +131,7 @@ export default function NegocioPerfilCompleto() {
               />
             </div>
 
-            {/* Info */}
+            {}
             <div className="flex-1 flex flex-col justify-center gap-4">
               <h1 className="text-5xl font-bold">Tacos Don Tino</h1>
               <p className="text-on-surface-variant text-lg">Los mejores tacos del barrio</p>
@@ -151,7 +151,7 @@ export default function NegocioPerfilCompleto() {
 
   return (
     <main className="min-h-screen pt-20 pb-12">
-      {/* BANNER */}
+      {}
       <div className="relative h-72 bg-gradient-to-br from-primary/20 to-secondary/20 overflow-hidden">
         <img 
           src="https://qewqnirwuptcudoflgkd.supabase.co/storage/v1/object/public/muul_media/TacosTino.jpeg" 
@@ -173,9 +173,9 @@ export default function NegocioPerfilCompleto() {
       </div>
 
       <div className="max-w-7xl mx-auto px-6 py-12">
-        {/* Header */}
+        {}
         <div className="flex flex-col md:flex-row gap-8 mb-12">
-          {/* Avatar */}
+          {}
           <div className="w-40 h-40 rounded-full overflow-hidden border-4 border-white shadow-xl -mt-32 shrink-0 bg-surface-container-low">
             <img 
               src="https://qewqnirwuptcudoflgkd.supabase.co/storage/v1/object/public/muul_media/TacosTino.jpeg" 
@@ -184,7 +184,7 @@ export default function NegocioPerfilCompleto() {
             />
           </div>
 
-          {/* Info */}
+          {}
           <div className="flex-1 flex flex-col justify-center gap-4">
             <h1 className="text-5xl font-bold">{negocio.nombre}</h1>
             <p className="text-on-surface-variant text-lg">{negocio.descripcion}</p>
@@ -212,7 +212,7 @@ export default function NegocioPerfilCompleto() {
           </div>
         </div>
 
-        {/* Características */}
+        {}
         <section className="bg-surface-container-low rounded-3xl p-8 mb-12">
           <h2 className="text-2xl font-bold mb-6">Características</h2>
           <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
@@ -245,7 +245,7 @@ export default function NegocioPerfilCompleto() {
           </div>
         </section>
 
-        {/* Redes Sociales */}
+        {}
         <section className="bg-surface-container-low rounded-3xl p-8 mb-12">
           <h2 className="text-2xl font-bold mb-6">Redes Sociales</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -274,7 +274,7 @@ export default function NegocioPerfilCompleto() {
           </div>
         </section>
 
-        {/* Estadísticas Dummy */}
+        {}
         <section className="grid grid-cols-3 gap-6">
           <div className="bg-primary/10 rounded-3xl p-6 text-center">
             <div className="text-3xl font-bold text-primary">245</div>

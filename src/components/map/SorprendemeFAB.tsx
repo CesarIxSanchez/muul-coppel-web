@@ -6,7 +6,7 @@ interface SorprendemeFABProps {
   onClick: () => void;
   loading?: boolean;
   disabled?: boolean;
-  /** Position override — default bottom-right above POI card area */
+  
   className?: string;
 }
 

@@ -1,7 +1,4 @@
-/* =============================================
-   MUUL — Database Types
-   Matches the Supabase schema
-   ============================================= */
+
 
 export type TipoCuenta = "turista" | "negocio";
 export type CategoriaNegocio = "comida" | "tienda" | "servicios" | "cultural" | "deportes";
