@@ -1,14 +1,14 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link } from "@/i18n/navigation";
 import { createClient } from "@/lib/supabase/client";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import type { Negocio } from "@/types/database";
-import { DUMMY_POIS } from "@/lib/dummy-data";
+import { getLocalizedDummyPois } from "@/lib/dummy-data";
 import { getPremiumPhoto } from "@/lib/photo-engine";
 
-type BusinessCategory = "comida" | "tienda" | "servicios";
+type BusinessCategory = "comida" | "tienda" | "servicios" | "cultural";
 
 const categoryEmojis: Record<string, string> = {
   comida: "🌮", tienda: "🛍️", servicios: "🏨", cultural: "🏛️", deportes: "⚽",
@@ -29,6 +29,8 @@ export default function TiendasPage() {
   const supabase = createClient();
   const t = useTranslations("tiendas");
   const tc = useTranslations("common");
+  const locale = useLocale();
+  const dummyPois = useMemo(() => getLocalizedDummyPois(locale), [locale]);
 
   const [negocios, setNegocios] = useState<Negocio[]>([]);
   const [filteredNegocios, setFilteredNegocios] = useState<Negocio[]>([]);
@@ -56,6 +58,7 @@ export default function TiendasPage() {
     { label: t("gastronomia"), value: "comida" },
     { label: t("artesanias"), value: "tienda" },
     { label: t("servicios"), value: "servicios" },
+    { label: t("cultural"), value: "cultural" },
   ];
 
   const businessCategories: { id: BusinessCategory; label: string; emoji: string }[] = [
@@ -76,7 +79,7 @@ export default function TiendasPage() {
     const fetchNegocios = async () => {
       const { data } = await supabase.from("negocios").select("*").eq("activo", true).order("created_at", { ascending: false });
       
-      const mocked: Negocio[] = DUMMY_POIS.map(p => ({
+      const mocked: Negocio[] = dummyPois.map(p => ({
         id: p.id,
         propietario_id: 'dummy',
         nombre: p.nombre,
@@ -97,7 +100,7 @@ export default function TiendasPage() {
       setLoadingStores(false);
     };
     fetchNegocios();
-  }, [supabase]);
+  }, [dummyPois, supabase]);
 
   useEffect(() => {
     let result = negocios;

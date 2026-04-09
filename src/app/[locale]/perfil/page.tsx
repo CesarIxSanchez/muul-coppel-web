@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
+import { useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { useTranslations } from "next-intl";
 import { 
@@ -19,38 +20,182 @@ import {
 } from "lucide-react";
 import clsx from "clsx";
 
-type TabType = "cuenta" | "direcciones" | "rutas" | "resenas" | "ajustes" | "editar";
+type TabType = "cuenta" | "publicaciones" | "amigos" | "rutas" | "medallas" | "ajustes" | "direcciones" | "resenas" | "editar";
 
 export default function PerfilPage() {
+  return (
+    <Suspense fallback={<div>Cargando perfil...</div>}>
+      <PerfilContent />
+    </Suspense>
+  );
+}
+
+function PerfilContent() {
   const t = useTranslations("perfil");
   const supabase = createClient();
   const [perfil, setPerfil] = useState<any>(null);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<TabType>("cuenta");
+  
+  const searchParams = useSearchParams();
+  const [activeTab, setActiveTab] = useState<TabType>(() => {
+    const tabParam = searchParams.get("tab") as TabType;
+    return tabParam || "cuenta";
+  });
+  
   const [isSidebarOpen, setSidebarOpen] = useState(false);
+  const [friendSearch, setFriendSearch] = useState("");
+  const [requestSent, setRequestSent] = useState(false);
+  
+  const [friendsList, setFriendsList] = useState([
+    {
+      id: "u2",
+      name: "Carlos R.",
+      username: "@carlos_explorador",
+      status: "En línea",
+      avatar: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=500&auto=format&fit=crop",
+      online: true
+    },
+    {
+      id: "u1",
+      name: "Ana Martínez",
+      username: "@viajera66",
+      status: "Hace 2 horas",
+      avatar: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=500&auto=format&fit=crop",
+      online: false
+    },
+    {
+      id: "u6",
+      name: "Marco Villanueva",
+      username: "@marco_photo",
+      status: "En línea",
+      avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=500&auto=format&fit=crop",
+      online: true
+    },
+    {
+      id: "u5",
+      name: "Lucía Ramírez",
+      username: "@lu_traveler",
+      status: "Hace 30 min",
+      avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=500&auto=format&fit=crop",
+      online: false
+    },
+    {
+      id: "u7",
+      name: "Valentina Orozco",
+      username: "@vale_fit",
+      status: "Hace 1 día",
+      avatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=500&auto=format&fit=crop",
+      online: false
+    }
+  ]);
+
+  const profileId = searchParams.get("id");
+  const [isPublicView, setIsPublicView] = useState(false);
+  const [publicProfileData, setPublicProfileData] = useState<any>(null);
 
   useEffect(() => {
     const fetchPerfil = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      
+      // HACKATHON: Mocking public profile routing based on ?id
+      // Dynamic lookup from our social user registry for perfect data consistency
+      if (profileId && (!session || session.user.id !== profileId)) {
+        setIsPublicView(true);
+        
+        const userBios: Record<string, string> = {
+          u1: "Me encanta el arte, los museos y todo lo relacionado con la cultura. Siempre buscando la próxima exhibición. 🎨",
+          u2: "Cazador de tacos legendarios y aventuras urbanas. Si no está picante, no es buena comida. 🌮🔥",
+          u3: "Viajando poco a poco y conociendo mi propia ciudad de formas distintas. 🌎",
+          u4: "Crítico gastronómico independiente. Pruebo, califico y comparto para que no pierdas tu tiempo ni tu dinero. 🍽️⭐",
+          u5: "Nómada digital. Trabajo desde cafés bonitos y exploro la ciudad entre reuniones. 💻✈️",
+          u6: "Fotógrafo callejero. Capturo la esencia de cada rincón de esta ciudad infinita. 📸",
+          u7: "Fitness + turismo = mi estilo de vida. Corro por parques nuevos cada fin de semana. 🏃‍♀️🌿",
+          u8: "Chef retirado. Ahora me dedico a descubrir la comida callejera más auténtica de México. 👨‍🍳🇲🇽",
+        };
+
+        const knownUsers: Record<string, { name: string; username: string; avatar: string; level: string; points: number }> = {
+          u1: { name: "Ana Martínez", username: "@viajera66", avatar: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=500&auto=format&fit=crop", level: "Guía Maestro", points: 4500 },
+          u2: { name: "Carlos R.", username: "@carlos_explorador", avatar: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=500&auto=format&fit=crop", level: "Aventurero Veterano", points: 3200 },
+          u3: { name: "Sofía Navarro", username: "@sofia_cdmx", avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=500&auto=format&fit=crop", level: "Turista Curioso", points: 1200 },
+          u4: { name: "Diego Hernández", username: "@foodie_mx", avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=500&auto=format&fit=crop", level: "Crítico Gourmet", points: 5100 },
+          u5: { name: "Lucía Ramírez", username: "@lu_traveler", avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=500&auto=format&fit=crop", level: "Nómada Digital", points: 2800 },
+          u6: { name: "Marco Villanueva", username: "@marco_photo", avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=500&auto=format&fit=crop", level: "Fotógrafo Urbano", points: 3900 },
+          u7: { name: "Valentina Orozco", username: "@vale_fit", avatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=500&auto=format&fit=crop", level: "Exploradora Activa", points: 1800 },
+          u8: { name: "Pedro Castañeda", username: "@el_chef_pedro", avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=500&auto=format&fit=crop", level: "Leyenda Local", points: 6200 },
+        };
+
+        const found = knownUsers[profileId];
+        const isFriend = profileId === "u1" || profileId === "u2" || profileId === "u6";
+        
+        setPublicProfileData({
+          id: profileId,
+          nombre_completo: found?.name || "Explorador Activo",
+          username: found?.username || `@explorer_${profileId}`,
+          avatar_url: found?.avatar || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=200&h=200&auto=format&fit=crop",
+          level: found?.level || "Aventurero",
+          about: userBios[profileId] || "Descubriendo nuevos lugares cada día. ¡Sígueme en mis aventuras!",
+          points: found?.points || 500,
+          isFriend: isFriend,
+        });
+        setLoading(false);
+        return;
+      }
+
       try {
         const { data, error } = await supabase.rpc('get_perfil_usuario_actual');
         
         if (error) {
           console.error("Error fetching profile:", error);
-          throw error;
-        }
-
-        if (data && data.length > 0) {
+          // HACKATHON: Fallback - build profile from auth session metadata
+          if (session?.user) {
+            const meta = session.user.user_metadata;
+            setPerfil({
+              nombre_completo: meta?.nombre_completo || meta?.full_name || session.user.email?.split('@')[0] || 'Usuario',
+              correo: session.user.email,
+              avatar_url: meta?.avatar_url || null,
+              nivel_actual: 'Explorador',
+              puntos_totales: 120,
+              rutas_completadas: 3,
+              insignias: 2,
+            });
+          }
+        } else if (data && data.length > 0) {
           setPerfil(data[0]);
+        } else if (session?.user) {
+          // RPC returned empty - build from auth
+          const meta = session.user.user_metadata;
+          setPerfil({
+            nombre_completo: meta?.nombre_completo || meta?.full_name || session.user.email?.split('@')[0] || 'Usuario',
+            correo: session.user.email,
+            avatar_url: meta?.avatar_url || null,
+            nivel_actual: 'Explorador',
+            puntos_totales: 120,
+            rutas_completadas: 3,
+            insignias: 2,
+          });
         }
       } catch (err) {
         console.error(err);
+        // Ultimate fallback
+        if (session?.user) {
+          const meta = session.user.user_metadata;
+          setPerfil({
+            nombre_completo: meta?.nombre_completo || meta?.full_name || session.user.email?.split('@')[0] || 'Usuario',
+            correo: session.user.email,
+            avatar_url: meta?.avatar_url || null,
+            nivel_actual: 'Explorador',
+            puntos_totales: 120,
+            rutas_completadas: 3,
+            insignias: 2,
+          });
+        }
       } finally {
         setLoading(false);
       }
     };
 
     fetchPerfil();
-  }, [supabase]);
+  }, [supabase, profileId]);
 
   if (loading) {
     return (
@@ -63,12 +208,86 @@ export default function PerfilPage() {
     );
   }
 
+  if (isPublicView && publicProfileData) {
+    return (
+      <main className="min-h-screen bg-[#f8fafd] pt-24 pb-20">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6">
+          <div className="bg-white rounded-[2.5rem] border border-outline-variant/20 shadow-xl overflow-hidden animate-fade-in-up">
+            <div className="h-48 md:h-64 bg-gradient-to-r from-[#003e6f] to-[#005596] relative">
+              <div className="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_center,_white_1px,_transparent_1px)] bg-[size:20px_20px]"></div>
+            </div>
+            
+            <div className="px-8 pb-10 relative">
+              <div className="flex flex-col md:flex-row md:items-end justify-between -mt-20 md:-mt-24 mb-6">
+                <div className="relative w-32 h-32 md:w-40 md:h-40 rounded-full overflow-hidden border-4 border-white shadow-lg bg-surface mb-4 md:mb-0">
+                  <img src={publicProfileData.avatar_url} alt={publicProfileData.nombre_completo} className="w-full h-full object-cover" />
+                </div>
+                
+                <div className="flex gap-3">
+                  <button 
+                    onClick={() => {
+                      setPublicProfileData({...publicProfileData, isFriend: !publicProfileData.isFriend});
+                      setRequestSent(true);
+                    }}
+                    className={`px-8 py-3 rounded-full font-headline font-black text-sm uppercase tracking-widest transition-all shadow-md ${publicProfileData.isFriend ? 'bg-neutral-200 text-neutral-600 hover:bg-neutral-300' : 'bg-[#fed000] text-[#003e6f] hover:bg-[#ffdf40] hover:shadow-[0_0_15px_rgba(254,208,0,0.4)]'}`}
+                  >
+                    {publicProfileData.isFriend ? "Amigos ✔" : requestSent ? "Solicitud Enviada" : "Agregar a Red"}
+                  </button>
+                  <button className="bg-surface-container-highest w-12 h-12 rounded-full flex items-center justify-center text-primary hover:bg-secondary/20 transition-colors shadow-sm">
+                    <Globe size={20} />
+                  </button>
+                </div>
+              </div>
+              
+              <div className="mb-8">
+                <h1 className="text-3xl md:text-4xl font-headline font-black tracking-tight text-[#003e6f] mb-1">
+                  {publicProfileData.nombre_completo}
+                </h1>
+                <p className="text-neutral-500 font-label text-base">{publicProfileData.username} • {publicProfileData.level}</p>
+              </div>
+              
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                <div className="bg-neutral-50 p-6 rounded-3xl border border-neutral-100 flex flex-col items-center justify-center text-center">
+                  <span className="material-symbols-outlined text-4xl text-secondary mb-2">workspace_premium</span>
+                  <p className="text-3xl font-black text-[#003e6f]">{publicProfileData.points}</p>
+                  <p className="text-xs font-bold text-neutral-500 uppercase tracking-widest">Puntos de Ruta</p>
+                </div>
+                <div className="bg-neutral-50 p-6 rounded-3xl border border-neutral-100 flex flex-col items-center justify-center text-center col-span-2">
+                  <span className="material-symbols-outlined text-3xl text-neutral-400 mb-2">format_quote</span>
+                  <p className="text-on-surface-variant font-body italic text-center text-lg leading-relaxed">
+                    "{publicProfileData.about}"
+                  </p>
+                </div>
+              </div>
+
+              <div className="space-y-6">
+                <h3 className="font-headline font-black text-xl text-[#003e6f] border-b border-neutral-100 pb-3">Rutas Recientes</h3>
+                <div className="bg-surface-container-lowest border border-outline-variant/10 rounded-2xl p-6 flex flex-col md:flex-row items-center gap-6 hover:shadow-md transition-shadow cursor-pointer">
+                  <div className="w-16 h-16 bg-[#003e6f]/5 rounded-2xl flex items-center justify-center shrink-0">
+                    <Route size={32} className="text-[#003e6f]" />
+                  </div>
+                  <div>
+                    <h4 className="font-headline font-bold text-[#003e6f] text-lg">Tour Gastronómico Centro Histórico</h4>
+                    <p className="font-body text-neutral-500 text-sm">3 Paradas • 2.5 km • Hace 2 días</p>
+                  </div>
+                  <button className="md:ml-auto font-bold text-[#005596] hover:underline text-sm">Ver Ruta en Mapa</button>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </main>
+    );
+  }
+
   const sidebarItems: { id: TabType; icon: any; label: string }[] = [
     { id: "cuenta", icon: <User size={20} />, label: "Mi Cuenta" },
-    { id: "direcciones", icon: <MapPin size={20} />, label: "Direcciones" },
+    { id: "publicaciones", icon: <Globe size={20} />, label: "Mis Publicaciones" },
+    { id: "amigos", icon: <Globe size={20} />, label: "Mis Amigos" },
     { id: "rutas", icon: <Route size={20} />, label: "Mis Rutas" },
-    { id: "resenas", icon: <Star size={20} />, label: "Mis Reseñas" },
-    { id: "editar", icon: <Settings size={20} />, label: "Ajustes" },
+    { id: "medallas", icon: <Star size={20} />, label: "Medallas & Gamificación" },
+    { id: "ajustes", icon: <Settings size={20} />, label: "Ajustes" },
   ];
 
   const tiers = [
@@ -248,95 +467,114 @@ export default function PerfilPage() {
 
             {/* Mis Insignias */}
             <section className="space-y-8">
-              <h2 className="text-4xl font-headline italic text-primary">Mis Insignias</h2>
+              <h2 className="text-4xl font-headline italic text-primary">Mis Insignias Recientes</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
                 {[
                   { emoji: "🎨", label: "Mecenas del Arte", description: "Visita 5 museos o galerías." },
                   { emoji: "☕", label: "Catador de Café", description: "Prueba cafés de 3 regiones distintas." },
-                  { emoji: "🎶", label: "Noctámbulo Musical", description: "Asiste a 3 conciertos en vivo." },
-                ].map((insignia) => {
-                  const randomTier = tiers[Math.floor(Math.random() * tiers.length)];
-                  return (
-                    <div key={insignia.label} className={`bg-surface-container-low p-8 rounded-[2.5rem] flex flex-col items-center text-center border hover:bg-white hover:shadow-xl transition-all ${randomTier.className}`}>
-                      <span className="text-6xl mb-4">{insignia.emoji}</span>
-                      <h3 className="font-headline font-bold text-xl text-on-surface mb-2">{insignia.label}</h3>
-                      <p className="text-sm text-on-surface-variant font-body">{insignia.description}</p>
+                ].map((insignia) => (
+                  <div key={insignia.label} className="bg-surface p-8 rounded-[2.5rem] flex flex-col items-center text-center shadow-sm border border-outline-variant/10 hover:shadow-md transition-shadow">
+                    <span className="text-6xl mb-4 grayscale opacity-50 hover:grayscale-0 hover:opacity-100 transition-all duration-500">{insignia.emoji}</span>
+                    <h3 className="font-headline font-bold text-xl text-on-surface mb-2">{insignia.label}</h3>
+                    <p className="text-sm text-on-surface-variant font-body">{insignia.description}</p>
+                    <div className="mt-4 w-full bg-surface-variant h-2 rounded-full overflow-hidden">
+                      <div className="bg-primary h-full w-3/5"></div>
                     </div>
-                  );
-                })}
-                <div className="border-2 border-dashed border-outline-variant/30 p-8 rounded-[2.5rem] flex flex-col items-center justify-center gap-2 text-on-surface-variant hover:bg-surface-container-low transition-all cursor-pointer">
-                  <span className="text-4xl">🏆</span>
-                  <span className="font-bold text-center">Ver todas mis insignias</span>
-                </div>
-              </div>
-            </section>
-
-            {/* Reviews Section - The "Bottom Part" previously liked */}
-            <section className="space-y-8">
-              <div className="flex items-center justify-between">
-                <h2 className="text-4xl font-headline italic text-primary">{t("recientesActividades")}</h2>
-              </div>
-              <div className="grid grid-cols-1 gap-8">
-                {/* Review Card 1 */}
-                <div className="group bg-surface-container-lowest p-6 md:p-10 rounded-[2.5rem] flex flex-col md:flex-row gap-10 transition-all hover:shadow-2xl hover:bg-white border border-outline-variant/10">
-                  <div className="w-full md:w-64 aspect-video md:aspect-square rounded-3xl overflow-hidden shrink-0 bg-surface-container-low shadow-inner">
-                    <img 
-                      src="https://images.unsplash.com/photo-1582234372722-50d7ccc30ebd?q=80&auto=format&fit=crop&w=400&h=400" 
-                      alt="Palacio de Bellas Artes" 
-                      className="w-full h-full object-cover grayscale-[30%] group-hover:grayscale-0 transition-all duration-500"
-                    />
+                    <p className="text-xs text-on-surface-variant mt-2 font-label">3/5 visitas</p>
                   </div>
-                  <div className="flex-1 flex flex-col justify-center">
-                    <div className="flex justify-between items-start mb-6">
-                      <div>
-                        <h3 className="text-2xl font-headline font-bold text-on-surface mb-1">Casa del Mayorazgo de la Canal</h3>
-                        <p className="text-sm font-label text-slate-400 flex items-center gap-2 uppercase tracking-widest">
-                          <MapPin size={14} /> San Miguel de Allende, Gto.
-                        </p>
-                      </div>
-                      <span className="font-label text-xs text-slate-300 bg-surface-container-high px-3 py-1 rounded-full">14 MAR 2024</span>
-                    </div>
-                    <div className="flex gap-1 mb-6 text-secondary">
-                      {[1, 2, 3, 4, 5].map((i) => <Star key={i} size={20} fill="currentColor" stroke="none" />)}
-                    </div>
-                    <p className="text-on-surface-variant leading-relaxed font-body text-lg italic font-light">
-                      “Una joya arquitectónica que te transporta en el tiempo. La curaduría de la exposición actual es impecable.”
-                    </p>
-                  </div>
-                </div>
-
-                {/* Review Card 2 */}
-                <div className="group bg-surface-container-lowest p-6 md:p-10 rounded-[2.5rem] flex flex-col md:flex-row gap-10 transition-all hover:shadow-2xl hover:bg-white border border-outline-variant/10">
-                  <div className="w-full md:w-64 aspect-video md:aspect-square rounded-3xl overflow-hidden shrink-0 bg-surface-container-low shadow-inner">
-                    <img 
-                      src="https://images.unsplash.com/photo-1512813588641-0737a3459ced?q=80&auto=format&fit=crop&w=400&h=400" 
-                      alt="Restaurante en la Roma" 
-                      className="w-full h-full object-cover grayscale-[30%] group-hover:grayscale-0 transition-all duration-500"
-                    />
-                  </div>
-                  <div className="flex-1 flex flex-col justify-center">
-                    <div className="flex justify-between items-start mb-6">
-                      <div>
-                        <h3 className="text-2xl font-headline font-bold text-on-surface mb-1">Restaurante Los Danzantes</h3>
-                        <p className="text-sm font-label text-slate-400 flex items-center gap-2 uppercase tracking-widest">
-                          <Star size={14} /> Oaxaca de Juárez, Oax.
-                        </p>
-                      </div>
-                      <span className="font-label text-xs text-slate-300 bg-surface-container-high px-3 py-1 rounded-full">02 FEB 2024</span>
-                    </div>
-                    <div className="flex gap-1 mb-6 text-secondary">
-                      {[1, 2, 3, 4, 5].map((i) => <Star key={i} size={20} fill="currentColor" stroke="none" />)}
-                    </div>
-                    <p className="text-on-surface-variant leading-relaxed font-body text-lg italic font-light">
-                      “El mole negro es de otro planeta. El ambiente en el patio central es muy acogedor.”
-                    </p>
-                  </div>
-                </div>
+                ))}
               </div>
             </section>
           </div>
         )}
 
+        {/* --- NUEVAS SECCIONES SOCIALES --- */}
+        {activeTab === "publicaciones" && (
+          <div className="space-y-8 animate-fade-in-up">
+            <h2 className="text-4xl font-headline italic text-primary">Mis Publicaciones</h2>
+            <div className="bg-white rounded-[2rem] p-12 text-center border border-outline-variant/10 shadow-sm flex flex-col items-center justify-center">
+              <span className="material-symbols-outlined text-6xl text-neutral-300 mb-4">post_add</span>
+              <p className="font-headline text-2xl text-[#003e6f] font-bold mb-2">Aún no has publicado nada</p>
+              <p className="text-neutral-500 font-body mb-6">Comparte tus rutas o deja reseñas para que aparezcan aquí.</p>
+              <button 
+                onClick={() => window.location.href = "/comunidad"}
+                className="bg-[#fed000] text-[#003e6f] px-8 py-3 rounded-full font-headline font-black text-sm uppercase tracking-widest hover:bg-[#ffdf40] transition-colors shadow-sm focus:outline-none"
+              >
+                Ir a Comunidad
+              </button>
+            </div>
+          </div>
+        )}
+
+        {activeTab === "amigos" && (
+          <div className="space-y-8 animate-fade-in-up">
+            <h2 className="text-4xl font-headline italic text-primary">Mis Amigos</h2>
+            <div className="bg-white rounded-[2rem] p-8 border border-outline-variant/10 shadow-sm min-h-[400px]">
+              <div className="flex justify-between items-center mb-6">
+                <input 
+                  type="text" 
+                  value={friendSearch}
+                  onChange={(e) => setFriendSearch(e.target.value)}
+                  placeholder="Buscar amigos por @nombre..." 
+                  className="bg-neutral-100 border border-transparent focus:bg-white focus:border-[#fed000] px-6 py-3 rounded-full w-full max-w-md font-body text-sm outline-none transition-colors"
+                />
+              </div>
+              
+              {friendSearch.length > 0 ? (
+                <div className="animate-fade-in-up mt-8">
+                  <div className="flex items-center justify-between bg-neutral-50 p-4 rounded-2xl border border-neutral-100">
+                    <div className="flex items-center gap-4">
+                      <div className="w-12 h-12 rounded-full overflow-hidden bg-gray-200">
+                        <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=200&h=200&auto=format&fit=crop" alt="Sofia" className="w-full h-full object-cover" />
+                      </div>
+                      <div>
+                        <p className="font-headline font-bold text-[#003e6f]">Sofía Navarro</p>
+                        <p className="text-xs text-neutral-500">@sofia_cdmx</p>
+                      </div>
+                    </div>
+                    <button 
+                      onClick={() => setRequestSent(true)}
+                      disabled={requestSent}
+                      className={`px-6 py-2 rounded-full font-bold text-sm transition-colors ${requestSent ? 'bg-neutral-200 text-neutral-500 cursor-not-allowed' : 'bg-[#003e6f] text-white hover:bg-[#005596]'}`}
+                    >
+                      {requestSent ? 'Enviada' : 'Agregar'}
+                    </button>
+                  </div>
+                </div>
+              ) : friendsList.length > 0 ? (
+                <div className="animate-fade-in-up mt-8 space-y-4">
+                  {friendsList.map((friend) => (
+                    <div key={friend.id} className={`flex items-center justify-between p-4 rounded-2xl border border-outline-variant/10 hover:bg-neutral-50 transition-colors ${!friend.online ? 'opacity-70' : ''}`}>
+                      <div className="flex items-center gap-4">
+                        <div className="relative w-12 h-12 rounded-full overflow-hidden bg-gray-200 border-2 border-transparent">
+                          <img src={friend.avatar} alt={friend.name} className={`w-full h-full object-cover ${!friend.online ? 'grayscale' : ''}`} />
+                          {friend.online && <div className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-white"></div>}
+                        </div>
+                        <div>
+                          <p className="font-headline font-bold text-[#003e6f] flex items-center gap-2">{friend.name}</p>
+                          <p className="text-xs text-neutral-500">{friend.username} • {friend.status}</p>
+                        </div>
+                      </div>
+                      <button 
+                        onClick={() => setFriendsList(friendsList.filter(f => f.id !== friend.id))}
+                        className="text-neutral-400 hover:text-red-500 bg-transparent hover:bg-red-50 transition-all p-2 rounded-full flex items-center justify-center shrink-0"
+                        title="Eliminar amigo"
+                      >
+                        <span className="material-symbols-outlined text-[20px]">person_remove</span>
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="flex flex-col items-center justify-center py-16 animate-fade-in">
+                  <span className="material-symbols-outlined text-6xl text-neutral-300 mb-4">group_off</span>
+                  <p className="font-headline text-2xl text-[#003e6f] font-bold mb-2">Lista Vacía</p>
+                  <p className="text-neutral-500 font-body text-center max-w-sm">Has eliminado a todos tus amigos de la lista.</p>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
         {activeTab === "direcciones" && (
           <div className="space-y-8 animate-fade-in-up">
             <h2 className="text-4xl font-headline italic text-primary">{t("direccionesGuardadas")}</h2>

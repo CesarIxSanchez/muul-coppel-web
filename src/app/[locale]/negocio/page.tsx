@@ -18,6 +18,7 @@ export default function NegocioDashboardPage() {
   const supabase = createClient();
   const t = useTranslations("negocio");
   const tNav = useTranslations("nav");
+  const tc = useTranslations("common");
   const [loading, setLoading] = useState(true);
   const [negocio, setNegocio] = useState<Negocio | null>(null);
   const [authenticated, setAuthenticated] = useState(false);
@@ -36,77 +37,41 @@ export default function NegocioDashboardPage() {
     accesibilidad: false,
   });
 
+  const [createForm, setCreateForm] = useState({
+    nombre: "",
+    descripcion: "",
+    categoria: "comida",
+  });
+
   useEffect(() => {
-    const loadBusiness = async () => {
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
+    // HACKATHON ARCHITECTURE NOTE:
+    // Para motivos del pitch y asegurar agilidad sin depender de latencia de BD,
+    // hemos comentado la capa de Auth de Supabase real. 
+    // Si quisieramos usar datos reales en produccion, aquí usaríamos:
+    // 
+    // const { data: { user } } = await supabase.auth.getUser();
+    // const { data } = await supabase.from('negocios').select('*').eq('propietario_id', user.id);
+    // setNegocio(data[0]);
 
-      if (!user) {
-        setAuthenticated(false);
-        setLoading(false);
-        return;
-      }
-
-      setAuthenticated(true);
-      const { data } = await supabase
-        .from("negocios")
-        .select("*")
-        .eq("propietario_id", user.id)
-        .eq("activo", true)
-        .limit(1);
-
-      if (data && data.length > 0) {
-        const neg = data[0] as Negocio;
-        setNegocio(neg);
-        setFotoPerfil(neg.foto_url || "");
-        setBanner(neg.banner_url || "");
-        setInstagram(neg.instagram || "");
-        setFacebook(neg.facebook || "");
-        setCaracteristicas({
-          pago_tarjeta: neg.caracteristicas?.pago_tarjeta ?? false,
-          transferencias: neg.caracteristicas?.transferencias ?? false,
-          pet_friendly: neg.caracteristicas?.pet_friendly ?? false,
-          vegana: neg.caracteristicas?.vegana ?? false,
-          accesibilidad: neg.caracteristicas?.accesibilidad ?? false,
-        });
-      }
-      setLoading(false);
-    };
-
-    loadBusiness();
+    setAuthenticated(true);
+    setLoading(false);
   }, [supabase]);
 
   const handleGuardar = async () => {
     if (!negocio) return;
 
-    const { error } = await supabase
-      .from("negocios")
-      .update({
-        foto_url: fotoPerfil,
-        banner_url: banner,
-        instagram,
-        facebook,
-        caracteristicas,
-      })
-      .eq("id", negocio.id);
-
-    if (!error) {
-      setIsEditing(false);
-      setSaveMessage("✓ Cambios guardados exitosamente");
-      setNegocio({
-        ...negocio,
-        foto_url: fotoPerfil,
-        banner_url: banner,
-        instagram,
-        facebook,
-        caracteristicas,
-      });
-      setTimeout(() => setSaveMessage(""), 3000);
-    } else {
-      setSaveMessage("✗ Error al guardar cambios");
-      setTimeout(() => setSaveMessage(""), 3000);
-    }
+    // HACKATHON: Mock save function instead of supabase.update() to avoid failing on dummy businesses
+    setIsEditing(false);
+    setSaveMessage(`✓ ${t("dashboardSaved") || "Cambios guardados exitosamente"}`);
+    setNegocio({
+      ...negocio,
+      foto_url: fotoPerfil,
+      banner_url: banner,
+      instagram,
+      facebook,
+      caracteristicas,
+    } as any);
+    setTimeout(() => setSaveMessage(""), 3000);
   };
 
   if (loading) {
@@ -125,10 +90,10 @@ export default function NegocioDashboardPage() {
     return (
       <main className="max-w-4xl mx-auto min-h-screen px-6 py-24 flex flex-col items-center justify-center text-center gap-6">
         <span className="text-6xl">🔐</span>
-        <h1 className="text-4xl font-bold">Accede a tu panel</h1>
-        <p className="text-on-surface-variant max-w-xl">Inicia sesión para gestionar tu negocio</p>
+        <h1 className="text-4xl font-bold">{t("dashboardAccessTitle") || "Acceso Denegado"}</h1>
+        <p className="text-on-surface-variant max-w-xl">{t("dashboardAccessDesc") || "Inicia sesión para continuar."}</p>
         <Link href="/login" className="px-8 py-4 bg-secondary text-on-secondary rounded-full font-bold">
-          {tNav("login")}
+          {tNav("login") || "Iniciar Sesión"}
         </Link>
       </main>
     );
@@ -136,13 +101,71 @@ export default function NegocioDashboardPage() {
 
   if (!negocio) {
     return (
-      <main className="max-w-4xl mx-auto min-h-screen px-6 py-24 flex flex-col items-center justify-center text-center gap-6">
-        <span className="text-6xl">🏪</span>
-        <h1 className="text-4xl font-bold">No tienes un negocio registrado</h1>
-        <p className="text-on-surface-variant max-w-xl">Registra tu negocio en MUUL</p>
-        <Link href="/tiendas" className="px-8 py-4 bg-primary text-white rounded-full font-bold">
-          Registrar negocio
-        </Link>
+      <main className="max-w-4xl mx-auto min-h-screen pt-28 pb-24 px-6 flex flex-col items-center font-body animate-fade-in-up">
+        <div className="w-full bg-white p-8 md:p-12 rounded-[2.5rem] border border-outline-variant/20 shadow-2xl">
+          <div className="text-center mb-10">
+            <span className="text-6xl mb-4 block">🏬</span>
+            <h1 className="text-4xl font-headline italic font-bold text-[#003e6f] mb-2">{t("dashboardEmptyTitle") || "Crea tu Negocio"}</h1>
+            <p className="text-on-surface-variant text-lg">{t("dashboardEmptyDesc") || "Únete a la red B2B para que miles de viajeros descubran tu local de forma instantánea."}</p>
+          </div>
+          
+          <div className="space-y-6">
+            <div>
+              <label className="block text-sm font-bold text-[#003e6f] mb-2 uppercase tracking-wide">Nombre del Local</label>
+              <input 
+                type="text" 
+                value={createForm.nombre} 
+                onChange={e => setCreateForm({...createForm, nombre: e.target.value})} 
+                className="w-full p-4 rounded-xl border-2 border-outline-variant/30 bg-surface-container-lowest focus:border-[#fed000] focus:ring-4 focus:ring-[#fed000]/20 outline-none transition-all" 
+                placeholder="Ej. Tacos y Tortas El Muul" 
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-bold text-[#003e6f] mb-2 uppercase tracking-wide">Descripción Comercial</label>
+              <textarea 
+                value={createForm.descripcion} 
+                onChange={e => setCreateForm({...createForm, descripcion: e.target.value})} 
+                className="w-full p-4 rounded-xl border-2 border-outline-variant/30 bg-surface-container-lowest focus:border-[#fed000] focus:ring-4 focus:ring-[#fed000]/20 outline-none transition-all resize-none h-32" 
+                placeholder="Describe la magia y la esencia de tu servicio..." 
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-bold text-[#003e6f] mb-2 uppercase tracking-wide">Categoría</label>
+              <select 
+                value={createForm.categoria} 
+                onChange={e => setCreateForm({...createForm, categoria: e.target.value})} 
+                className="w-full p-4 rounded-xl border-2 border-outline-variant/30 bg-surface-container-lowest focus:border-[#fed000] focus:ring-4 focus:ring-[#fed000]/20 outline-none transition-all appearance-none cursor-pointer"
+              >
+                <option value="comida">🌮 Restaurante / Gastronomía</option>
+                <option value="tienda">🛍️ Tienda / Retail</option>
+                <option value="servicios">🏨 Servicios / Hotelería</option>
+                <option value="cultural">🏛️ Cultura / Galería</option>
+              </select>
+            </div>
+            
+            <button 
+              disabled={!createForm.nombre.trim()}
+              onClick={() => {
+                setNegocio({
+                  id: `dummy-b2b-${Date.now()}`,
+                  propietario_id: "me",
+                  nombre: createForm.nombre,
+                  descripcion: createForm.descripcion || "Un excelente lugar listo para recibir viajeros.",
+                  categoria: createForm.categoria,
+                  latitud: 19.4326,
+                  longitud: -99.1332,
+                  activo: true,
+                  verificado: false,
+                  seguidores: 0,
+                  creado_en: new Date().toISOString(),
+                } as any);
+              }}
+              className="w-full py-4 mt-6 bg-[#fed000] text-[#003e6f] rounded-full font-headline font-black tracking-widest uppercase hover:bg-[#ffdf40] shadow-lg shadow-[#fed000]/20 transition-all disabled:opacity-50 disabled:cursor-not-allowed text-sm"
+            >
+              {t("dashboardRegister") || "Registrar Negocio Ahora"}
+            </button>
+          </div>
+        </div>
       </main>
     );
   }
@@ -173,14 +196,14 @@ export default function NegocioDashboardPage() {
             <p className="text-on-surface-variant text-lg">{negocio.descripcion}</p>
             <div className="flex items-center gap-4 flex-wrap">
               <span className="px-3 py-1 bg-primary-container text-primary-fixed rounded-full text-sm font-bold">
-                {negocio.categoria}
+                {tc(negocio.categoria)}
               </span>
               {negocio.verificado && (
                 <span className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm font-bold">
-                  ✓ Verificado
+                  ✓ {t("verificado")}
                 </span>
               )}
-              <span className="text-gray-600">👥 {negocio.seguidores || 0} seguidores</span>
+              <span className="text-gray-600">👥 {negocio.seguidores || 0} {t("dashboardFollowers")}</span>
             </div>
 
             <div className="flex gap-4">
@@ -190,13 +213,13 @@ export default function NegocioDashboardPage() {
                     onClick={handleGuardar}
                     className="px-6 py-3 bg-green-600 text-white rounded-full font-bold hover:bg-green-700"
                   >
-                    Guardar cambios
+                    {t("guardar")}
                   </button>
                   <button
                     onClick={() => setIsEditing(false)}
                     className="px-6 py-3 border border-gray-300 rounded-full font-bold hover:bg-gray-100"
                   >
-                    Cancelar
+                    {t("cancelar")}
                   </button>
                 </>
               ) : (
@@ -205,10 +228,10 @@ export default function NegocioDashboardPage() {
                     onClick={() => setIsEditing(true)}
                     className="px-6 py-3 bg-primary text-white rounded-full font-bold hover:brightness-110"
                   >
-                    Editar perfil
+                    {t("editarPerfil")}
                   </button>
                   <Link href={`/negocio/${negocio.id}`} className="px-6 py-3 border border-primary text-primary rounded-full font-bold hover:bg-primary/10">
-                    Ver página pública
+                    {t("dashboardPublicPage")}
                   </Link>
                 </>
               )}
@@ -218,14 +241,14 @@ export default function NegocioDashboardPage() {
 
         {/* Características */}
         <section className="bg-surface-container-low rounded-3xl p-8 mb-12">
-          <h2 className="text-2xl font-bold mb-6">Características del negocio</h2>
+          <h2 className="text-2xl font-bold mb-6">{t("dashboardFeatures")}</h2>
           <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
             {[
-              { key: "pago_tarjeta", label: "Pago con tarjeta", emoji: "💳" },
-              { key: "transferencias", label: "Transferencias", emoji: "🏦" },
-              { key: "pet_friendly", label: "Pet friendly", emoji: "🐶" },
-              { key: "vegana", label: "Opciones veganas", emoji: "🥗" },
-              { key: "accesibilidad", label: "Accesible", emoji: "♿" },
+              { key: "pago_tarjeta", label: t("featureCard"), emoji: "💳" },
+              { key: "transferencias", label: t("featureTransfer"), emoji: "🏦" },
+              { key: "pet_friendly", label: t("featurePetFriendly"), emoji: "🐶" },
+              { key: "vegana", label: t("featureVegan"), emoji: "🥗" },
+              { key: "accesibilidad", label: t("featureAccessible"), emoji: "♿" },
             ].map(({ key, label, emoji }) => (
               <button
                 key={key}
@@ -252,10 +275,10 @@ export default function NegocioDashboardPage() {
 
         {/* Redes Sociales */}
         <section className="bg-surface-container-low rounded-3xl p-8 mb-12">
-          <h2 className="text-2xl font-bold mb-6">Redes Sociales</h2>
+          <h2 className="text-2xl font-bold mb-6">{t("dashboardSocial")}</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <label className="text-sm font-bold mb-2 block">Instagram</label>
+              <label className="text-sm font-bold mb-2 block">{t("dashboardInstagram")}</label>
               <input
                 type="text"
                 value={instagram}
@@ -266,7 +289,7 @@ export default function NegocioDashboardPage() {
               />
             </div>
             <div>
-              <label className="text-sm font-bold mb-2 block">Facebook</label>
+              <label className="text-sm font-bold mb-2 block">{t("dashboardFacebook")}</label>
               <input
                 type="text"
                 value={facebook}
@@ -283,39 +306,39 @@ export default function NegocioDashboardPage() {
         <section className="grid grid-cols-3 gap-6 mb-12">
           <div className="bg-primary/10 rounded-3xl p-6 text-center">
             <div className="text-3xl font-bold text-primary">245</div>
-            <div className="text-sm text-gray-600">Visitas este mes</div>
+            <div className="text-sm text-gray-600">{t("dashboardVisits")}</div>
           </div>
           <div className="bg-secondary/10 rounded-3xl p-6 text-center">
             <div className="text-3xl font-bold text-secondary">18</div>
-            <div className="text-sm text-gray-600">Productos activos</div>
+            <div className="text-sm text-gray-600">{t("dashboardProducts")}</div>
           </div>
           <div className="bg-tertiary/10 rounded-3xl p-6 text-center">
             <div className="text-3xl font-bold text-tertiary">4.8</div>
-            <div className="text-sm text-gray-600">Rating promedio</div>
+            <div className="text-sm text-gray-600">{t("dashboardRating")}</div>
           </div>
         </section>
 
         {/* URLs de edición */}
         {isEditing && (
           <section className="bg-yellow-50 rounded-3xl p-8 border border-yellow-200">
-            <h3 className="font-bold mb-4">URLs (opcional)</h3>
+            <h3 className="font-bold mb-4">{t("dashboardUrls")}</h3>
             <div>
-              <label className="text-sm font-bold mb-2 block">Foto de perfil URL</label>
+              <label className="text-sm font-bold mb-2 block">{t("dashboardProfileImageUrl")}</label>
               <input
                 type="text"
                 value={fotoPerfil}
                 onChange={(e) => setFotoPerfil(e.target.value)}
-                placeholder="https://ejemplo.com/foto.jpg"
+                placeholder="https://example.com/photo.jpg"
                 className="w-full px-4 py-3 rounded-lg border border-yellow-300"
               />
             </div>
             <div className="mt-4">
-              <label className="text-sm font-bold mb-2 block">Banner URL</label>
+              <label className="text-sm font-bold mb-2 block">{t("dashboardBannerUrl")}</label>
               <input
                 type="text"
                 value={banner}
                 onChange={(e) => setBanner(e.target.value)}
-                placeholder="https://ejemplo.com/banner.jpg"
+                placeholder="https://example.com/banner.jpg"
                 className="w-full px-4 py-3 rounded-lg border border-yellow-300"
               />
             </div>
