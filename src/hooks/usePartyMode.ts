@@ -24,11 +24,19 @@ export interface PartyParticipant {
 }
 
 // Resilience Helper
-const withTimeout = <T>(promise: Promise<T>, ms: number, fallbackObj: T): Promise<T> => {
+const withTimeout = <T>(promise: PromiseLike<T>, ms: number, fallbackObj: T): Promise<T> => {
   return Promise.race([
     promise,
     new Promise<T>((resolve) => setTimeout(() => resolve(fallbackObj), ms))
   ]).catch(() => fallbackObj);
+};
+
+const TIMEOUT_ERROR = {
+  message: "timeout",
+  details: "Operation timed out",
+  hint: "Try again",
+  code: "TIMEOUT",
+  name: "TimeoutError"
 };
 
 const DUMMY_PUBLIC_ROUTES: PartyRoute[] = [
@@ -152,9 +160,9 @@ export function usePartyMode(
       setLoading(true);
       
       const result = await withTimeout(
-        supabase.from("rutas_guardadas").update({ es_publica: true }).eq("id", rutaId),
+        supabase.from("rutas_guardadas").update({ es_publica: true }).eq("id", rutaId).then(r => r),
         5000,
-        { error: { message: "timeout" }, data: null, count: null, status: 500, statusText: "Timeout" }
+        { error: TIMEOUT_ERROR, data: null, count: null, status: 500, statusText: "Timeout" }
       );
       
       setLoading(false);
@@ -225,9 +233,9 @@ export function usePartyMode(
       };
 
       const result = await withTimeout(
-        supabase.from("rutas_guardadas").insert(payload).select("id").single(),
+        supabase.from("rutas_guardadas").insert(payload).select("id").single().then(r => r),
         6000,
-        { data: null, error: { message: "timeout" }, count: null, status: 500, statusText: "Timeout" }
+        { data: null, error: TIMEOUT_ERROR, count: null, status: 500, statusText: "Timeout" }
       );
 
       setLoading(false);
@@ -263,9 +271,9 @@ export function usePartyMode(
 
       // Fetch the route
       const fetchResult = await withTimeout(
-        supabase.from("rutas_guardadas").select("*").eq("id", rutaId).eq("es_publica", true).single(),
+        supabase.from("rutas_guardadas").select("*").eq("id", rutaId).eq("es_publica", true).single().then(r => r),
         5000,
-        { data: null, error: { message: "timeout" }, count: null, status: 500, statusText: "Timeout" }
+        { data: null, error: TIMEOUT_ERROR, count: null, status: 500, statusText: "Timeout" }
       );
 
       if (fetchResult.error || !fetchResult.data) {
@@ -328,9 +336,9 @@ export function usePartyMode(
   const fetchPublicRoutes = useCallback(async () => {
     setLoading(true);
     const result = await withTimeout(
-      supabase.from("rutas_guardadas").select("*").eq("es_publica", true).order("created_at", { ascending: false }).limit(20),
+      supabase.from("rutas_guardadas").select("*").eq("es_publica", true).order("created_at", { ascending: false }).limit(20).then(r => r),
       5000,
-      { data: null, error: { message: "timeout" }, count: null, status: 500, statusText: "Timeout" }
+      { data: null, error: TIMEOUT_ERROR, count: null, status: 500, statusText: "Timeout" }
     );
     
     setLoading(false);
