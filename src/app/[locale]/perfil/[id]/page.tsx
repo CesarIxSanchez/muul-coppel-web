@@ -25,7 +25,7 @@ const slugify = (value: string) =>
     .replace(/-+/g, "-")
     .replace(/^-|-$/g, "");
 
-export default function NegocioPerfilPage() {
+export default function PerfilDinamicoPage() {
   const params = useParams();
   const id = params.id as string;
   const supabase = createClient();
