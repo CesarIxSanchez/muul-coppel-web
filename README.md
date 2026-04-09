@@ -1,4 +1,4 @@
-# MUUL by Coppel Web
+# MUUL
 
 Plataforma web de turismo inteligente, descubrimiento de negocios locales y movilidad urbana, enfocada en experiencias en Mexico para el contexto MUUL 2026.
 
@@ -24,12 +24,15 @@ Este proyecto combina mapas interactivos, rutas optimizadas, recomendaciones asi
 
 ## Resumen Ejecutivo
 
-MUUL by Coppel Web es una aplicacion desarrollada con Next.js (App Router) para:
+MUUL is a web platform for intelligent tourism, local business discovery, and urban mobility, focused on experiences in Mexico for the MUUL 2026 context.
 
-- Descubrir puntos de interes y negocios cercanos.
-- Construir rutas inteligentes por distintos modos de transporte.
-- Guardar, compartir y publicar rutas.
-- Conectar visitantes y comunidad mediante funciones sociales.
+This project combines interactive maps, optimized routes, AI-assisted recommendations, internationalization and a social ecosystem for tourists and businesses.
+
+## Caracteristicas Principales
+
+- Mapa interactivo con filtros por categoria y estado (abierto/cerrado).
+- Calculo de rutas con optimizacion y alternativas.
+- Modos de movilidad: caminando, accesible, vehiculo y metro (segun cobertura).
 - Impulsar negocios locales con perfiles, catalogo y visibilidad.
 - Asistir al usuario con un chat de IA contextual y multilenguaje.
 
@@ -154,7 +157,7 @@ supabase/migrations/   # Migraciones SQL
 - npm 9 o superior (o equivalente con pnpm/yarn).
 - Proyecto Supabase configurado.
 - Token de Mapbox.
-- (Opcional) API key de OpenRouter para MUUL AI.
+- API key de OpenRouter para MUUL AI.
 
 ## Configuracion de Variables de Entorno
 
