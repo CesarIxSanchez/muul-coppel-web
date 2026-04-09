@@ -3,7 +3,8 @@
 import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "@/i18n/navigation";
 import { useLocale, useTranslations } from "next-intl";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { useSearchParams } from "next/navigation";
 
 type BusinessFeature = "card" | "transfer" | "petFriendly" | "vegan" | "accessible";
 
@@ -35,6 +36,7 @@ export default function LoginPage() {
   const locale = useLocale();
   const supabase = createClient();
   const t = useTranslations("login");
+  const searchParams = useSearchParams();
 
   const [mode, setMode] = useState<"login" | "register">("login");
   const [profile, setProfile] = useState<"turista" | "negocio">("turista");
@@ -63,6 +65,34 @@ export default function LoginPage() {
   });
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const hasPrefilledFromOAuth = useRef(false);
+
+  const isGoogleCompletionFlow =
+    searchParams.get("oauth") === "google" && searchParams.get("complete") === "1";
+
+  useEffect(() => {
+    if (!isGoogleCompletionFlow || hasPrefilledFromOAuth.current) return;
+
+    const firstName = searchParams.get("firstName") ?? "";
+    const lastName = searchParams.get("lastName") ?? "";
+    const username = searchParams.get("username") ?? "";
+    const email = searchParams.get("email") ?? "";
+    const phone = searchParams.get("phone") ?? "";
+
+    setProfile("turista");
+    setMode("register");
+    setTouristRegister((prev) => ({
+      ...prev,
+      firstName,
+      lastName,
+      username,
+      email,
+      phone,
+      password: "",
+    }));
+
+    hasPrefilledFromOAuth.current = true;
+  }, [isGoogleCompletionFlow, searchParams]);
 
   const toggleFeature = (feature: BusinessFeature) => {
     setBusinessRegister((prev) => {
@@ -76,12 +106,70 @@ export default function LoginPage() {
     });
   };
 
+  const mapFeaturesToDatabase = (features: BusinessFeature[]): string[] => {
+    const featureMap: Record<BusinessFeature, string> = {
+      card: "pago_tarjeta",
+      transfer: "transferencias",
+      petFriendly: "pet_friendly",
+      vegan: "vegana",
+      accessible: "accesibilidad",
+    };
+    return features.map((f) => featureMap[f]);
+  };
+
   const getRegisterAuth = () => {
     if (profile === "turista") {
       return { email: touristRegister.email, password: touristRegister.password };
     }
     return { email: businessRegister.authEmail, password: businessRegister.authPassword };
   };
+
+  const iniciarSesionConGoogle = async () => {
+    if (loading) return;
+
+    setLoading(true);
+    setErrorMessage("");
+
+    const resetTimer = window.setTimeout(() => {
+      setLoading(false);
+    }, 6000);
+
+    const redirectTo = `${window.location.origin}/${locale}/auth/callback?next=/perfil`;
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: "google",
+      options: {
+        redirectTo,
+        queryParams: {
+          prompt: "select_account",
+        },
+      },
+    });
+
+    if (error) {
+      setErrorMessage(error.message || t("errorCredenciales"));
+      setLoading(false);
+    }
+
+    window.clearTimeout(resetTimer);
+  };
+
+  useEffect(() => {
+    // If user comes back from OAuth and this page is restored from cache,
+    // ensure actions are not left in a blocked loading state.
+    setLoading(false);
+
+    const unlockUi = () => setLoading(false);
+
+    window.addEventListener("focus", unlockUi);
+    window.addEventListener("pageshow", unlockUi);
+    document.addEventListener("visibilitychange", unlockUi);
+
+    return () => {
+      window.removeEventListener("focus", unlockUi);
+      window.removeEventListener("pageshow", unlockUi);
+      document.removeEventListener("visibilitychange", unlockUi);
+    };
+  }, [searchParams]);
 
   const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -102,61 +190,193 @@ export default function LoginPage() {
         return;
       }
 
-      const { email, password } = getRegisterAuth();
-      if (!email || !password) {
-        setErrorMessage(t("requiredFields"));
-        return;
-      }
+      // REGISTRO - Usar RPC functions directamente
+      if (profile === "turista") {
+        // Validar campos
+        if (!touristRegister.firstName.trim()) {
+          setErrorMessage(t("requiredFields"));
+          return;
+        }
+        if (!touristRegister.lastName.trim()) {
+          setErrorMessage(t("requiredFields"));
+          return;
+        }
+        if (!touristRegister.username.trim()) {
+          setErrorMessage(t("requiredFields"));
+          return;
+        }
+        if (!touristRegister.email.trim()) {
+          setErrorMessage(t("requiredFields"));
+          return;
+        }
+        if (!touristRegister.phone.trim()) {
+          setErrorMessage(t("requiredFields"));
+          return;
+        }
 
-      if (password.length < 8) {
-        setErrorMessage(t("errorMinContrasena"));
-        return;
-      }
+        if (!isGoogleCompletionFlow && (!touristRegister.password || touristRegister.password.length < 8)) {
+          setErrorMessage(t("errorMinContrasena"));
+          return;
+        }
 
-      const profileMetadata =
-        profile === "turista"
-          ? {
-              first_name: touristRegister.firstName,
-              last_name: touristRegister.lastName,
-              username: touristRegister.username,
-              phone: touristRegister.phone,
-              tipo_usuario: "turista",
-            }
-          : {
-              owner_first_name: businessRegister.ownerFirstName,
-              owner_last_name: businessRegister.ownerLastName,
-              postal_code: businessRegister.postalCode,
-              phone: businessRegister.phone,
-              contact_email: businessRegister.contactEmail || null,
-              business_name: businessRegister.businessName,
-              business_type: businessRegister.businessType,
-              business_address: businessRegister.businessAddress,
-              business_features: businessRegister.features,
-              tipo_usuario: "negocio",
-            };
+        if (isGoogleCompletionFlow) {
+          const {
+            data: { user },
+          } = await supabase.auth.getUser();
 
-      const { error } = await supabase.auth.signUp({
-        email,
-        password,
-        options: {
-          data: {
-            nombre_completo:
-              profile === "turista"
-                ? `${touristRegister.firstName} ${touristRegister.lastName}`.trim()
-                : `${businessRegister.ownerFirstName} ${businessRegister.ownerLastName}`.trim(),
-            ...profileMetadata,
-          },
-          emailRedirectTo: `${typeof window !== "undefined" ? window.location.origin : ""}/${locale}/auth/callback?next=/perfil`,
-        },
-      });
+          if (!user?.id) {
+            setErrorMessage(t("googleSessionExpired"));
+            return;
+          }
 
-      if (error) {
-        setErrorMessage(error.message);
-        return;
+          const { error: rpcError } = await supabase.rpc("guardar_perfil_turista", {
+            p_id: user.id,
+            p_nombre: touristRegister.firstName.trim(),
+            p_apellido: touristRegister.lastName.trim(),
+            p_correo: touristRegister.email.toLowerCase().trim(),
+            p_username: touristRegister.username.trim(),
+            p_telefono: touristRegister.phone.trim(),
+            p_idioma: locale,
+          });
+
+          if (rpcError) {
+            console.error("RPC Error:", rpcError);
+            setErrorMessage(t("googleProfileSaveError"));
+            return;
+          }
+
+          router.push("/perfil");
+          return;
+        }
+
+        const { data: authData, error: signUpError } = await supabase.auth.signUp({
+          email: touristRegister.email,
+          password: touristRegister.password,
+        });
+
+        if (signUpError) {
+          setErrorMessage(signUpError.message);
+          return;
+        }
+
+        if (!authData.user?.id) {
+          setErrorMessage(t("errorCredenciales"));
+          return;
+        }
+
+        // Llamar RPC guardar_perfil_turista directamente
+        const { error: rpcError } = await supabase.rpc("guardar_perfil_turista", {
+          p_id: authData.user.id,
+          p_nombre: touristRegister.firstName.trim(),
+          p_apellido: touristRegister.lastName.trim(),
+          p_correo: touristRegister.email.toLowerCase().trim(),
+          p_username: touristRegister.username.trim(),
+          p_telefono: touristRegister.phone.trim(),
+          p_idioma: locale,
+        });
+
+        if (rpcError) {
+          console.error("RPC Error:", rpcError);
+          setErrorMessage("Error al guardar perfil");
+          return;
+        }
+      } else {
+        // NEGOCIO - Validar campos
+        if (!businessRegister.ownerFirstName.trim()) {
+          setErrorMessage(t("requiredFields"));
+          return;
+        }
+        if (!businessRegister.ownerLastName.trim()) {
+          setErrorMessage(t("requiredFields"));
+          return;
+        }
+        if (!businessRegister.postalCode.trim()) {
+          setErrorMessage(t("requiredFields"));
+          return;
+        }
+        if (!businessRegister.phone.trim()) {
+          setErrorMessage(t("requiredFields"));
+          return;
+        }
+        if (!businessRegister.businessName.trim()) {
+          setErrorMessage(t("requiredFields"));
+          return;
+        }
+        if (!businessRegister.businessType) {
+          setErrorMessage(t("requiredFields"));
+          return;
+        }
+        if (!businessRegister.businessAddress.trim()) {
+          setErrorMessage(t("requiredFields"));
+          return;
+        }
+        if (!businessRegister.authEmail.trim()) {
+          setErrorMessage(t("requiredFields"));
+          return;
+        }
+        if (!businessRegister.authPassword || businessRegister.authPassword.length < 8) {
+          setErrorMessage(t("errorMinContrasena"));
+          return;
+        }
+
+        const { data: authData, error: signUpError } = await supabase.auth.signUp({
+          email: businessRegister.authEmail,
+          password: businessRegister.authPassword,
+        });
+
+        if (signUpError) {
+          setErrorMessage(signUpError.message);
+          return;
+        }
+
+        if (!authData.user?.id) {
+          setErrorMessage(t("errorCredenciales"));
+          return;
+        }
+
+        // Llamar RPC guardar_perfil_negocio para el propietario
+        const { error: rpcProfileError } = await supabase.rpc("guardar_perfil_negocio", {
+          p_id: authData.user.id,
+          p_nombre: businessRegister.ownerFirstName.trim(),
+          p_apellido: businessRegister.ownerLastName.trim(),
+          p_correo: businessRegister.authEmail.toLowerCase().trim(),
+          p_username: businessRegister.businessName.toLowerCase().replace(/\s+/g, "_"),
+          p_telefono: businessRegister.phone.trim(),
+          p_idioma: locale,
+        });
+
+        if (rpcProfileError) {
+          console.error("RPC Profile Error:", rpcProfileError);
+          setErrorMessage("Error al guardar perfil");
+          return;
+        }
+
+        // Llamar RPC crear_negocio directamente
+        const { error: rpcNegocioError } = await supabase.rpc("crear_negocio", {
+          p_propietario_id: authData.user.id,
+          p_nombre: businessRegister.businessName.trim(),
+          p_categoria: businessRegister.businessType,
+          p_direccion: businessRegister.businessAddress.trim(),
+          p_propietario_nombre: businessRegister.ownerFirstName.trim(),
+          p_propietario_apellido: businessRegister.ownerLastName.trim(),
+          p_propietario_cp: businessRegister.postalCode.trim(),
+          p_propietario_telefono: businessRegister.phone.trim(),
+          p_propietario_correo: businessRegister.contactEmail.trim(),
+          p_latitud: 19.4326,
+          p_longitud: -99.1677,
+          p_caracteristicas: mapFeaturesToDatabase(businessRegister.features),
+        });
+
+        if (rpcNegocioError) {
+          console.error("RPC Negocio Error:", rpcNegocioError);
+          setErrorMessage("Error al crear negocio");
+          return;
+        }
       }
 
       router.push("/perfil");
-    } catch {
+    } catch (error) {
+      console.error("Auth error:", error);
       setErrorMessage(t("errorCredenciales"));
     } finally {
       setLoading(false);
@@ -244,6 +464,12 @@ export default function LoginPage() {
               <p className="font-label text-xs text-on-surface-variant uppercase tracking-[0.24em] mt-3">
                 {profile === "negocio" ? t("businessSubtitle") : t("touristSubtitle")}
               </p>
+              {isGoogleCompletionFlow && (
+                <div className="mt-4 rounded-2xl border border-[#003e6f]/15 bg-[#003e6f]/5 px-4 py-3 text-left">
+                  <p className="text-xs font-black uppercase tracking-[0.14em] text-[#003e6f]">{t("googleCompleteTitle")}</p>
+                  <p className="mt-1 text-sm text-[#003e6f]/80">{t("googleCompleteBody")}</p>
+                </div>
+              )}
             </div>
 
             <form className="space-y-5" onSubmit={handleAuth}>
@@ -364,15 +590,21 @@ export default function LoginPage() {
                     <label className="font-label text-xs font-bold text-primary uppercase tracking-[0.2em]" htmlFor="touristPassword">
                       {t("contrasena")}
                     </label>
-                    <input
-                      id="touristPassword"
-                      type="password"
-                      value={touristRegister.password}
-                      onChange={(e) => setTouristRegister((prev) => ({ ...prev, password: e.target.value }))}
-                      className="w-full h-14 px-4 bg-surface border border-outline-variant/20 rounded-2xl focus:ring-2 focus:ring-secondary/40 focus:border-transparent outline-none"
-                      minLength={8}
-                      required
-                    />
+                    {isGoogleCompletionFlow ? (
+                      <div className="w-full h-14 px-4 bg-slate-50 border border-slate-200 rounded-2xl flex items-center text-sm text-on-surface-variant">
+                        {t("googlePasswordNotRequired")}
+                      </div>
+                    ) : (
+                      <input
+                        id="touristPassword"
+                        type="password"
+                        value={touristRegister.password}
+                        onChange={(e) => setTouristRegister((prev) => ({ ...prev, password: e.target.value }))}
+                        className="w-full h-14 px-4 bg-surface border border-outline-variant/20 rounded-2xl focus:ring-2 focus:ring-secondary/40 focus:border-transparent outline-none"
+                        minLength={8}
+                        required
+                      />
+                    )}
                   </div>
                 </>
               )}
@@ -567,7 +799,7 @@ export default function LoginPage() {
               </button>
             </form>
 
-            {profile === "turista" && mode === "login" && (
+            {profile === "turista" && (
               <>
                 <div className="relative my-8">
                   <div className="absolute inset-0 flex items-center">
@@ -582,6 +814,8 @@ export default function LoginPage() {
 
                 <button
                   type="button"
+                  onClick={iniciarSesionConGoogle}
+                  disabled={loading}
                   className="w-full h-14 bg-slate-50 rounded-2xl border border-slate-200 flex items-center justify-center gap-4 hover:bg-slate-100 transition-all shadow-sm"
                 >
                   <span className="w-8 h-8 rounded-full bg-white border border-slate-100 flex items-center justify-center shadow-inner" aria-hidden="true">
@@ -594,7 +828,6 @@ export default function LoginPage() {
                   </span>
                   <span className="font-black text-xs uppercase tracking-widest text-[#003e6f]">{t("google")}</span>
                 </button>
-                <p className="text-center text-[10px] font-bold text-[#003e6f]/40 uppercase tracking-widest mt-4">{t("googleSoon")}</p>
               </>
             )}
 
