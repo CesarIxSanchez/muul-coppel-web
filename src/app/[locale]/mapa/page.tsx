@@ -877,6 +877,20 @@ export default function MapaPage() {
               />
             </div>
 
+            {/* Sticky AI button only on map */}
+            <button
+              onClick={() => {
+                setChatbotAbierto(true);
+                setMobileSheetOpen(false);
+              }}
+              className="absolute bottom-[12rem] right-4 md:bottom-6 md:right-6 z-[45] h-14 px-5 rounded-full bg-[#003e6f] text-white shadow-xl shadow-[#003e6f]/30 hover:bg-[#0a4f84] transition-colors flex items-center gap-2"
+              aria-label="Abrir MUUL AI"
+              title="Abrir MUUL AI"
+            >
+              <span className="w-6 h-6 rounded-full border border-white/70 flex items-center justify-center text-[11px] leading-none" aria-hidden="true">✦</span>
+              <span className="font-label text-[11px] font-black tracking-[0.18em] text-white">MUUL AI</span>
+            </button>
+
             {/* POI card — enhanced with photo */}
             {selectedPoi && !mostrarItinerario && (
               <POICard
@@ -962,7 +976,14 @@ export default function MapaPage() {
           onLoadRoute={(pois_data) => cargarRutaEnMapa(pois_data)}
         />
 
-        <ChatModal isOpen={chatbotAbierto} onClose={() => setChatbotAbierto(false)} poi={selectedPoi} idioma={locale} />
+        <ChatModal
+          isOpen={chatbotAbierto}
+          onClose={() => setChatbotAbierto(false)}
+          poi={selectedPoi}
+          poisEnRuta={poisEnRuta}
+          totalVisibles={filteredPois.length}
+          idioma={locale}
+        />
       </main>
 
       {/* ═══ MOBILE BOTTOM SHEET ═══ */}
